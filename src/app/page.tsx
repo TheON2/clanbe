@@ -2,6 +2,7 @@
 
 import MultiCarousel from "@/components/MultiCarousel";
 import {
+  Button,
   Card,
   CardBody,
   CardFooter,
@@ -102,7 +103,7 @@ export default function HomePage() {
               </span>
             </Tooltip>
             <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <span className="text-lg text-danger cursord-pointer active:opacity-50">
                 <DeleteIcon />
               </span>
             </Tooltip>
@@ -149,21 +150,67 @@ export default function HomePage() {
           </CardHeader>
           <Divider />
           <CardBody>
-            <Listbox
-              items={items}
-              aria-label="Dynamic Actions"
-              onAction={(key) => alert(key)}
-            >
-              {(item) => (
-                <ListboxItem
-                  key={item.key}
-                  color={item.key === "delete" ? "danger" : "default"}
-                  className={item.key === "delete" ? "text-danger" : ""}
-                >
-                  {item.label}
-                </ListboxItem>
-              )}
-            </Listbox>
+            <div className="flex gap-4 my-2">
+              <Button
+                className="h-[30px]"
+                radius="full"
+                color="primary"
+                variant="ghost"
+              >
+                Ghost
+              </Button>
+              <p> 12/18 후원통장내역</p>
+              <p className="ml-auto"> Classic 12.10.</p>
+            </div>
+            <div className="flex gap-4 my-2">
+              <Button
+                className="h-[30px]"
+                radius="full"
+                color="primary"
+                variant="ghost"
+              >
+                Ghost
+              </Button>
+              <p> 12/18 후원통장내역</p>
+              <p className="ml-auto"> Classic 12.10.</p>
+            </div>
+            <div className="flex gap-4 my-2">
+              <Button
+                className="h-[30px]"
+                radius="full"
+                color="primary"
+                variant="ghost"
+              >
+                Ghost
+              </Button>
+              <p> 12/18 후원통장내역</p>
+              <p className="ml-auto"> Classic 12.10.</p>
+            </div>
+
+            <div className="flex gap-4 my-2">
+              <Button
+                className="h-[30px]"
+                radius="full"
+                color="primary"
+                variant="ghost"
+              >
+                Ghost
+              </Button>
+              <p> 12/18 후원통장내역</p>
+              <p className="ml-auto"> Classic 12.10.</p>
+            </div>
+            <div className="flex gap-4 my-2">
+              <Button
+                className="h-[30px]"
+                radius="full"
+                color="primary"
+                variant="ghost"
+              >
+                Ghost
+              </Button>
+              <p> 12/18 후원통장내역</p>
+              <p className="ml-auto"> Classic 12.10.</p>
+            </div>
           </CardBody>
           <Divider />
           <CardFooter>

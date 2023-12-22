@@ -4,7 +4,9 @@ import {
   Button,
   Card,
   CardBody,
+  CardHeader,
   CircularProgress,
+  Divider,
   Input,
   Popover,
   PopoverContent,
@@ -41,7 +43,7 @@ const TapNav = () => {
     },
   ];
   return (
-    <div className="w-[220px] mx-4 sticky top-16">
+    <div className="w-[220px] mx-4 sticky top-16 my-32">
       <Tabs aria-label="Dynamic tabs" items={tabs}>
         <Tab key={"Profile"} title={"Profile"}>
           <Card>
@@ -129,6 +131,10 @@ const TapNav = () => {
                 />
                 <p className="mx-4 font-bold">vs T 4W 6L</p>
               </div>
+              <div className="flex flex-col gap-4 my-4">
+                <Button>BELO 순위</Button>
+                <Button>BELO 등록</Button>
+              </div>
             </CardBody>
           </Card>
         </Tab>
@@ -192,13 +198,34 @@ const TapNav = () => {
         </Tab>
       </Tabs>
       <Tabs aria-label="Dynamic tabs" items={tabs}>
-        {(item) => (
-          <Tab key={item.id} title={item.label}>
-            <Card>
-              <CardBody>{item.content}</CardBody>
-            </Card>
-          </Tab>
-        )}
+        <Tab key={"후원"} title={"후원"}>
+          <Card>
+            <CardHeader>
+              <p className="text-lg font-bold">후원자 명단</p>
+            </CardHeader>
+            <Divider />
+            <CardBody>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+              <p>김도원 100000원</p>
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab key={"포인트"} title={"포인트"}>
+          <Card>
+            <CardBody></CardBody>
+          </Card>
+        </Tab>
+        <Tab key={"최신댓글"} title={"최신댓글"}>
+          <Card>
+            <CardBody></CardBody>
+          </Card>
+        </Tab>
       </Tabs>
     </div>
   );
