@@ -28,6 +28,11 @@ import { EditIcon } from "../../public/EditIcon";
 import { DeleteIcon } from "../../public/DeleteIcon";
 import { EyeIcon } from "../../public/EyeIcon";
 import { columns, users } from "../../public/data";
+import CarouselItem from "@/components/CarouselItem";
+import Banner from "@/components/Banner";
+import Notice from "@/components/Notice";
+import Upcoming from "@/components/Upcoming";
+import PublicPosts from "@/components/PublicPosts";
 
 export default function HomePage() {
   const statusColorMap = {
@@ -52,6 +57,25 @@ export default function HomePage() {
     {
       key: "delete",
       label: "Delete file",
+    },
+  ];
+
+  const bannerItems = [
+    {
+      src: "/후원.png",
+      alt: "New file",
+    },
+    {
+      src: "/후원.png",
+      alt: "Copy link",
+    },
+    {
+      src: "/후원.png",
+      alt: "Edit file",
+    },
+    {
+      src: "/후원.png",
+      alt: "Delete file",
     },
   ];
 
@@ -115,172 +139,13 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div>
-      <div className="w-[1100px] h-[400px]">
-        <MultiCarousel>
-          <div className="w-full h-[400px]">
-            <Image alt="Card background" src={"/후원.png"} fill />
-          </div>
-          <div className="w-full h-[400px]">
-            <Image alt="Card background" src={"/후원.png"} fill />
-          </div>
-          <div className="w-full h-[400px]">
-            <Image alt="Card background" src={"/후원.png"} fill />
-          </div>
-          <div className="w-full h-[400px]">
-            <Image alt="Card background" src={"/후원.png"} fill />
-          </div>
-        </MultiCarousel>
-      </div>
+    <div className="mx-auto">
+      <Banner items={bannerItems} />
       <Divider className="my-4" />
-      <div className="flex w-[1100px] flex-wrap justify-center gap-4 my-4">
-        <Card className="w-[540px]">
-          <CardHeader className="flex gap-3">
-            <Image
-              alt="nextui logo"
-              height={40}
-              radius="sm"
-              src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-              width={40}
-            />
-            <div className="flex flex-col">
-              <p className="text-md">NextUI</p>
-              <p className="text-small text-default-500">nextui.org</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <div className="flex gap-4 my-2">
-              <Button
-                className="h-[30px]"
-                radius="full"
-                color="primary"
-                variant="ghost"
-              >
-                Ghost
-              </Button>
-              <p> 12/18 후원통장내역</p>
-              <p className="ml-auto"> Classic 12.10.</p>
-            </div>
-            <div className="flex gap-4 my-2">
-              <Button
-                className="h-[30px]"
-                radius="full"
-                color="primary"
-                variant="ghost"
-              >
-                Ghost
-              </Button>
-              <p> 12/18 후원통장내역</p>
-              <p className="ml-auto"> Classic 12.10.</p>
-            </div>
-            <div className="flex gap-4 my-2">
-              <Button
-                className="h-[30px]"
-                radius="full"
-                color="primary"
-                variant="ghost"
-              >
-                Ghost
-              </Button>
-              <p> 12/18 후원통장내역</p>
-              <p className="ml-auto"> Classic 12.10.</p>
-            </div>
-
-            <div className="flex gap-4 my-2">
-              <Button
-                className="h-[30px]"
-                radius="full"
-                color="primary"
-                variant="ghost"
-              >
-                Ghost
-              </Button>
-              <p> 12/18 후원통장내역</p>
-              <p className="ml-auto"> Classic 12.10.</p>
-            </div>
-            <div className="flex gap-4 my-2">
-              <Button
-                className="h-[30px]"
-                radius="full"
-                color="primary"
-                variant="ghost"
-              >
-                Ghost
-              </Button>
-              <p> 12/18 후원통장내역</p>
-              <p className="ml-auto"> Classic 12.10.</p>
-            </div>
-          </CardBody>
-          <Divider />
-          <CardFooter>
-            <Link
-              isExternal
-              showAnchorIcon
-              href="https://github.com/nextui-org/nextui"
-            >
-              Visit source code on GitHub.
-            </Link>
-          </CardFooter>
-        </Card>
-        <Card className="w-[540px]">
-          <CardHeader className="flex gap-3">
-            <Image
-              alt="nextui logo"
-              height={40}
-              radius="sm"
-              src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-              width={40}
-            />
-            <div className="flex flex-col">
-              <p className="text-md">NextUI</p>
-              <p className="text-small text-default-500">nextui.org</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <p>Make beautiful websites regardless of your design experience.</p>
-          </CardBody>
-          <Divider />
-          <CardFooter>
-            <Link
-              isExternal
-              showAnchorIcon
-              href="https://github.com/nextui-org/nextui"
-            >
-              Visit source code on GitHub.
-            </Link>
-          </CardFooter>
-        </Card>
-        <Card className="w-[540px]">
-          <CardHeader className="flex gap-3">
-            <Image
-              alt="nextui logo"
-              height={40}
-              radius="sm"
-              src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-              width={40}
-            />
-            <div className="flex flex-col">
-              <p className="text-md">NextUI</p>
-              <p className="text-small text-default-500">nextui.org</p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <CardBody>
-            <p>Make beautiful websites regardless of your design experience.</p>
-          </CardBody>
-          <Divider />
-          <CardFooter>
-            <Link
-              isExternal
-              showAnchorIcon
-              href="https://github.com/nextui-org/nextui"
-            >
-              Visit source code on GitHub.
-            </Link>
-          </CardFooter>
-        </Card>
+      <div className="flex flex-wrap  gap-4 my-auto ">
+        <Notice />
+        <Upcoming />
+        <PublicPosts />
         <Card className="w-[540px]">
           <CardHeader className="flex gap-3">
             <Image

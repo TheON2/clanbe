@@ -25,13 +25,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={sans.className}>
-      <body className="flex justify-center w-full">
+      <body className="flex flex-col w-full">
         <Providers>
-          <div className="mx-auto max-w-8xl">
+          <div className="mx-auto max-w-7xl">
             <Header />
-            <div className="flex items-start flex-row max-w-7xl">
+            <div className="flex items-start flex-row mx-auto max-w-7xl">
               <TapNav />
-              <main className="flex w-full h-[1600px]">{children}</main>
+              <main className="flex items-center">{children}</main>
             </div>
             <Footer />
           </div>
