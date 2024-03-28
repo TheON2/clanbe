@@ -268,35 +268,42 @@ export default function Header() {
               description="ACME scales apps to meet user demand, automagically, based on load."
               startContent={icons.scale}
             >
-              공지 사항
+              BELO란?
             </DropdownItem>
             <DropdownItem
               key="usage_metrics"
               description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
               startContent={icons.activity}
             >
-              클랜 일정
+              BELO S5
             </DropdownItem>
             <DropdownItem
               key="production_ready"
               description="ACME runs on ACME, join us and others serving requests at web scale."
               startContent={icons.flash}
             >
-              클랜원 명단
+              경기기록
             </DropdownItem>
             <DropdownItem
               key="99_uptime"
               description="Applications stay on the grid with high availability and high uptime guarantees."
               startContent={icons.server}
             >
-              클랜 규정
+              개인기록조회
             </DropdownItem>
             <DropdownItem
               key="supreme_support"
               description="Overcome any challenge with a supporting team ready to respond."
               startContent={icons.user}
             >
-              +Supreme Support
+              상대전적기록
+            </DropdownItem>
+            <DropdownItem
+              key="supreme_support"
+              description="Overcome any challenge with a supporting team ready to respond."
+              startContent={icons.user}
+            >
+              티어
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -326,35 +333,35 @@ export default function Header() {
               description="ACME scales apps to meet user demand, automagically, based on load."
               startContent={icons.scale}
             >
-              공지 사항
+              랭킹전
             </DropdownItem>
             <DropdownItem
               key="usage_metrics"
               description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
               startContent={icons.activity}
             >
-              클랜 일정
+              EVENT
             </DropdownItem>
             <DropdownItem
               key="production_ready"
               description="ACME runs on ACME, join us and others serving requests at web scale."
               startContent={icons.flash}
             >
-              클랜원 명단
+              개인 EVENT
             </DropdownItem>
             <DropdownItem
               key="99_uptime"
               description="Applications stay on the grid with high availability and high uptime guarantees."
               startContent={icons.server}
             >
-              클랜 규정
+              외부리그
             </DropdownItem>
             <DropdownItem
               key="supreme_support"
               description="Overcome any challenge with a supporting team ready to respond."
               startContent={icons.user}
             >
-              +Supreme Support
+              끝장전
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
@@ -384,35 +391,42 @@ export default function Header() {
               description="ACME scales apps to meet user demand, automagically, based on load."
               startContent={icons.scale}
             >
-              공지 사항
+              가위바위보
             </DropdownItem>
             <DropdownItem
               key="usage_metrics"
               description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
               startContent={icons.activity}
             >
-              클랜 일정
+              포인트규정
             </DropdownItem>
             <DropdownItem
               key="production_ready"
               description="ACME runs on ACME, join us and others serving requests at web scale."
               startContent={icons.flash}
             >
-              클랜원 명단
+              포인트랭킹
             </DropdownItem>
             <DropdownItem
               key="99_uptime"
               description="Applications stay on the grid with high availability and high uptime guarantees."
               startContent={icons.server}
             >
-              클랜 규정
+              아이콘샵
             </DropdownItem>
             <DropdownItem
               key="supreme_support"
               description="Overcome any challenge with a supporting team ready to respond."
               startContent={icons.user}
             >
-              +Supreme Support
+              아이콘추가요청
+            </DropdownItem>
+            <DropdownItem
+              key="supreme_support"
+              description="Overcome any challenge with a supporting team ready to respond."
+              startContent={icons.user}
+            >
+              로또복권
             </DropdownItem>
           </DropdownMenu>
         </Dropdown>
