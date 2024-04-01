@@ -29,6 +29,7 @@ import {
 } from "../../public/Icons";
 import { AcmeLogo } from "../../public/AcmeLogo";
 import { useState } from "react";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -439,6 +440,9 @@ export default function Header() {
           <Button as={Link} color="primary" href="#" variant="flat">
             Sign Up
           </Button>
+        </NavbarItem>
+        <NavbarItem>
+          <ThemeSwitcher />
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>

@@ -107,8 +107,8 @@ const Notice = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
     <div className="py-20">
-      <h1>공지사항</h1>
-      <div className="flex justify-between items-center mb-2">
+      <a className="font-bold text-3xl px-4 mb-20">공지사항</a>
+      <div className="flex justify-between items-center m-2">
         <Select
           isRequired
           label="정렬기준"
