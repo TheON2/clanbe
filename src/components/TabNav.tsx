@@ -20,6 +20,7 @@ import {
 import React from "react";
 import Image from "next/image";
 import { UserTwitterCard } from "./UserTwitterCard";
+import { myProfile, myTeam } from "../../public/data";
 
 const TapNav = () => {
   let tabs = [
@@ -98,7 +99,7 @@ const TapNav = () => {
                 />
                 <div>
                   <p className="mx-4 font-bold">18W 12L</p>
-                  <p className="mx-2 font-bold">A+ Tier Rank 3</p>
+                  <p className="mx-4 font-bold">A+ Tier</p>
                 </div>
               </div>
               <div className="flex my-2">

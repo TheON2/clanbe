@@ -79,7 +79,7 @@ export default function HomePage() {
     },
   ];
 
-  const renderCell = useCallback((user, columnKey) => {
+  const renderCell = useCallback((user: any, columnKey: any) => {
     const cellValue = user[columnKey];
 
     switch (columnKey) {

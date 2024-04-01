@@ -1,4 +1,109 @@
 import React from "react";
+
+export const aligns = [
+  {
+    label: "기본",
+    value: "기본",
+    description: "기본기준으로 게시글을 정렬합니다.",
+  },
+  {
+    label: "날짜",
+    value: "날짜",
+    description: "게시날짜 순으로 게시글을 정렬합니다.",
+  },
+  {
+    label: "조회수",
+    value: "조회수",
+    description: "조회수 순으로 게시글을 정렬합니다.",
+  },
+];
+
+export const searchOption = [
+  {
+    label: "제목",
+    value: "제목",
+    description: "제목기준으로 게시글을 검색합니다.",
+  },
+  {
+    label: "내용",
+    value: "내용",
+    description: "내용 순으로 게시글을 검색합니다.",
+  },
+  {
+    label: "닉네임",
+    value: "닉네임",
+    description: "닉네임 순으로 게시글을 검색합니다.",
+  },
+];
+
+export const posts = [
+  {
+    number: "공지",
+    title: "2024, 3월, 3일 공지사항",
+    author: "forU",
+    date: "24.03.03.",
+    views: "68",
+  },
+  {
+    number: "공지",
+    title: "2.13 공지사항",
+    author: "forU",
+    date: "24.02.13.",
+    views: "80",
+  },
+  {
+    number: "공지",
+    title: "12.16 영업진 회의 공지사항",
+    author: "forU",
+    date: "22.12.18.",
+    views: "290",
+  },
+  {
+    number: "공지",
+    title: "06.25 영업진 회의 공지사항",
+    author: "JPAPA",
+    date: "22.06.27.",
+    views: "348",
+  },
+  {
+    number: "34",
+    title: "프로모션 진행중",
+    author: "hOn",
+    date: "22.03.25.",
+    views: "106",
+  },
+  {
+    number: "33",
+    title: "3.17 영업진회의",
+    author: "hOn",
+    date: "22.03.18.",
+    views: "77",
+  },
+];
+
+export const myProfile = {
+  avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
+  name: "TheON2",
+  gradename: "BJ",
+  grade: 2,
+  point: 10040,
+  tear: "A+",
+  BELO: { race: "P", pw: 4, pl: 3, tw: 2, tl: 4, zw: 1, zl: 3 },
+  team: "갈락티코",
+};
+
+export const myTeam = {
+  name: "갈락티코",
+  status: {
+    ranking: 1,
+    w: 4,
+    l: 2,
+    point: 15,
+    winpoint: 22,
+    enemy: { name: "프로브타키온", day: "2023-07-24" },
+  },
+};
+
 const columns = [
   { name: "STATUS", uid: "status" },
   { name: "NAME", uid: "name" },
