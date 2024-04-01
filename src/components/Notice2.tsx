@@ -57,6 +57,51 @@ export const searchOption = [
   },
 ];
 
+const posts = [
+  {
+    number: "공지",
+    title: "2024, 3월, 3일 공지사항",
+    author: "forU",
+    date: "24.03.03.",
+    views: "68",
+  },
+  {
+    number: "공지",
+    title: "2.13 공지사항",
+    author: "forU",
+    date: "24.02.13.",
+    views: "80",
+  },
+  {
+    number: "공지",
+    title: "12.16 영업진 회의 공지사항",
+    author: "forU",
+    date: "22.12.18.",
+    views: "290",
+  },
+  {
+    number: "공지",
+    title: "06.25 영업진 회의 공지사항",
+    author: "JPAPA",
+    date: "22.06.27.",
+    views: "348",
+  },
+  {
+    number: "34",
+    title: "프로모션 진행중",
+    author: "hOn",
+    date: "22.03.25.",
+    views: "106",
+  },
+  {
+    number: "33",
+    title: "3.17 영업진회의",
+    author: "hOn",
+    date: "22.03.18.",
+    views: "77",
+  },
+];
+
 const Notice = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
@@ -76,7 +121,6 @@ const Notice = () => {
             </SelectItem>
           ))}
         </Select>
-        {/* 정렬기준 드랍다운과 버튼들 사이의 간격을 유지하기 위한 div */}
         <div className="flex space-x-2">
           <Button onPress={onOpen} color="primary">
             검색
@@ -127,131 +171,28 @@ const Notice = () => {
         </ModalContent>
       </Modal>
       <Card className="w-[1000px] py-4">
-        <CardHeader className="flex gap-3">
-          <Image
-            alt="nextui logo"
-            height={40}
-            src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
-            width={40}
-          />
-          <div className="flex flex-col">
-            <p className="text-md">NextUI</p>
-            <p className="text-small text-default-500">nextui.org</p>
-          </div>
+        <CardHeader className="flex justify-between items-center px-4 py-2">
+          <div className="w-1/12 text-center">번호</div>
+          <div className="w-7/12 text-center">제목</div>
+          <div className="w-2/12 text-center">글쓴이</div>
+          <div className="w-1/12 text-center">날짜</div>
+          <div className="w-1/12 text-center">조회수</div>
         </CardHeader>
         <Divider />
-        <CardBody>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
+        {posts.map((post, index) => (
+          <div
+            key={index}
+            className="flex justify-between items-center px-4 py-2"
+          >
+            <div className="w-1/12 text-center">{post.number}</div>
+            <div className="w-7/12 text-center">{post.title}</div>
+            <div className="w-2/12 text-center">{post.author}</div>
+            <div className="w-1/12 text-center">{post.date}</div>
+            <div className="w-1/12 text-center">{post.views}</div>
           </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-          <div className="flex gap-4 my-2">
-            <Button
-              className="h-[30px]"
-              radius="full"
-              color="primary"
-              variant="ghost"
-            >
-              Ghost
-            </Button>
-            <p> 12/18 후원통장내역</p>
-            <p className="ml-auto"> Classic 12.10.</p>
-          </div>
-        </CardBody>
+        ))}
       </Card>
+
       <div className="flex justify-center py-2">
         <Pagination showControls total={10} initialPage={1} />
       </div>
