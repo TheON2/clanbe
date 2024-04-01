@@ -17,6 +17,7 @@ import {
   NavbarMenuToggle,
 } from "@nextui-org/react";
 import Link from "next/link";
+import Image from "next/image";
 
 import {
   ChevronDown,
@@ -115,8 +116,14 @@ export default function Header() {
           className="sm:hidden"
         />
         <NavbarBrand>
-          <AcmeLogo />
-          <p className="font-bold text-inherit">ACME</p>
+          <Image
+            alt="Card background"
+            src={"/Belogo.png"}
+            width={100}
+            height={100}
+            sizes="sm"
+          />
+          <p className="font-bold text-inherit text-3xl">CLANBE</p>
         </NavbarBrand>
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
