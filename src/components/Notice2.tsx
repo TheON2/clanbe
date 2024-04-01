@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Button,
   Card,
   CardBody,
@@ -186,7 +187,14 @@ const Notice = () => {
           >
             <div className="w-1/12 text-center">{post.number}</div>
             <div className="w-7/12 text-center">{post.title}</div>
-            <div className="w-2/12 text-center">{post.author}</div>
+            <div className="w-2/12 flex items-center justify-start font-bold gap-2">
+              <Avatar
+                isBordered
+                color="success"
+                src="https://i.pravatar.cc/150?u=a04258114e29026302d"
+              />
+              {post.author}
+            </div>
             <div className="w-1/12 text-center">{post.date}</div>
             <div className="w-1/12 text-center">{post.views}</div>
           </div>
