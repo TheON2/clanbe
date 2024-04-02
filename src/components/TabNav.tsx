@@ -41,9 +41,7 @@ const TapNav = () => {
   const level = Math.floor(myProfile.point / 1000);
   const expPercentage = (myProfile.point % 1000) / 10;
 
-  const myTeam = proleagueTeams.find(
-    (team) => team.name === myProfile.team
-  )?.status;
+  const myTeam = proleagueTeams.find((team) => team.name === myProfile.team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정

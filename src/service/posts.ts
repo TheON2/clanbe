@@ -5,12 +5,10 @@ import {
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
-import { readFile } from "fs/promises";
-import path from "path";
-import { cache } from "react";
+
 import mongoose from "mongoose";
-import Post from "@/models/post";
-import PostModel from "@/models/post";
+import Post from "@/model/post";
+import PostModel from "@/model/post";
 
 export type Post = {
   _id: string;
