@@ -116,36 +116,27 @@ export const myProfile = {
 export const proleagueTeams = [
   {
     name: "갈락티코",
-    status: {
-      ranking: 1,
-      w: 4,
-      l: 2,
-      point: 15,
-      winpoint: 22,
-      enemy: { name: "프로브타키온", day: "2023-07-24" },
-    },
+    ranking: 1,
+    w: 4,
+    l: 2,
+    point: 15,
+    winpoint: 22,
   },
   {
     name: "버킹엄",
-    status: {
-      ranking: 2,
-      w: 2,
-      l: 4,
-      point: 11,
-      winpoint: 4,
-      enemy: { name: "프로브타키온", day: "2023-07-24" },
-    },
+    ranking: 2,
+    w: 2,
+    l: 4,
+    point: 11,
+    winpoint: 4,
   },
   {
     name: "원",
-    status: {
-      ranking: 3,
-      w: 1,
-      l: 4,
-      point: -3,
-      winpoint: 0,
-      enemy: { name: "프로브타키온", day: "2023-07-24" },
-    },
+    ranking: 3,
+    w: 1,
+    l: 4,
+    point: -3,
+    winpoint: 0,
   },
 ];
 
