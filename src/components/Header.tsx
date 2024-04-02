@@ -48,6 +48,23 @@ export default function Header() {
     "Log Out",
   ];
 
+  const handleSubmit = async (event: any) => {
+    event.preventDefault(); // Link 컴포넌트의 기본 행동을 중단합니다.
+
+    try {
+      const response = await fetch("/api/dummy", {
+        method: "POST",
+        // body와 headers를 생략할 수 있습니다, 서버에서 더미 데이터를 처리하기 때문입니다.
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+    } catch (error) {
+      console.error("Failed to submit the article:", error);
+    }
+  };
+
   const icons = {
     chevron: (
       <ChevronDown fill="currentColor" size={16} height={15} width={15} />
@@ -450,6 +467,16 @@ export default function Header() {
         </NavbarItem>
         <NavbarItem>
           <ThemeSwitcher />
+        </NavbarItem>
+        <NavbarItem>
+          <Button
+            color="primary"
+            href="#"
+            variant="flat"
+            onClick={handleSubmit}
+          >
+            Dummy
+          </Button>
         </NavbarItem>
       </NavbarContent>
       <NavbarMenu>
