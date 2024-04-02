@@ -162,7 +162,7 @@ const TapNav = () => {
         </Tab>
         <Tab key={"LEAGUE"} title={"LEAGUE"}>
           <Card>
-            <CardBody>
+            <CardBody className="my-4">
               <User
                 name={myProfile.name}
                 description={myProfile.role}
@@ -175,6 +175,7 @@ const TapNav = () => {
                 src={imagePath}
                 width={1100}
                 height={400}
+                className="my-4"
               />
               <div className="flex my-2">
                 <CircularProgress
