@@ -78,6 +78,28 @@ export const getAllPosts = async () => {
   }
 };
 
+export const getUserData = async () => {
+  try {
+    // MongoDB 데이터베이스에 연결
+    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
+
+    // 데이터베이스에서 모든 게시글을 검색
+    const posts = await PostModel.find({}); // 모든 게시글을 검색
+    console.log(posts);
+
+    const transformedPosts = posts.map((post) => {
+      return {
+        ...post.toObject(),
+        _id: post._id.toString(), // ObjectId를 문자열로 변환
+      };
+    });
+    return transformedPosts;
+  } catch (error) {
+    console.error("Error fetching posts from MongoDB", error);
+    throw new Error("Error fetching posts from MongoDB");
+  }
+};
+
 export async function getPostData(slug: string): Promise<PostData> {
   const posts = await getAllPosts();
   console.log(posts);

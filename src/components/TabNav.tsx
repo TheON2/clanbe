@@ -20,29 +20,44 @@ import {
 import React from "react";
 import Image from "next/image";
 import { UserTwitterCard } from "./UserTwitterCard";
-import { myProfile, myTeam } from "../../public/data";
+import { myProfile, tabs, proleagueTeams } from "../../public/data";
 
 const TapNav = () => {
-  let tabs = [
-    {
-      id: "photos",
-      label: "Photos",
-      content:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
-    },
-    {
-      id: "music",
-      label: "Music",
-      content:
-        "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
-    },
-    {
-      id: "videos",
-      label: "Videos",
-      content:
-        "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
-    },
-  ];
+  // 총 승리, 패배 횟수 및 각 종족별 승률 계산
+  const totalWins = myProfile.BELO.pw + myProfile.BELO.tw + myProfile.BELO.zw;
+  const totalLosses = myProfile.BELO.pl + myProfile.BELO.tl + myProfile.BELO.zl;
+
+  const totalGames = totalWins + totalLosses;
+  const winRateTotal = (totalWins / totalGames) * 100;
+
+  const winRateP =
+    (myProfile.BELO.pw / (myProfile.BELO.pw + myProfile.BELO.pl)) * 100;
+  const winRateT =
+    (myProfile.BELO.tw / (myProfile.BELO.tw + myProfile.BELO.tl)) * 100;
+  const winRateZ =
+    (myProfile.BELO.zw / (myProfile.BELO.zw + myProfile.BELO.zl)) * 100;
+
+  // 레벨과 경험치 백분율 계산
+  const level = Math.floor(myProfile.point / 1000);
+  const expPercentage = (myProfile.point % 1000) / 10;
+
+  const myTeam = proleagueTeams.find(
+    (team) => team.name === myProfile.team
+  )?.status;
+
+  const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
+  // myTeam이 undefined일 경우 승률을 0으로 설정
+
+  // 팀 이미지 경로 매핑
+  const teamImagePaths: { [key: string]: string } = {
+    갈락티코: "/grtc.jpg",
+    버킹엄: "/bk.jpg",
+    원: "/one.jpg",
+  };
+
+  // 선택한 팀에 따른 이미지 경로 결정
+  const imagePath = teamImagePaths[myProfile.team] || "/default.jpg";
+
   return (
     <div className="w-[220px] mx-4 sticky top-16 my-32">
       <Tabs aria-label="Dynamic tabs" items={tabs}>
@@ -51,10 +66,10 @@ const TapNav = () => {
             <CardBody>
               <User
                 className="my-4"
-                name="Jane Doe"
-                description="Product Designer"
+                name={myProfile.name}
+                description={myProfile.role}
                 avatarProps={{
-                  src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                  src: myProfile.avatar,
                 }}
               />
               <br />
@@ -68,8 +83,8 @@ const TapNav = () => {
                   label: "tracking-wider font-medium text-default-600",
                   value: "text-foreground/60",
                 }}
-                label="LV29"
-                value={65}
+                label={"LV" + level}
+                value={expPercentage}
                 showValueLabel={true}
               />
               <div className="flex justify-center gap-4">
@@ -83,54 +98,62 @@ const TapNav = () => {
           <Card>
             <CardBody className="my-4">
               <User
-                name="Jane Doe"
-                description="Product Designer"
+                name={myProfile.name}
+                description={myProfile.role}
                 avatarProps={{
-                  src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                  src: myProfile.avatar,
                 }}
               />
               <div className="flex my-4">
                 <CircularProgress
                   aria-label="Loading..."
                   size="lg"
-                  value={60}
+                  value={winRateTotal}
                   color="success"
                   showValueLabel={true}
                 />
                 <div>
-                  <p className="mx-4 font-bold">18W 12L</p>
-                  <p className="mx-4 font-bold">A+ Tier</p>
+                  <p className="mx-4 font-bold">
+                    {totalWins}W {totalLosses}L
+                  </p>
+                  <p className="mx-4 font-bold">{myProfile.tear} Tier</p>
                 </div>
               </div>
               <div className="flex my-2">
                 <CircularProgress
                   aria-label="Loading..."
                   size="lg"
-                  value={70}
+                  value={winRateP}
                   color="success"
                   showValueLabel={true}
                 />
-                <p className="mx-4 font-bold">vs P 7W 3L</p>
+                <p className="mx-4 font-bold">
+                  vs P {myProfile.BELO.pw}W {myProfile.BELO.pl}L
+                </p>
               </div>
               <div className="flex my-2">
                 <CircularProgress
                   aria-label="Loading..."
                   size="lg"
-                  value={60}
+                  value={winRateZ}
                   color="success"
                   showValueLabel={true}
                 />
-                <p className="mx-4 font-bold">vs Z 7W 3L</p>
+                <p className="mx-4 font-bold">
+                  vs Z {myProfile.BELO.zw}W {myProfile.BELO.zl}L
+                </p>
               </div>
               <div className="flex my-2">
                 <CircularProgress
                   aria-label="Loading..."
                   size="lg"
-                  value={40}
+                  value={winRateT}
                   color="danger"
                   showValueLabel={true}
                 />
-                <p className="mx-4 font-bold">vs T 4W 6L</p>
+                <p className="mx-4 font-bold">
+                  vs T {myProfile.BELO.tw}W {myProfile.BELO.tl}L
+                </p>
               </div>
               <div className="flex flex-col gap-4 my-4">
                 <Button>BELO 순위</Button>
@@ -143,16 +166,15 @@ const TapNav = () => {
           <Card>
             <CardBody>
               <User
-                className="my-4"
-                name="Jane Doe"
-                description="Product Designer"
+                name={myProfile.name}
+                description={myProfile.role}
                 avatarProps={{
-                  src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                  src: myProfile.avatar,
                 }}
               />
               <Image
                 alt="Card background"
-                src={"/grtc.jpg"}
+                src={imagePath}
                 width={1100}
                 height={400}
               />
@@ -160,14 +182,16 @@ const TapNav = () => {
                 <CircularProgress
                   aria-label="Loading..."
                   size="lg"
-                  value={70}
+                  value={winRateTeam}
                   color="success"
                   showValueLabel={true}
                 />
                 <div>
-                  <p className="mx-4 font-bold">1위 7W 3L</p>
-                  <p className="mx-4 font-bold">득실 +15</p>
-                  <p className="mx-4 font-bold">승점 35</p>
+                  <p className="mx-4 font-bold">
+                    {myTeam?.ranking}위 {myTeam?.w}W {myTeam?.l}L
+                  </p>
+                  <p className="mx-4 font-bold">득실 {myTeam?.point}</p>
+                  <p className="mx-4 font-bold">승점 {myTeam?.winpoint}</p>
                 </div>
               </div>
               <div className="flex flex-col mx-auto my-4">

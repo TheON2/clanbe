@@ -18,6 +18,27 @@ export const aligns = [
   },
 ];
 
+export const tabs = [
+  {
+    id: "photos",
+    label: "Photos",
+    content:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+  },
+  {
+    id: "music",
+    label: "Music",
+    content:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+  },
+  {
+    id: "videos",
+    label: "Videos",
+    content:
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+  },
+];
+
 export const searchOption = [
   {
     label: "제목",
@@ -84,7 +105,7 @@ export const posts = [
 export const myProfile = {
   avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
   name: "TheON2",
-  gradename: "BJ",
+  role: "BJ",
   grade: 2,
   point: 10040,
   tear: "A+",
@@ -92,25 +113,49 @@ export const myProfile = {
   team: "갈락티코",
 };
 
-export const myTeam = {
-  name: "갈락티코",
-  status: {
-    ranking: 1,
-    w: 4,
-    l: 2,
-    point: 15,
-    winpoint: 22,
-    enemy: { name: "프로브타키온", day: "2023-07-24" },
+export const proleagueTeams = [
+  {
+    name: "갈락티코",
+    status: {
+      ranking: 1,
+      w: 4,
+      l: 2,
+      point: 15,
+      winpoint: 22,
+      enemy: { name: "프로브타키온", day: "2023-07-24" },
+    },
   },
-};
+  {
+    name: "버킹엄",
+    status: {
+      ranking: 2,
+      w: 2,
+      l: 4,
+      point: 11,
+      winpoint: 4,
+      enemy: { name: "프로브타키온", day: "2023-07-24" },
+    },
+  },
+  {
+    name: "원",
+    status: {
+      ranking: 3,
+      w: 1,
+      l: 4,
+      point: -3,
+      winpoint: 0,
+      enemy: { name: "프로브타키온", day: "2023-07-24" },
+    },
+  },
+];
 
-const columns = [
+export const columns = [
   { name: "STATUS", uid: "status" },
   { name: "NAME", uid: "name" },
   { name: "ROLE", uid: "role" },
 ];
 
-const users = [
+export const users = [
   {
     id: 1,
     name: "Tony Reichert",
@@ -182,5 +227,3 @@ const users = [
     email: "kristen.cooper@example.com",
   },
 ];
-
-export { columns, users };
