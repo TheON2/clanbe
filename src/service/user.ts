@@ -12,8 +12,6 @@ export const getNavData = async () => {
     // 데이터베이스에서 모든 게시글을 검색
     const users = await UserModel.find({});
     const teams = await TeamModel.find({});
-    console.log(users);
-    console.log(teams);
 
     const transformedUser: User[] = users.map((user: Document) => ({
       ...user.toObject(),

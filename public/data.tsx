@@ -102,44 +102,6 @@ export const posts = [
   },
 ];
 
-export const myProfile = {
-  avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-  name: "TheON2",
-  role: "BJ",
-  grade: 2,
-  point: 10040,
-  tear: "A+",
-  BELO: { race: "P", pw: 4, pl: 3, tw: 2, tl: 4, zw: 1, zl: 3 },
-  team: "갈락티코",
-};
-
-export const proleagueTeams = [
-  {
-    name: "갈락티코",
-    ranking: 1,
-    w: 4,
-    l: 2,
-    point: 15,
-    winpoint: 22,
-  },
-  {
-    name: "버킹엄",
-    ranking: 2,
-    w: 2,
-    l: 4,
-    point: 11,
-    winpoint: 4,
-  },
-  {
-    name: "원",
-    ranking: 3,
-    w: 1,
-    l: 4,
-    point: -3,
-    winpoint: 0,
-  },
-];
-
 export const columns = [
   { name: "STATUS", uid: "status" },
   { name: "NAME", uid: "name" },

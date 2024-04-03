@@ -24,8 +24,7 @@ import { tabs } from "../../public/data";
 
 const TapNavComponent = (navData: any) => {
   const { user, teams } = navData.navData;
-  console.log(user[0]);
-  console.log(teams);
+
   // 총 승리, 패배 횟수 및 각 종족별 승률 계산
   const totalWins = user[0].BELO.pw + user[0].BELO.tw + user[0].BELO.zw;
   const totalLosses = user[0].BELO.pl + user[0].BELO.tl + user[0].BELO.zl;
