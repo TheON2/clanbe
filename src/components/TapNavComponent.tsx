@@ -20,32 +20,31 @@ import {
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { UserTwitterCard } from "./UserTwitterCard";
-import { myProfile, tabs, proleagueTeams } from "../../public/data";
+import { tabs } from "../../public/data";
 
 const TapNavComponent = (navData: any) => {
-  const { transformedUser, transformedTeam } = navData;
-  console.log(transformedTeam);
-  console.log(transformedUser);
-  console.log(navData);
+  const { user, teams } = navData.navData;
+  console.log(user[0]);
+  console.log(teams);
   // 총 승리, 패배 횟수 및 각 종족별 승률 계산
-  const totalWins = myProfile.BELO.pw + myProfile.BELO.tw + myProfile.BELO.zw;
-  const totalLosses = myProfile.BELO.pl + myProfile.BELO.tl + myProfile.BELO.zl;
+  const totalWins = user[0].BELO.pw + user[0].BELO.tw + user[0].BELO.zw;
+  const totalLosses = user[0].BELO.pl + user[0].BELO.tl + user[0].BELO.zl;
 
   const totalGames = totalWins + totalLosses;
   const winRateTotal = (totalWins / totalGames) * 100;
 
   const winRateP =
-    (myProfile.BELO.pw / (myProfile.BELO.pw + myProfile.BELO.pl)) * 100;
+    (user[0].BELO.pw / (user[0].BELO.pw + user[0].BELO.pl)) * 100;
   const winRateT =
-    (myProfile.BELO.tw / (myProfile.BELO.tw + myProfile.BELO.tl)) * 100;
+    (user[0].BELO.tw / (user[0].BELO.tw + user[0].BELO.tl)) * 100;
   const winRateZ =
-    (myProfile.BELO.zw / (myProfile.BELO.zw + myProfile.BELO.zl)) * 100;
+    (user[0].BELO.zw / (user[0].BELO.zw + user[0].BELO.zl)) * 100;
 
   // 레벨과 경험치 백분율 계산
-  const level = Math.floor(myProfile.point / 1000);
-  const expPercentage = (myProfile.point % 1000) / 10;
+  const level = Math.floor(user[0].point / 1000);
+  const expPercentage = (user[0].point % 1000) / 10;
 
-  const myTeam = proleagueTeams.find((team) => team.name === myProfile.team);
+  const myTeam = teams.find((team) => team.name === user[0].team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정
@@ -58,7 +57,7 @@ const TapNavComponent = (navData: any) => {
   };
 
   // 선택한 팀에 따른 이미지 경로 결정
-  const imagePath = teamImagePaths[myProfile.team] || "/default.jpg";
+  const imagePath = teamImagePaths[user[0].team] || "/default.jpg";
 
   return (
     <div className="w-[220px] mx-4 sticky top-16 my-32">
@@ -68,10 +67,10 @@ const TapNavComponent = (navData: any) => {
             <CardBody>
               <User
                 className="my-4"
-                name={myProfile.name}
-                description={myProfile.role}
+                name={user[0].name}
+                description={user[0].role}
                 avatarProps={{
-                  src: myProfile.avatar,
+                  src: user[0].avatar,
                 }}
               />
               <br />
@@ -100,10 +99,10 @@ const TapNavComponent = (navData: any) => {
           <Card>
             <CardBody className="my-4">
               <User
-                name={myProfile.name}
-                description={myProfile.role}
+                name={user[0].name}
+                description={user[0].role}
                 avatarProps={{
-                  src: myProfile.avatar,
+                  src: user[0].avatar,
                 }}
               />
               <div className="flex my-4">
@@ -118,7 +117,7 @@ const TapNavComponent = (navData: any) => {
                   <p className="mx-4 font-bold">
                     {totalWins}W {totalLosses}L
                   </p>
-                  <p className="mx-4 font-bold">{myProfile.tear} Tier</p>
+                  <p className="mx-4 font-bold">{user[0].tear} Tier</p>
                 </div>
               </div>
               <div className="flex my-2">
@@ -130,7 +129,7 @@ const TapNavComponent = (navData: any) => {
                   showValueLabel={true}
                 />
                 <p className="mx-4 font-bold">
-                  vs P {myProfile.BELO.pw}W {myProfile.BELO.pl}L
+                  vs P {user[0].BELO.pw}W {user[0].BELO.pl}L
                 </p>
               </div>
               <div className="flex my-2">
@@ -142,7 +141,7 @@ const TapNavComponent = (navData: any) => {
                   showValueLabel={true}
                 />
                 <p className="mx-4 font-bold">
-                  vs Z {myProfile.BELO.zw}W {myProfile.BELO.zl}L
+                  vs Z {user[0].BELO.zw}W {user[0].BELO.zl}L
                 </p>
               </div>
               <div className="flex my-2">
@@ -154,7 +153,7 @@ const TapNavComponent = (navData: any) => {
                   showValueLabel={true}
                 />
                 <p className="mx-4 font-bold">
-                  vs T {myProfile.BELO.tw}W {myProfile.BELO.tl}L
+                  vs T {user[0].BELO.tw}W {user[0].BELO.tl}L
                 </p>
               </div>
               <div className="flex flex-col gap-4 my-4">
@@ -168,10 +167,10 @@ const TapNavComponent = (navData: any) => {
           <Card>
             <CardBody className="my-4">
               <User
-                name={myProfile.name}
-                description={myProfile.role}
+                name={user[0].name}
+                description={user[0].role}
                 avatarProps={{
-                  src: myProfile.avatar,
+                  src: user[0].avatar,
                 }}
               />
               <Image
