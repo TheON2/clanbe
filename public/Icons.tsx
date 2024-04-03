@@ -1,6 +1,6 @@
 import React from "react";
 
-type IconProp = {
+export type IconProp = {
   fill?: string;
   size?: number;
   height?: number;

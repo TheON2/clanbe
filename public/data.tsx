@@ -1,4 +1,5 @@
 import React from "react";
+import { ChevronDown } from "./Icons";
 
 export const aligns = [
   {
@@ -107,6 +108,33 @@ export const columns = [
   { name: "NAME", uid: "name" },
   { name: "ROLE", uid: "role" },
 ];
+
+export const headerDummy = {
+  buttonTitle: "더미메뉴",
+  menuItems: [
+    {
+      title: "더미1번",
+      description: "더미임",
+      icon: (
+        <ChevronDown fill="currentColor" size={16} height={15} width={15} />
+      ),
+    },
+    {
+      title: "더미2번",
+      description: "더미임",
+      icon: (
+        <ChevronDown fill="currentColor" size={16} height={15} width={15} />
+      ),
+    },
+    {
+      title: "더미3번",
+      description: "더미임",
+      icon: (
+        <ChevronDown fill="currentColor" size={16} height={15} width={15} />
+      ),
+    },
+  ],
+};
 
 export const users = [
   {

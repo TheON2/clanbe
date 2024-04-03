@@ -24,7 +24,6 @@ const CKEditorContent: React.FC<CKEditorContentProps> = ({ contentUrl }) => {
         console.error("Failed to fetch content", error);
       }
     }
-
     fetchContent();
   }, [contentUrl]);
   return (

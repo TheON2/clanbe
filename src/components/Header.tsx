@@ -31,6 +31,9 @@ import {
 import { AcmeLogo } from "../../public/AcmeLogo";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
+import { HeaderLogo } from "./Header/HeaderLogo";
+import { NavbarDropdown } from "./Header/HeaderDropdown";
+import { headerDummy } from "../../public/data";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -84,18 +87,10 @@ export default function Header() {
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
           className="sm:hidden"
         />
-        <NavbarBrand>
-          <Image
-            alt="Card background"
-            src={"/Belogo.png"}
-            width={100}
-            height={100}
-            sizes="sm"
-          />
-          <p className="font-bold text-inherit text-3xl">CLANBE</p>
-        </NavbarBrand>
+        <HeaderLogo />
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarDropdown buttonTitle={ headerDummy.buttonTitle} menuItems={headerDummy.menuItems}/>
         <Dropdown>
           <NavbarItem>
             <DropdownTrigger>
