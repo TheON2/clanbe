@@ -1,5 +1,5 @@
-import TeamModel from "@/model/team";
-import UserModel from "@/model/user";
+import TeamModel from "@/models/team";
+import UserModel from "@/models/user";
 import mongoose from "mongoose";
 import { NextApiResponse } from "next";
 import { NextRequest } from "next/server";
@@ -71,7 +71,6 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         console.log(err); // 에러 핸들링
       });
 
-    console.log("더미 데이터 삽입 성공");
     return Response.json({
       uploaded: true,
     });

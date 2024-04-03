@@ -1,4 +1,5 @@
-import mongoose from "mongoose";
+import mongoose, { Model } from "mongoose";
+import { User } from "../../types/types";
 
 const userSchema = new mongoose.Schema(
   {
@@ -24,7 +25,14 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-const UserModel =
-  mongoose.models.user || mongoose.model("user", userSchema, "user");
+let UserModel: Model<User>;
+
+if (mongoose.modelNames().includes("user")) {
+  // 모델이 이미 존재하는 경우, 해당 모델을 가져옵니다.
+  UserModel = mongoose.model<User>("user");
+} else {
+  // 모델이 존재하지 않는 경우, 새로운 모델을 생성합니다.
+  UserModel = mongoose.model<User>("user", userSchema, "user");
+}
 
 export default UserModel;

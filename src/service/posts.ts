@@ -7,8 +7,8 @@ import {
 } from "@aws-sdk/client-s3";
 
 import mongoose from "mongoose";
-import Post from "@/model/post";
-import PostModel from "@/model/post";
+import Post from "@/models/post";
+import PostModel from "@/models/post";
 
 export type Post = {
   _id: string;
