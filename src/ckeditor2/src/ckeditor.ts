@@ -60,7 +60,6 @@ import { PageBreak } from "@ckeditor/ckeditor5-page-break";
 import { Paragraph } from "@ckeditor/ckeditor5-paragraph";
 import { PasteFromOffice } from "@ckeditor/ckeditor5-paste-from-office";
 import { RemoveFormat } from "@ckeditor/ckeditor5-remove-format";
-import { StandardEditingMode } from "@ckeditor/ckeditor5-restricted-editing";
 import { SelectAll } from "@ckeditor/ckeditor5-select-all";
 import { ShowBlocks } from "@ckeditor/ckeditor5-show-blocks";
 import { SourceEditing } from "@ckeditor/ckeditor5-source-editing";
@@ -126,7 +125,6 @@ class Editor extends ClassicEditor {
     SelectAll,
     ShowBlocks,
     SourceEditing,
-    StandardEditingMode,
     Strikethrough,
     Style,
     Subscript,

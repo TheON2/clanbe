@@ -21,6 +21,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { UserTwitterCard } from "./UserTwitterCard";
 import { tabs } from "../../public/data";
+import { Team } from "../../types/types";
 
 const TapNavComponent = (navData: any) => {
   const { user, teams } = navData.navData;
@@ -43,7 +44,7 @@ const TapNavComponent = (navData: any) => {
   const level = Math.floor(user[0].point / 1000);
   const expPercentage = (user[0].point % 1000) / 10;
 
-  const myTeam = teams.find((team) => team.name === user[0].team);
+  const myTeam = teams.find((team:Team) => team.name === user[0].team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정

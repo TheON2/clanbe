@@ -10,17 +10,17 @@ export const ThemeSwitcher = () => {
     setMounted(true);
   }, []);
 
+  if (!mounted) return null;
+
   return (
     <div>
-      {mounted && (
-        <div>
-          {theme === "dark" ? (
-            <Button onClick={() => setTheme("light")}>Light Mode</Button>
-          ) : (
-            <Button onClick={() => setTheme("dark")}>Dark Mode</Button>
-          )}
-        </div>
-      )}
+      <div>
+        {theme === "dark" ? (
+          <Button onClick={() => setTheme("light")}>Light Mode</Button>
+        ) : (
+          <Button onClick={() => setTheme("dark")}>Dark Mode</Button>
+        )}
+      </div>
     </div>
   );
 };

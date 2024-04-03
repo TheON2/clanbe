@@ -1,21 +1,10 @@
 import TeamModel from "@/models/team";
 import UserModel from "@/models/user";
 import mongoose from "mongoose";
-import { NextApiResponse } from "next";
+import { NextApiResponse,NextApiRequest } from "next";
 import { NextRequest } from "next/server";
 
-export const config = {
-  api: {
-    bodyParser: true,
-  },
-};
-
-export async function POST(req: NextRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
+export async function POST(req:Request, res:Response) {
   try {
     const myProfile = {
       avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
@@ -71,14 +60,13 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
         console.log(err); // 에러 핸들링
       });
 
-    return Response.json({
-      uploaded: true,
-    });
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
-    } else {
-      res.status(500).json({ error: "An unknown error occurred" });
-    }
+    return new Response(JSON.stringify({ message: '더미 전송 완료' }), {
+          status: 200,
+        })
+  } catch (error) {
+    // 에러 처리 로직
+    return new Response(JSON.stringify({ message: '더미 전송에 실패함!' }), {
+        status: 500,
+      });
   }
 }

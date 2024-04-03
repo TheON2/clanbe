@@ -1,5 +1,19 @@
 import React from "react";
-export const ChevronDown = ({fill, size, height, width, ...props}) => {
+
+type IconProp = {
+  fill?: string;
+  size?: number;
+  height?: number;
+  width?: number;
+};
+
+export const ChevronDown: React.FC<IconProp> = ({
+  fill,
+  size,
+  height,
+  width,
+  ...props
+}) => {
   return (
     <svg
       fill="none"
@@ -21,7 +35,13 @@ export const ChevronDown = ({fill, size, height, width, ...props}) => {
   );
 };
 
-export const Lock = ({fill, size, height, width, ...props}) => {
+export const Lock: React.FC<IconProp> = ({
+  fill,
+  size,
+  height,
+  width,
+  ...props
+}) => {
   const color = fill;
 
   return (
@@ -68,7 +88,13 @@ export const Lock = ({fill, size, height, width, ...props}) => {
   );
 };
 
-export const Activity = ({fill, size, height, width, ...props}) => {
+export const Activity: React.FC<IconProp> = ({
+  fill,
+  size,
+  height,
+  width,
+  ...props
+}) => {
   return (
     <svg
       height={size || height || 24}
@@ -93,7 +119,7 @@ export const Activity = ({fill, size, height, width, ...props}) => {
   );
 };
 
-export const Flash = ({
+export const Flash: React.FC<IconProp> = ({
   fill = "currentColor",
   size,
   height,
@@ -121,7 +147,7 @@ export const Flash = ({
   );
 };
 
-export const Server = ({
+export const Server: React.FC<IconProp> = ({
   fill = "currentColor",
   size,
   height,
@@ -148,7 +174,7 @@ export const Server = ({
   );
 };
 
-export const TagUser = ({
+export const TagUser: React.FC<IconProp> = ({
   fill = "currentColor",
   size,
   height,
@@ -183,8 +209,7 @@ export const TagUser = ({
   );
 };
 
-
-export const Scale = ({
+export const Scale: React.FC<IconProp> = ({
   fill = "currentColor",
   size,
   height,

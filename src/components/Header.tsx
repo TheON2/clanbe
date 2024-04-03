@@ -69,60 +69,12 @@ export default function Header() {
     chevron: (
       <ChevronDown fill="currentColor" size={16} height={15} width={15} />
     ),
-    scale: (
-      <Scale
-        className="text-warning"
-        fill="currentColor"
-        size={30}
-        height={15}
-        width={15}
-      />
-    ),
-    lock: (
-      <Lock
-        className="text-success"
-        fill="currentColor"
-        size={30}
-        height={15}
-        width={15}
-      />
-    ),
-    activity: (
-      <Activity
-        className="text-secondary"
-        fill="currentColor"
-        size={30}
-        height={15}
-        width={15}
-      />
-    ),
-    flash: (
-      <Flash
-        className="text-primary"
-        fill="currentColor"
-        size={30}
-        height={15}
-        width={15}
-      />
-    ),
-    server: (
-      <Server
-        className="text-success"
-        fill="currentColor"
-        size={30}
-        height={15}
-        width={15}
-      />
-    ),
-    user: (
-      <TagUser
-        className="text-danger"
-        fill="currentColor"
-        size={30}
-        height={15}
-        width={15}
-      />
-    ),
+    scale: <Scale fill="currentColor" size={30} height={15} width={15} />,
+    lock: <Lock fill="currentColor" size={30} height={15} width={15} />,
+    activity: <Activity fill="currentColor" size={30} height={15} width={15} />,
+    flash: <Flash fill="currentColor" size={30} height={15} width={15} />,
+    server: <Server fill="currentColor" size={30} height={15} width={15} />,
+    user: <TagUser fill="currentColor" size={30} height={15} width={15} />,
   };
 
   return (
