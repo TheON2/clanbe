@@ -420,7 +420,7 @@ export default function Header() {
         <NavbarItem>
           <ThemeSwitcher />
         </NavbarItem>
-        <NavbarItem>
+        {/* <NavbarItem>
           <Button
             color="primary"
             href="#"
@@ -429,7 +429,7 @@ export default function Header() {
           >
             Dummy
           </Button>
-        </NavbarItem>
+        </NavbarItem> */}
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (
