@@ -137,28 +137,33 @@ export const headerCLANBE = {
       title: "공지 사항",
       description: "Be클랜의 필수공지사항을 확인 할 수 있습니다.",
       icon: "scale",
+      href: "/CLANBE/notices",
     },
     {
       title: "클랜 일정",
       description:
         "클랜리그/이벤트 등의 모든 일정을 달력을 통해 확인 할 수 있습니다.",
       icon: "activity",
+      href: "/CLANBE/schedule",
     },
     {
       title: "클랜원 명단",
       description: "전체 클랜원들의 명단 및 운영진 명단을 확인 할 수 있습니다.",
       icon: "flash",
+      href: "/CLANBE/members",
     },
     {
       title: "클랜 규정",
       description:
         "클랜원 활동에 필요한 필수규칙 및 운영방침을 확인 할 수 있습니다.",
       icon: "server",
+      href: "/CLANBE/rules",
     },
     {
       title: "클랜 후원",
       description: "클랜의 활동에 필요한 후원자금에 관련된 게시판 입니다.",
       icon: "user",
+      href: "/CLANBE/support",
     },
   ],
 };
@@ -170,6 +175,7 @@ export const headerCOMMUNITY = {
       title: "전체글보기",
       description: "더미임",
       icon: "scale",
+      href: "/CLANBE/notices",
     },
     {
       title: "자유게시판",
