@@ -1,5 +1,5 @@
 "use client";
 
-export default function MembersPage() {
+export default function TearPage() {
   return "멤버 페이지";
 }
