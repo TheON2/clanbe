@@ -140,64 +140,95 @@ export const headerCLANBE = {
     },
     {
       title: "클랜 일정",
-      description: "더미임",
+      description:
+        "클랜리그/이벤트 등의 모든 일정을 달력을 통해 확인 할 수 있습니다.",
       icon: "activity",
     },
     {
       title: "클랜원 명단",
-      description: "더미임",
+      description: "전체 클랜원들의 명단 및 운영진 명단을 확인 할 수 있습니다.",
       icon: "flash",
     },
     {
       title: "클랜 규정",
       description:
         "클랜원 활동에 필요한 필수규칙 및 운영방침을 확인 할 수 있습니다.",
-      icon: "flash",
+      icon: "server",
     },
     {
       title: "클랜 후원",
       description: "클랜의 활동에 필요한 후원자금에 관련된 게시판 입니다.",
-      icon: "flash",
+      icon: "user",
     },
   ],
 };
 
 export const headerCOMMUNITY = {
-  buttonTitle: "더미메뉴",
+  buttonTitle: "커뮤니티",
   menuItems: [
     {
-      title: "더미1번",
+      title: "전체글보기",
       description: "더미임",
       icon: "scale",
     },
     {
-      title: "더미2번",
+      title: "자유게시판",
       description: "더미임",
       icon: "flash",
     },
     {
-      title: "더미3번",
+      title: "가입인사",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "건의사항",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "전략전술",
       description: "더미임",
       icon: "server",
+    },
+    {
+      title: "출석체크",
+      description: "더미임",
+      icon: "user",
     },
   ],
 };
 
 export const headerBELO = {
-  buttonTitle: "더미메뉴",
+  buttonTitle: "BELO",
   menuItems: [
     {
-      title: "더미1번",
+      title: "BELO란?",
       description: "더미임",
       icon: "scale",
     },
     {
-      title: "더미2번",
+      title: "BELO S5",
       description: "더미임",
       icon: "flash",
     },
     {
-      title: "더미3번",
+      title: "경기기록",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "개인기록조회",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "상대전적기록",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "티어",
       description: "더미임",
       icon: "server",
     },
@@ -205,20 +236,25 @@ export const headerBELO = {
 };
 
 export const headerLEAGUE = {
-  buttonTitle: "더미메뉴",
+  buttonTitle: "리그",
   menuItems: [
     {
-      title: "더미1번",
+      title: "랭킹전",
       description: "더미임",
       icon: "scale",
     },
     {
-      title: "더미2번",
+      title: "EVENT",
       description: "더미임",
       icon: "flash",
     },
     {
-      title: "더미3번",
+      title: "외부리그",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "끝장전",
       description: "더미임",
       icon: "server",
     },
@@ -226,20 +262,35 @@ export const headerLEAGUE = {
 };
 
 export const headerPOINT = {
-  buttonTitle: "더미메뉴",
+  buttonTitle: "포인트",
   menuItems: [
     {
-      title: "더미1번",
+      title: "포인트규정",
       description: "더미임",
       icon: "scale",
     },
     {
-      title: "더미2번",
+      title: "포인트랭킹",
       description: "더미임",
       icon: "flash",
     },
     {
-      title: "더미3번",
+      title: "아이콘",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "가위바위보",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "로또복권",
+      description: "더미임",
+      icon: "server",
+    },
+    {
+      title: "포인트 배팅",
       description: "더미임",
       icon: "server",
     },

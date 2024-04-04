@@ -28,12 +28,18 @@ import {
   TagUser,
   Scale,
 } from "../../public/Icons";
-import { AcmeLogo } from "../../public/AcmeLogo";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { HeaderLogo } from "./Header/HeaderLogo";
-import { HeaderDropdown, NavbarDropdown } from "./Header/HeaderDropdown";
-import { headerDummy } from "../../public/data";
+import { HeaderDropdown } from "./Header/HeaderDropdown";
+import {
+  headerDummy,
+  headerCLANBE,
+  headerCOMMUNITY,
+  headerBELO,
+  headerLEAGUE,
+  headerPOINT,
+} from "../../public/data";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -90,321 +96,26 @@ export default function Header() {
         <HeaderLogo />
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <Dropdown>
-          <HeaderDropdown
-            buttonTitle={headerDummy.buttonTitle}
-            menuItems={headerDummy.menuItems}
-          />
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
-                endContent={icons.chevron}
-                radius="sm"
-                variant="light"
-              >
-                CLANBE
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu
-            aria-label="ACME features"
-            className="w-[250px]"
-            itemClasses={{
-              base: "gap-4",
-            }}
-          >
-            <DropdownItem
-              key="autoscaling"
-              description="Be클랜의 필수공지사항을 확인 할 수 있습니다."
-              startContent={icons.scale}
-            >
-              공지 사항
-            </DropdownItem>
-            <DropdownItem
-              key="usage_metrics"
-              description="클랜리그/이벤트 등의 모든 일정을 달력을 통해 확인 할 수 있습니다."
-              startContent={icons.activity}
-            >
-              클랜 일정
-            </DropdownItem>
-            <DropdownItem
-              key="production_ready"
-              description="전체 클랜원들의 명단 및 운영진 명단을 확인 할 수 있습니다."
-              startContent={icons.flash}
-            >
-              클랜원 명단
-            </DropdownItem>
-            <DropdownItem
-              key="99_uptime"
-              description="클랜원 활동에 필요한 필수규칙 및 운영방침을 확인 할 수 있습니다."
-              startContent={icons.server}
-            >
-              클랜 규정
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="클랜의 활동에 필요한 후원자금에 관련된 게시판 입니다."
-              startContent={icons.user}
-            >
-              클랜 후원
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <Dropdown>
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
-                endContent={icons.chevron}
-                radius="sm"
-                variant="light"
-              >
-                커뮤니티
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu
-            aria-label="ACME features"
-            className="w-[250px]"
-            itemClasses={{
-              base: "gap-4",
-            }}
-          >
-            <DropdownItem
-              key="autoscaling"
-              description="ACME scales apps to meet user demand, automagically, based on load."
-              startContent={icons.scale}
-            >
-              전체글보기
-            </DropdownItem>
-            <DropdownItem
-              key="usage_metrics"
-              description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
-              startContent={icons.activity}
-            >
-              자유게시판
-            </DropdownItem>
-            <DropdownItem
-              key="production_ready"
-              description="ACME runs on ACME, join us and others serving requests at web scale."
-              startContent={icons.flash}
-            >
-              가입인사
-            </DropdownItem>
-            <DropdownItem
-              key="99_uptime"
-              description="Applications stay on the grid with high availability and high uptime guarantees."
-              startContent={icons.server}
-            >
-              건의사항
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              전략전술
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              출석체크
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <Dropdown>
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
-                endContent={icons.chevron}
-                radius="sm"
-                variant="light"
-              >
-                BELO
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu
-            aria-label="ACME features"
-            className="w-[250px]"
-            itemClasses={{
-              base: "gap-4",
-            }}
-          >
-            <DropdownItem
-              key="autoscaling"
-              description="ACME scales apps to meet user demand, automagically, based on load."
-              startContent={icons.scale}
-            >
-              BELO란?
-            </DropdownItem>
-            <DropdownItem
-              key="usage_metrics"
-              description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
-              startContent={icons.activity}
-            >
-              BELO S5
-            </DropdownItem>
-            <DropdownItem
-              key="production_ready"
-              description="ACME runs on ACME, join us and others serving requests at web scale."
-              startContent={icons.flash}
-            >
-              경기기록
-            </DropdownItem>
-            <DropdownItem
-              key="99_uptime"
-              description="Applications stay on the grid with high availability and high uptime guarantees."
-              startContent={icons.server}
-            >
-              개인기록조회
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              상대전적기록
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              티어
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <Dropdown>
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
-                endContent={icons.chevron}
-                radius="sm"
-                variant="light"
-              >
-                리그
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu
-            aria-label="ACME features"
-            className="w-[250px]"
-            itemClasses={{
-              base: "gap-4",
-            }}
-          >
-            <DropdownItem
-              key="autoscaling"
-              description="ACME scales apps to meet user demand, automagically, based on load."
-              startContent={icons.scale}
-            >
-              랭킹전
-            </DropdownItem>
-            <DropdownItem
-              key="usage_metrics"
-              description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
-              startContent={icons.activity}
-            >
-              EVENT
-            </DropdownItem>
-            <DropdownItem
-              key="production_ready"
-              description="ACME runs on ACME, join us and others serving requests at web scale."
-              startContent={icons.flash}
-            >
-              개인 EVENT
-            </DropdownItem>
-            <DropdownItem
-              key="99_uptime"
-              description="Applications stay on the grid with high availability and high uptime guarantees."
-              startContent={icons.server}
-            >
-              외부리그
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              끝장전
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
-        <Dropdown>
-          <NavbarItem>
-            <DropdownTrigger>
-              <Button
-                disableRipple
-                className="p-0 bg-transparent data-[hover=true]:bg-transparent"
-                endContent={icons.chevron}
-                radius="sm"
-                variant="light"
-              >
-                포인트
-              </Button>
-            </DropdownTrigger>
-          </NavbarItem>
-          <DropdownMenu
-            aria-label="ACME features"
-            className="w-[250px]"
-            itemClasses={{
-              base: "gap-4",
-            }}
-          >
-            <DropdownItem
-              key="autoscaling"
-              description="ACME scales apps to meet user demand, automagically, based on load."
-              startContent={icons.scale}
-            >
-              가위바위보
-            </DropdownItem>
-            <DropdownItem
-              key="usage_metrics"
-              description="Real-time metrics to debug issues. Slow query added? We’ll show you exactly where."
-              startContent={icons.activity}
-            >
-              포인트규정
-            </DropdownItem>
-            <DropdownItem
-              key="production_ready"
-              description="ACME runs on ACME, join us and others serving requests at web scale."
-              startContent={icons.flash}
-            >
-              포인트랭킹
-            </DropdownItem>
-            <DropdownItem
-              key="99_uptime"
-              description="Applications stay on the grid with high availability and high uptime guarantees."
-              startContent={icons.server}
-            >
-              아이콘샵
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              아이콘추가요청
-            </DropdownItem>
-            <DropdownItem
-              key="supreme_support"
-              description="Overcome any challenge with a supporting team ready to respond."
-              startContent={icons.user}
-            >
-              로또복권
-            </DropdownItem>
-          </DropdownMenu>
-        </Dropdown>
+        <HeaderDropdown
+          buttonTitle={headerCLANBE.buttonTitle}
+          menuItems={headerCLANBE.menuItems}
+        />
+        <HeaderDropdown
+          buttonTitle={headerCOMMUNITY.buttonTitle}
+          menuItems={headerCOMMUNITY.menuItems}
+        />
+        <HeaderDropdown
+          buttonTitle={headerBELO.buttonTitle}
+          menuItems={headerBELO.menuItems}
+        />
+        <HeaderDropdown
+          buttonTitle={headerLEAGUE.buttonTitle}
+          menuItems={headerLEAGUE.menuItems}
+        />
+        <HeaderDropdown
+          buttonTitle={headerPOINT.buttonTitle}
+          menuItems={headerPOINT.menuItems}
+        />
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
