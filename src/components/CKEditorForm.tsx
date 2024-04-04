@@ -10,7 +10,7 @@ import { Chip } from "@nextui-org/react";
 import ButtonModal from "./ButtonModal";
 import SubmitModal from "./SubmitModal";
 
-const MyEditorWithNoSSR = dynamic(() => import("../app/myeditor/MyEditor"), {
+const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
 });
 
