@@ -32,7 +32,7 @@ import { AcmeLogo } from "../../public/AcmeLogo";
 import { useState } from "react";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { HeaderLogo } from "./Header/HeaderLogo";
-import { NavbarDropdown } from "./Header/HeaderDropdown";
+import { HeaderDropdown, NavbarDropdown } from "./Header/HeaderDropdown";
 import { headerDummy } from "../../public/data";
 
 export default function Header() {
@@ -90,8 +90,11 @@ export default function Header() {
         <HeaderLogo />
       </NavbarContent>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
-        <NavbarDropdown buttonTitle={ headerDummy.buttonTitle} menuItems={headerDummy.menuItems}/>
         <Dropdown>
+          <HeaderDropdown
+            buttonTitle={headerDummy.buttonTitle}
+            menuItems={headerDummy.menuItems}
+          />
           <NavbarItem>
             <DropdownTrigger>
               <Button

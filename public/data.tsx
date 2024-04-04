@@ -115,23 +115,133 @@ export const headerDummy = {
     {
       title: "더미1번",
       description: "더미임",
-      icon: (
-        <ChevronDown fill="currentColor" size={16} height={15} width={15} />
-      ),
+      icon: "scale",
     },
     {
       title: "더미2번",
       description: "더미임",
-      icon: (
-        <ChevronDown fill="currentColor" size={16} height={15} width={15} />
-      ),
+      icon: "flash",
     },
     {
       title: "더미3번",
       description: "더미임",
-      icon: (
-        <ChevronDown fill="currentColor" size={16} height={15} width={15} />
-      ),
+      icon: "server",
+    },
+  ],
+};
+
+export const headerCLANBE = {
+  buttonTitle: "CLANBE",
+  menuItems: [
+    {
+      title: "공지 사항",
+      description: "Be클랜의 필수공지사항을 확인 할 수 있습니다.",
+      icon: "scale",
+    },
+    {
+      title: "클랜 일정",
+      description: "더미임",
+      icon: "activity",
+    },
+    {
+      title: "클랜원 명단",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "클랜 규정",
+      description:
+        "클랜원 활동에 필요한 필수규칙 및 운영방침을 확인 할 수 있습니다.",
+      icon: "flash",
+    },
+    {
+      title: "클랜 후원",
+      description: "클랜의 활동에 필요한 후원자금에 관련된 게시판 입니다.",
+      icon: "flash",
+    },
+  ],
+};
+
+export const headerCOMMUNITY = {
+  buttonTitle: "더미메뉴",
+  menuItems: [
+    {
+      title: "더미1번",
+      description: "더미임",
+      icon: "scale",
+    },
+    {
+      title: "더미2번",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "더미3번",
+      description: "더미임",
+      icon: "server",
+    },
+  ],
+};
+
+export const headerBELO = {
+  buttonTitle: "더미메뉴",
+  menuItems: [
+    {
+      title: "더미1번",
+      description: "더미임",
+      icon: "scale",
+    },
+    {
+      title: "더미2번",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "더미3번",
+      description: "더미임",
+      icon: "server",
+    },
+  ],
+};
+
+export const headerLEAGUE = {
+  buttonTitle: "더미메뉴",
+  menuItems: [
+    {
+      title: "더미1번",
+      description: "더미임",
+      icon: "scale",
+    },
+    {
+      title: "더미2번",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "더미3번",
+      description: "더미임",
+      icon: "server",
+    },
+  ],
+};
+
+export const headerPOINT = {
+  buttonTitle: "더미메뉴",
+  menuItems: [
+    {
+      title: "더미1번",
+      description: "더미임",
+      icon: "scale",
+    },
+    {
+      title: "더미2번",
+      description: "더미임",
+      icon: "flash",
+    },
+    {
+      title: "더미3번",
+      description: "더미임",
+      icon: "server",
     },
   ],
 };

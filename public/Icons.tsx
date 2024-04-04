@@ -241,4 +241,5 @@ export const Scale: React.FC<IconProp> = ({
       />
     </svg>
   );
+  
 };
