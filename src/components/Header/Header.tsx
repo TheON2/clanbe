@@ -1,6 +1,13 @@
 "use client";
 
-import { Navbar, NavbarContent, NavbarMenuToggle } from "@nextui-org/react";
+import {
+  Link,
+  Navbar,
+  NavbarContent,
+  NavbarMenu,
+  NavbarMenuItem,
+  NavbarMenuToggle,
+} from "@nextui-org/react";
 
 import { useState } from "react";
 import { HeaderLogo } from "./HeaderLogo";
@@ -16,6 +23,18 @@ import { HeaderEnd } from "./HeaderEnd";
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const menuItems = [
+    "Profile",
+    "Dashboard",
+    "Activity",
+    "Analytics",
+    "System",
+    "Deployments",
+    "My Settings",
+    "Team Settings",
+    "Help & Feedback",
+    "Log Out",
+  ];
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" className="w-full">
@@ -49,6 +68,26 @@ export default function Header() {
         />
       </NavbarContent>
       <HeaderEnd />
+      <NavbarMenu>
+        {menuItems.map((item, index) => (
+          <NavbarMenuItem key={`${item}-${index}`}>
+            <Link
+              color={
+                index === 2
+                  ? "primary"
+                  : index === menuItems.length - 1
+                  ? "danger"
+                  : "foreground"
+              }
+              className="w-auto"
+              href="#"
+              size="md"
+            >
+              {item}
+            </Link>
+          </NavbarMenuItem>
+        ))}
+      </NavbarMenu>
     </Navbar>
   );
 }

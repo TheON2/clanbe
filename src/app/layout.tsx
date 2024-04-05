@@ -27,11 +27,13 @@ export default function RootLayout({
     <html lang="en" className={sans.className}>
       <body className="flex flex-col w-full">
         <Providers>
-          <div className="mx-auto max-w-7xl">
+          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             <Header />
-            <div className="flex items-start flex-row mx-auto max-w-7xl">
-              <TapNav />
-              <main className="flex items-center">{children}</main>
+            <div className="flex flex-col-reverse sm:flex-row items-start mx-auto">
+              <TapNav/>
+              <main className="flex flex-col sm:flex-row items-center w-full">
+                {children}
+              </main>
             </div>
             <Footer />
           </div>
