@@ -1,5 +1,3 @@
-"use client";
-
 import MultiCarousel from "@/components/MultiCarousel";
 import {
   Button,
@@ -31,53 +29,52 @@ import Banner from "@/components/Banner";
 import Notice from "@/components/Notice";
 import Upcoming from "@/components/Upcoming";
 import PublicPosts from "@/components/PublicPosts";
-import PlayerPosts from "@/components/PlayerPosts";
 
-export default function HomePage() {
-  const statusColorMap: any = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-  };
+const statusColorMap: any = {
+  active: "success",
+  paused: "danger",
+  vacation: "warning",
+};
 
-  const items = [
-    {
-      key: "new",
-      label: "New file",
-    },
-    {
-      key: "copy",
-      label: "Copy link",
-    },
-    {
-      key: "edit",
-      label: "Edit file",
-    },
-    {
-      key: "delete",
-      label: "Delete file",
-    },
-  ];
+const items = [
+  {
+    key: "new",
+    label: "New file",
+  },
+  {
+    key: "copy",
+    label: "Copy link",
+  },
+  {
+    key: "edit",
+    label: "Edit file",
+  },
+  {
+    key: "delete",
+    label: "Delete file",
+  },
+];
 
-  const bannerItems = [
-    {
-      src: "/후원.png",
-      alt: "New file",
-    },
-    {
-      src: "/후원.png",
-      alt: "Copy link",
-    },
-    {
-      src: "/후원.png",
-      alt: "Edit file",
-    },
-    {
-      src: "/후원.png",
-      alt: "Delete file",
-    },
-  ];
+const bannerItems = [
+  {
+    src: "/후원.png",
+    alt: "New file",
+  },
+  {
+    src: "/후원.png",
+    alt: "Copy link",
+  },
+  {
+    src: "/후원.png",
+    alt: "Edit file",
+  },
+  {
+    src: "/후원.png",
+    alt: "Delete file",
+  },
+];
 
+const PlayerPosts = () => {
   const renderCell = useCallback(
     (user: any, columnKey: any) => {
       const cellValue = user[columnKey];
@@ -141,15 +138,55 @@ export default function HomePage() {
   );
 
   return (
-    <div className="mx-auto">
-      <Banner items={bannerItems} />
-      <Divider className="my-4" />
-      <div className="flex flex-wrap gap-4 justify-center mx-auto">
-        <Notice />
-        <Upcoming />
-        <PublicPosts />
-        <PlayerPosts />
-      </div>
-    </div>
+    <Card className="w-[540px]">
+      <CardHeader className="flex gap-3">
+        <Image
+          alt="nextui logo"
+          height={40}
+          src="https://avatars.githubusercontent.com/u/86160567?s=200&v=4"
+          width={40}
+        />
+        <div className="flex flex-col">
+          <p className="text-md">NextUI</p>
+          <p className="text-small text-default-500">nextui.org</p>
+        </div>
+      </CardHeader>
+      <Divider />
+      <CardBody>
+        <Table aria-label="Example table with custom cells">
+          <TableHeader columns={columns}>
+            {(column) => (
+              <TableColumn
+                key={column.uid}
+                align={column.uid === "actions" ? "center" : "start"}
+              >
+                {column.name}
+              </TableColumn>
+            )}
+          </TableHeader>
+          <TableBody items={users}>
+            {(item) => (
+              <TableRow key={item.id}>
+                {(columnKey) => (
+                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                )}
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </CardBody>
+      <Divider />
+      <CardFooter>
+        <Link
+          isExternal
+          showAnchorIcon
+          href="https://github.com/nextui-org/nextui"
+        >
+          Visit source code on GitHub.
+        </Link>
+      </CardFooter>
+    </Card>
   );
-}
+};
+
+export default PlayerPosts;
