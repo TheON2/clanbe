@@ -35,7 +35,7 @@ const NextCarousel: React.FC<NextCarouselProps> = ({ images }) => {
           style={{ transform: `translateX(-${currentIndex * 100}%)` }}
         >
           {images.map((image, index) => (
-            <div key={index} className="flex-shrink-0 w-full h-full">
+            <div key={index} className="flex-shrink-0 w-full h-full px-4">
               <Image
                 src={image.src}
                 alt={image.alt}

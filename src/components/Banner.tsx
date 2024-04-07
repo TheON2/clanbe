@@ -13,7 +13,7 @@ interface BannerProps {
 
 const Banner: React.FC<BannerProps> = ({ items }) => {
   return (
-    <div className="min-w-[620px] max-w-[1200px] min-h-[200px] max-h[200px] mx-auto mt-4">
+    <div>
       <NextCarousel images={items} />
     </div>
   );

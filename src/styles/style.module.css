@@ -3,7 +3,14 @@
 
 @media (min-width: 1300px) {
     .customCard {
-        max-width: calc(50% - 1rem);
+        max-width: calc(50% - 0.5rem);
+        /* 큰 화면에서 적용될 스타일 */
+    }
+}
+
+@media (max-width: 1300px) {
+    .customCard {
+        max-width: calc(100% - 2rem);
         /* 큰 화면에서 적용될 스타일 */
     }
 }
