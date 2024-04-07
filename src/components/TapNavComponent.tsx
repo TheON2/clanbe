@@ -60,7 +60,7 @@ const TapNavComponent = (navData: any) => {
   const imagePath = teamImagePaths[user[0].team] || "/default.jpg";
 
   return (
-    <div className="hidden md:block mx-4 sticky top-16 my-32 sm:w-auto">
+    <div className="hidden sm:block mx-4 sticky top-16 my-32 sm:w-auto">
       <Tabs aria-label="Dynamic tabs" items={tabs}>
         <Tab key={"Profile"} title={"Profile"}>
           <Card>
