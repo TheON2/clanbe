@@ -176,8 +176,8 @@ const TapNavComponent = (navData: any) => {
               <Image
                 alt="Card background"
                 src={imagePath}
-                width={1100}
-                height={400}
+                width={200}
+                height={200}
                 className="my-4"
               />
               <div className="flex my-2">
