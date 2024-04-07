@@ -3,11 +3,15 @@ import { Category } from "../../types/types";
 
 const categorySchema = new mongoose.Schema(
   {
-    category: String, // 속한 카테고리
-    title: String, // 카테고리 항목의 제목
-    description: String, // 메뉴 항목의 설명
-    icon: String, // 메뉴 항목의 아이콘
-    href: String, // 라우터 링크
+    buttonTitle: { type: String, required: true },
+    menuItems: [
+      {
+        title: { type: String, required: true },
+        description: { type: String, required: true },
+        icon: { type: String, required: true },
+        href: { type: String, required: true },
+      },
+    ],
   },
   {
     timestamps: true, // createdAt 및 updatedAt 타임스탬프 자동 생성

@@ -31,11 +31,13 @@ export type User = {
 };
 
 export type Category = {
-  category:String,// 속한 카테고리
-  title: String, // 카테고리 항목의 제목
-  description: String, // 메뉴 항목의 설명
-  icon: String, // 메뉴 항목의 아이콘
-  href: String, // 라우터 링크
+  buttonTitle: string;
+  menuItems: {
+    title: string;
+    description: string;
+    icon: string;
+    href: string;
+  }[];
 }
 
 // NavData 타입 정의, 이전 단계에서 사용된 NavData 타입 예시를 확장하여 사용합니다.
