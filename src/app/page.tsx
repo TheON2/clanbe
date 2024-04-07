@@ -141,7 +141,7 @@ export default function HomePage() {
   );
 
   return (
-    <div className="">
+    <div className="mx-auto">
       <Banner items={bannerItems} />
       <Divider className="my-4" />
       <div className="flex flex-wrap gap-2 justify-center">
