@@ -3,6 +3,8 @@ import UserModel from "@/models/user";
 import mongoose from "mongoose";
 import { NextApiResponse,NextApiRequest } from "next";
 import { NextRequest } from "next/server";
+import { headerCLANBE,headerBELO,headerCOMMUNITY,headerLEAGUE,headerPOINT } from "../../../../public/data";
+import CategoryModel from "@/models/category";
 
 export async function POST(req:Request, res:Response) {
   try {
@@ -43,6 +45,14 @@ export async function POST(req:Request, res:Response) {
         winpoint: 0,
       },
     ];
+
+    const category = [
+      headerCLANBE,
+      headerBELO,
+      headerCOMMUNITY,
+      headerLEAGUE,
+      headerPOINT
+    ]
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
     if (mongoose.connection.readyState !== 1) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
@@ -52,6 +62,15 @@ export async function POST(req:Request, res:Response) {
     await user.save(); // 데이터베이스에 저장
 
     TeamModel.insertMany(proleagueTeams)
+      .then(function (docs) {
+        console.log("Data inserted"); // 성공 시 로그
+        mongoose.connection.close(); // 데이터 삽입 후 연결 종료
+      })
+      .catch(function (err) {
+        console.log(err); // 에러 핸들링
+      });
+    
+    CategoryModel.insertMany(category)
       .then(function (docs) {
         console.log("Data inserted"); // 성공 시 로그
         mongoose.connection.close(); // 데이터 삽입 후 연결 종료
