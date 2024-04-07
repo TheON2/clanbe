@@ -1,0 +1,9 @@
+.customCard {
+}
+
+@media (min-width: 1300px) {
+    .customCard {
+        max-width: calc(50% - 1rem);
+        /* 큰 화면에서 적용될 스타일 */
+    }
+}

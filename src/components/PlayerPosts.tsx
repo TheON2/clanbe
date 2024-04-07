@@ -29,6 +29,7 @@ import Banner from "@/components/Banner";
 import Notice from "@/components/Notice";
 import Upcoming from "@/components/Upcoming";
 import PublicPosts from "@/components/PublicPosts";
+import styles from "../styles/style.module.css";
 
 const statusColorMap: any = {
   active: "success",
@@ -138,7 +139,7 @@ const PlayerPosts = () => {
   );
 
   return (
-    <Card className="w-[540px]">
+    <Card className={`w-full lg:w-1/2 ${styles.customCard}`}>
       <CardHeader className="flex gap-3">
         <Image
           alt="nextui logo"

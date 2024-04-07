@@ -1,10 +1,11 @@
 import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import Image from "next/image";
 import React from "react";
+import styles from "../styles/style.module.css";
 
 const Notice = () => {
   return (
-    <Card className="w-[540px]">
+    <Card className={`w-full lg:w-1/2 ${styles.customCard}`}>
       <CardHeader className="flex gap-3">
         <Image
           alt="nextui logo"
