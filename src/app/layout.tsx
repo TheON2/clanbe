@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en" className={sans.className}>
       <body className="flex flex-col w-full">
         <Providers>
-          <div className="mx-auto max-w-7xl">
+          <div className="max-w-7xl">
             <Header />
             <div className="flex flex-col-reverse sm:flex-row items-start mx-auto">
               <TapNav />
