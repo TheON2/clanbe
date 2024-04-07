@@ -144,7 +144,7 @@ export default function HomePage() {
     <div className="mx-auto">
       <Banner items={bannerItems} />
       <Divider className="my-4" />
-      <div className="flex flex-wrap gap-2 justify-start">
+      <div className="flex flex-wrap gap-2 justify-center">
         <Notice />
         <Upcoming />
         <PublicPosts />
