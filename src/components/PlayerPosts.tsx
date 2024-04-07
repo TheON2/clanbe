@@ -25,10 +25,6 @@ import { EditIcon } from "../../public/EditIcon";
 import { DeleteIcon } from "../../public/DeleteIcon";
 import { EyeIcon } from "../../public/EyeIcon";
 import { columns, users } from "../../public/data";
-import Banner from "@/components/Banner";
-import Notice from "@/components/Notice";
-import Upcoming from "@/components/Upcoming";
-import PublicPosts from "@/components/PublicPosts";
 import styles from "../styles/style.module.css";
 
 const statusColorMap: any = {
