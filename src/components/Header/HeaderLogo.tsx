@@ -8,7 +8,7 @@ export const HeaderLogo = () => {
   return (
     <NavbarBrand
       onClick={() => router.push("/")}
-      className="cursor-pointer hover:opacity-75"
+      className="cursor-pointer hover:opacity-75 min-w-2xl"
     >
       <Image
         alt="Card background"
@@ -16,6 +16,7 @@ export const HeaderLogo = () => {
         width={100}
         height={100}
         sizes="sm"
+        style={{ minWidth: "100px", minHeight: "60px" }}
       />
       <p className="font-bold text-inherit text-3xl">CLANBE</p>
     </NavbarBrand>
