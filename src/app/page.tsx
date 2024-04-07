@@ -61,19 +61,19 @@ export default function HomePage() {
 
   const bannerItems = [
     {
-      src: "/후원.png",
+      src: "/후원2.png",
       alt: "New file",
     },
     {
-      src: "/후원.png",
+      src: "/후원2.png",
       alt: "Copy link",
     },
     {
-      src: "/후원.png",
+      src: "/후원2.png",
       alt: "Edit file",
     },
     {
-      src: "/후원.png",
+      src: "/후원2.png",
       alt: "Delete file",
     },
   ];
