@@ -40,6 +40,10 @@ export type Category = {
   }[];
 }
 
+export type CategoryData = {
+  category: Category[];
+}
+
 // NavData 타입 정의, 이전 단계에서 사용된 NavData 타입 예시를 확장하여 사용합니다.
 export type NavData = {
   user: User[];
