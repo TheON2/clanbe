@@ -21,7 +21,7 @@ import { aligns, searchOption, posts } from "../../public/data";
 const Notice = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
-    <div className="py-20 w-full">
+    <div className="py-20 w-full mx-auto min-w-[630px]">
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20">공지사항</a>
       <div className="flex justify-between items-center m-2">
         <Select
