@@ -49,3 +49,13 @@ export type NavData = {
   user: User[];
   teams: Team[];
 };
+
+// 게시물 타입 정의
+export type Post = {
+  id: number,
+  category: string,
+  title:string,
+  date: number,
+  author: string,
+  view:number
+}
