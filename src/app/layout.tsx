@@ -4,6 +4,7 @@ import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer";
 import { Providers } from "./provider";
 import TapNav from "@/components/TabNav";
+import Head from "next/head";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
@@ -25,6 +26,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={sans.className}>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </Head>
       <body className="flex flex-col w-full">
         <Providers>
           <div className="mx-auto max-w-7xl">
