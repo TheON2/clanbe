@@ -324,6 +324,92 @@ export const headerPOINT = {
   ],
 };
 
+export const announce = [
+  {
+    id: 1,
+    category: "announce",
+    title: "2024 3월 3일 공지사항",
+    date: 240303,
+    author: "TheON2",
+    view: 64,
+  },
+  {
+    id: 2,
+    category: "announce",
+    title: "CLANBE 후원계좌",
+    date: 220210,
+    author: "TheON2",
+    view: 121,
+  },
+];
+
+export const board = [
+  {
+    id: 1,
+    category: "forum",
+    title: "더미 게시글 1",
+    date: 240303,
+    author: "TheON2",
+    view: 64,
+  },
+  {
+    id: 2,
+    category: "forum",
+    title: "더미 게시글 2",
+    date: 220210,
+    author: "TheON2",
+    view: 121,
+  },
+  {
+    id: 3,
+    category: "forum",
+    title: "더미 게시글 3",
+    date: 240303,
+    author: "TheON2",
+    view: 64,
+  },
+  {
+    id: 4,
+    category: "forum",
+    title: "더미 게시글 4",
+    date: 220210,
+    author: "TheON2",
+    view: 121,
+  },
+  {
+    id: 5,
+    category: "forum",
+    title: "더미 게시글 5",
+    date: 240303,
+    author: "TheON2",
+    view: 64,
+  },
+  {
+    id: 6,
+    category: "forum",
+    title: "더미 게시글 6",
+    date: 220210,
+    author: "TheON2",
+    view: 121,
+  },
+  {
+    id: 5,
+    category: "forum",
+    title: "더미 게시글 5",
+    date: 240303,
+    author: "TheON2",
+    view: 64,
+  },
+  {
+    id: 6,
+    category: "forum",
+    title: "더미 게시글 6",
+    date: 220210,
+    author: "TheON2",
+    view: 121,
+  },
+];
+
 export const users = [
   {
     id: 1,

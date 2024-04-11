@@ -16,7 +16,15 @@ import {
   Input,
 } from "@nextui-org/react";
 import React from "react";
-import { aligns, searchOption, posts } from "../../public/data";
+import {
+  aligns,
+  searchOption,
+  posts,
+  announce,
+  board,
+} from "../../public/data";
+import NoticeCardHeader from "./NoticeCardHeader";
+import PostCardComponent from "./PostCardComponent";
 
 const AllPosts = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
@@ -86,38 +94,22 @@ const AllPosts = () => {
         </ModalContent>
       </Modal>
       <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
-        <CardHeader className="flex justify-between items-center px-4 py-2">
-          <div className="w-full sm:w-1/12 text-center">공지</div>
-          <div className="w-full sm:w-7/12 text-center">
-            2024 3월 3일 공지사항
-          </div>
-          <div className="w-full sm:w-1/12 text-center">24.03.03</div>
-        </CardHeader>
+        {announce.map((announce) => (
+          <NoticeCardHeader
+            key={announce.id}
+            title={announce.title}
+            date={announce.date}
+          />
+        ))}
         <Divider />
-        <CardHeader className="flex justify-between items-center px-4 py-2">
-          <div className="w-full sm:w-1/12 text-center">공지</div>
-          <div className="w-full sm:w-7/12 text-center">CLANBE 후원계좌</div>
-          <div className="w-full sm:w-1/12 text-center">22.02.10</div>
-        </CardHeader>
-        <Divider />
-        {posts.map((post, index) => (
-          <div key={index} className="flex flex-col px-4 py-2 gap-4">
-            <div className="font-bold text-xl">{post.title}</div>
-            <div className="flex flex-row mx-4">
-              <div className="flex flex-row items-center justify-center sm:justify-start font-bold gap-4">
-                <Avatar
-                  size="sm"
-                  isBordered
-                  color="success"
-                  src="https://i.pravatar.cc/150?u=a04258114e29026302d"
-                />
-                <span>{post.author}</span>
-              </div>
-              <div className="mx-4">조회 수 {post.views}</div>
-              <div className="mx-4">{post.date}</div>
-            </div>
-            <Divider />
-          </div>
+        {board.map((post, index) => (
+          <PostCardComponent
+            key={index}
+            title={post.title}
+            author={post.author}
+            views={post.view}
+            date={post.date}
+          />
         ))}
       </Card>
 
