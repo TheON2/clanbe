@@ -15,7 +15,7 @@ import {
   useDisclosure,
   Input,
 } from "@nextui-org/react";
-import React from "react";
+import React, { useState } from "react";
 import {
   aligns,
   searchOption,
@@ -28,6 +28,19 @@ import PostCardComponent from "./PostCardComponent";
 
 const AllPosts = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 6;
+
+  // 현재 페이지에 따라 보여줄 게시물 계산
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = board.slice(indexOfFirstPost, indexOfLastPost);
+
+  // 페이지 변경 핸들러
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
   return (
     <div className="py-20 w-full mx-auto min-w-[630px]">
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20">전체 게시글</a>
@@ -102,7 +115,8 @@ const AllPosts = () => {
           />
         ))}
         <Divider />
-        {board.map((post, index) => (
+        {/* 현재 페이지의 게시물 렌더링 */}
+        {currentPosts.map((post, index) => (
           <PostCardComponent
             key={index}
             title={post.title}
@@ -112,9 +126,13 @@ const AllPosts = () => {
           />
         ))}
       </Card>
-
       <div className="flex justify-center py-2">
-        <Pagination showControls total={10} initialPage={1} />
+        <Pagination
+          showControls
+          total={Math.ceil(board.length / postsPerPage)}
+          initialPage={1}
+          onChange={(page) => handlePageChange(page)}
+        />
       </div>
     </div>
   );
