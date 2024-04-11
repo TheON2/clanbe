@@ -11,11 +11,9 @@ export default function SchedulePage() {
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   // 이벤트 클릭 핸들러
-  const handleEventClick = ({ event }) => {
-    // 선택된 이벤트 정보를 상태에 저장하고 모달을 엽니다.
+  const handleEventClick = ({ event }: { event: any }) => {
     setSelectedEvent(event);
     setIsModalOpen(true);
-    // 간단한 예제를 위해 alert로 대체합니다.
     alert(`이벤트: ${event.title}`);
   };
 
@@ -44,14 +42,6 @@ export default function SchedulePage() {
         }}
         eventClick={handleEventClick} // 이벤트 클릭 핸들러 등록
       />
-
-      {/* 모달이 열려있는 경우, 모달 컴포넌트를 렌더링합니다. */}
-      {isModalOpen && (
-        <div className="modal">
-          <p>이벤트 제목: {selectedEvent?.title}</p>
-          <button onClick={() => setIsModalOpen(false)}>닫기</button>
-        </div>
-      )}
     </div>
   );
 }
