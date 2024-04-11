@@ -1,7 +1,10 @@
 "use client";
 
-import AllPosts from "@/components/AllPosts";
+import BoardLayout from "@/components/BoardLayout";
+import { announce, board } from "../../../../public/data";
 
 export default function AllPostPage() {
-  return <AllPosts />;
+  return (
+    <BoardLayout boardTitle={"전체 게시글"} announce={announce} posts={board} />
+  );
 }
