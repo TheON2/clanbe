@@ -1,8 +1,6 @@
 import TeamModel from "@/models/team";
 import UserModel from "@/models/user";
 import mongoose from "mongoose";
-import { NextApiResponse,NextApiRequest } from "next";
-import { NextRequest } from "next/server";
 import { headerCLANBE,headerBELO,headerCOMMUNITY,headerLEAGUE,headerPOINT } from "../../../../public/data";
 import CategoryModel from "@/models/category";
 

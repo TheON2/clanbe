@@ -1,5 +1,7 @@
 "use client";
 
+import MemberComponent from "@/components/MemberComponent";
+
 export default function MembersPage() {
-  return "멤버 페이지";
+  return <MemberComponent />;
 }
