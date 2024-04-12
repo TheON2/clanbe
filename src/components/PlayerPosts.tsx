@@ -135,7 +135,7 @@ const PlayerPosts = () => {
   );
 
   return (
-    <Card className={`w-full lg:w-1/2 ${styles.customCard}`}>
+    <Card className={`w-full max-h-[600px] lg:w-1/2 ${styles.customCard}`}>
       <CardHeader className="flex gap-3">
         <Image
           alt="nextui logo"
