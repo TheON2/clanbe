@@ -16,6 +16,49 @@ export default function RulesPage() {
   return (
     <div className="flex flex-wrap justify-center items-start gap-12 mx-auto max-w-8xl w-full">
       <Card
+        className={`w-full mt-28 ml-12 mr-12 overflow-visible max-h-[400px] min-w-[620px]`}
+      >
+        <CardHeader className="relative p-0">
+          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+            <Image
+              alt="nextui logo"
+              src="/Belogo.png"
+              width={250}
+              height={250}
+              style={{ filter: "invert(100%)" }}
+            />
+          </div>
+          <div className="relative pt-20 px-4 pb-4 w-full">
+            <p className="text-5xl font-bold block text-center">
+              클랜 활동 규정
+            </p>
+          </div>
+        </CardHeader>
+        <Divider />
+        <CardBody className="p-4 text-center min-h-[320px]">
+          <div className="m-2">
+            <p className="text-2xl text-bold">
+              모든 BE 클랜원은 네티켓을 준수합니다.
+            </p>
+          </div>
+          <div className="m-2">
+            <p className="text-2xl text-bold">
+              모든 BE 클랜원은 소규모 친목행위를 지양합니다.
+            </p>
+          </div>
+          <div className="m-2">
+            <p className="text-2xl text-bold">
+              모든 BE 클랜원은 다른인원을 배척하지 않습니다.
+            </p>
+          </div>
+          <div className="m-2">
+            <p className="text-2xl text-bold">
+              모든 BE 클랜원은 클랜원간 금전거래행위를 금합니다.
+            </p>
+          </div>
+        </CardBody>
+      </Card>
+      <Card
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
