@@ -69,9 +69,9 @@ export default function RulesPage() {
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
-              src="https://img.icons8.com/ios-filled/200/laptop-coding.png"
-              width={200}
-              height={200}
+              src="https://img.icons8.com/ios-filled/100/laptop-coding.png"
+              width={100}
+              height={100}
             />
           </div>
           <div className="relative pt-20 px-4 pb-4 w-full">

@@ -28,7 +28,10 @@ export default function RootLayout({
     <html lang="en" className={sans.className}>
       <Head>
         <title>CLANBE</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1 user-scalable=yes"
+        />
       </Head>
       <body className="flex flex-col w-full">
         <Providers>
