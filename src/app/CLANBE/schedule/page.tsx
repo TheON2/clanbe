@@ -20,7 +20,7 @@ export default function SchedulePage() {
   };
 
   return (
-    <div className="calendar-container">
+    <div className="calendar-container px-4">
       <FullCalendar
         plugins={[dayGridPlugin, interactionPlugin, timeGridPlugin, listPlugin]}
         initialView="listWeek"
