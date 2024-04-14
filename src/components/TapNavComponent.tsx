@@ -22,6 +22,7 @@ import Image from "next/image";
 import { UserTwitterCard } from "./UserTwitterCard";
 import { tabs } from "../../public/data";
 import { Team } from "../../types/types";
+import { ThemeSwitcher } from "./ThemeSwitcher";
 
 const TapNavComponent = (navData: any) => {
   const { user, teams } = navData.navData;
@@ -254,6 +255,7 @@ const TapNavComponent = (navData: any) => {
           </Card>
         </Tab>
       </Tabs>
+      <ThemeSwitcher />
     </div>
   );
 };

@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className="w-full">
+    <html lang="en" className={`w-full ${sans.className}`}>
       <Head>
         <title>CLANBE</title>
         <meta

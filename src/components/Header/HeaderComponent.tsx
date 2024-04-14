@@ -38,7 +38,7 @@ export default function HeaderComponent(categoryData: any) {
   ];
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} className="w-full">
+    <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" className="w-full">
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
@@ -67,6 +67,9 @@ export default function HeaderComponent(categoryData: any) {
           buttonTitle={headerPOINT.buttonTitle}
           menuItems={headerPOINT.menuItems}
         />
+      </NavbarContent>
+      <NavbarContent>
+        <HeaderEnd />
       </NavbarContent>
       <NavbarMenu>
         {menuItems.map((item, index) => (

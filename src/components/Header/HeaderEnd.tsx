@@ -29,9 +29,6 @@ export const HeaderEnd = () => {
         </Button>
       </NavbarItem> */}
       {/* <NavbarItem>
-        <ThemeSwitcher />
-      </NavbarItem> */}
-      {/* <NavbarItem>
           <Button
             color="primary"
             href="#"

@@ -25,5 +25,47 @@ body {
 .calendar-container {
   width: 100%;
   max-width: 1200px;
+  min-height: 500px;
   margin: 0 auto;
 }
+
+.fc-event-title {
+  overflow: hidden;
+  /* 넘치는 부분 숨기기 */
+  display: -webkit-box;
+  /* 웹킷 브라우저에 대한 대체 */
+  -webkit-line-clamp: 2;
+  /* 표시할 줄 수 */
+  -webkit-box-orient: vertical;
+  /* 세로로 쌓기 */
+}
+
+.fc-event {
+  height: auto !important;
+}
+
+.fc-list-table .fc-list-event:hover .fc-list-event-title {
+  background-color: transparent !important;
+}
+
+.fc-list-table .fc-list-event:hover .fc-list-event-time {
+  background-color: transparent !important;
+}
+
+.fc-list-table .fc-list-event:hover .fc-list-event-graphic {
+  background-color: transparent !important;
+}
+
+/* 날짜 헤더의 컨테이너 배경색 고정 */
+.fc-list-day-cushion {
+  background-color: #f0f0f0;
+  /* 연한 회색 배경 */
+}
+
+/* 날짜 헤더의 글자색 고정 */
+.fc-list-day-text,
+.fc-list-day-side-text {
+  color: #333333;
+  /* 어두운 회색 글자 */
+}
+
