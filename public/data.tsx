@@ -106,7 +106,6 @@ export const posts = [
 export const columns = [
   { name: "STATUS", uid: "status" },
   { name: "NAME", uid: "name" },
-  { name: "ROLE", uid: "role" },
 ];
 
 export const headerDummy = {
