@@ -1,6 +1,7 @@
 import { NavbarBrand } from "@nextui-org/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { ThemeSwitcher } from "../ThemeSwitcher";
 
 export const HeaderLogo = () => {
   const router = useRouter();
@@ -19,6 +20,9 @@ export const HeaderLogo = () => {
         style={{ minWidth: "100px", minHeight: "60px" }}
       />
       <p className="font-bold text-inherit text-3xl">CLANBE</p>
+      <div className="block sm:hidden">
+        <ThemeSwitcher />
+      </div>
     </NavbarBrand>
   );
 };

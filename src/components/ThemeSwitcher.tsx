@@ -14,11 +14,11 @@ export const ThemeSwitcher = () => {
 
   return (
     <div>
-      <div>
+      <div className="px-2">
         {theme === "dark" ? (
-          <Button onClick={() => setTheme("light")}>Light Mode</Button>
+          <Button onClick={() => setTheme("light")}>Light</Button>
         ) : (
-          <Button onClick={() => setTheme("dark")}>Dark Mode</Button>
+          <Button onClick={() => setTheme("dark")}>Dark</Button>
         )}
       </div>
     </div>
