@@ -15,7 +15,7 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-      screens: { lg: "1300px" },
+      screens: { lg: "1300px" ,'custom': '1000px',},
     },
   },
   darkMode: "class",

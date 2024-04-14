@@ -24,7 +24,7 @@ import { useCallback } from "react";
 import { EditIcon } from "../../public/EditIcon";
 import { DeleteIcon } from "../../public/DeleteIcon";
 import { EyeIcon } from "../../public/EyeIcon";
-import { columns, users } from "../../public/data";
+import { columns, mobilecolumns, users } from "../../public/data";
 import styles from "../styles/style.module.css";
 
 const statusColorMap: any = {
@@ -151,7 +151,7 @@ const PlayerPosts = () => {
       <Divider />
       <CardBody>
         <Table aria-label="Example table with custom cells">
-          <TableHeader columns={columns}>
+          <TableHeader columns={mobilecolumns}>
             {(column) => (
               <TableColumn
                 key={column.uid}

@@ -21,7 +21,7 @@ import { aligns, searchOption, posts } from "../../public/data";
 const Notice = () => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   return (
-    <div className="py-20 w-full mx-auto">
+    <div className="py-20 w-full mx-8">
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20">공지사항</a>
       <div className="flex justify-between items-center m-2">
         <Select
@@ -85,7 +85,7 @@ const Notice = () => {
           )}
         </ModalContent>
       </Modal>
-      <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
+      <Card className="w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] mx-auto">
         <CardHeader className="flex justify-between items-center px-4 py-2">
           <div className="w-full sm:w-1/12 text-center">번호</div>
           <div className="w-full sm:w-7/12 text-center">제목</div>
