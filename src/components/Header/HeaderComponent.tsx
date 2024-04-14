@@ -68,7 +68,6 @@ export default function HeaderComponent(categoryData: any) {
           menuItems={headerPOINT.menuItems}
         />
       </NavbarContent>
-      <HeaderEnd />
       <NavbarMenu>
         {menuItems.map((item, index) => (
           <NavbarMenuItem key={`${item}-${index}`}>

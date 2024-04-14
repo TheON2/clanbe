@@ -8,7 +8,7 @@ export const HeaderLogo = () => {
   return (
     <NavbarBrand
       onClick={() => router.push("/")}
-      className="cursor-pointer hover:opacity-75 min-w-2xl"
+      className="cursor-pointer hover:opacity-75"
     >
       <Image
         alt="Card background"
