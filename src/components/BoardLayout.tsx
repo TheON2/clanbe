@@ -84,7 +84,7 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
   }, [selectedSortKey, posts]);
 
   return (
-    <div className="py-20 w-full mx-auto min-w-[630px]">
+    <div className="py-20 w-full mx-auto ">
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20">{boardTitle}</a>
       <div className="flex justify-between items-center m-2">
         <Select

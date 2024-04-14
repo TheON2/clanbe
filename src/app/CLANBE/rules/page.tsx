@@ -16,7 +16,7 @@ export default function RulesPage() {
   return (
     <div className="flex flex-wrap justify-center items-start gap-12 mx-auto max-w-8xl w-full">
       <Card
-        className={`w-full mt-28 ml-12 mr-12 overflow-visible max-h-[400px] min-w-[620px]`}
+        className={`w-full mt-28 ml-12 mr-12 overflow-visible max-h-[400px]`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
@@ -59,7 +59,7 @@ export default function RulesPage() {
         </CardBody>
       </Card>
       <Card
-        className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
+        className={`max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
@@ -106,7 +106,7 @@ export default function RulesPage() {
         </CardBody>
       </Card>
       <Card
-        className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
+        className={`max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
@@ -155,7 +155,7 @@ export default function RulesPage() {
         </CardBody>
       </Card>
       <Card
-        className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
+        className={`max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
@@ -204,7 +204,7 @@ export default function RulesPage() {
         </CardBody>
       </Card>
       <Card
-        className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
+        className={`mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
@@ -239,7 +239,7 @@ export default function RulesPage() {
         </CardBody>
       </Card>
       <Card
-        className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
+        className={`max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
@@ -290,7 +290,7 @@ export default function RulesPage() {
         </CardBody>
       </Card>
       <Card
-        className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
+        className={`max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
           <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">

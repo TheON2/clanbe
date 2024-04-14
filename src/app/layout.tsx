@@ -25,7 +25,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={sans.className}>
+    <html lang="en" className="w-full">
       <Head>
         <title>CLANBE</title>
         <meta
@@ -37,7 +37,7 @@ export default function RootLayout({
         <Providers>
           <div className="mx-auto max-w-7xl">
             <Header />
-            <div className="flex flex-col-reverse sm:flex-row items-start md:min-w-[950px] sm:min-w-[950px]">
+            <div className="flex flex-col-reverse sm:flex-row items-start">
               <TapNav />
               <main className="flex flex-col sm:flex-row items-center w-full">
                 {children}
