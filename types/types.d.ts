@@ -38,11 +38,11 @@ export type Category = {
     icon: string;
     href: string;
   }[];
-}
+};
 
 export type CategoryData = {
   category: Category[];
-}
+};
 
 // NavData 타입 정의, 이전 단계에서 사용된 NavData 타입 예시를 확장하여 사용합니다.
 export type NavData = {
@@ -52,10 +52,42 @@ export type NavData = {
 
 // 게시물 타입 정의
 export type Post = {
-  id: number,
-  category: string,
-  title:string,
-  date: number,
-  author: string,
-  view:number
-}
+  id: number;
+  category: string;
+  title: string;
+  date: number;
+  author: string;
+  view: number;
+};
+
+//회원가입 정보 타입정의
+export type Signup = {
+  id: string;
+  name: string;
+  kakao: string;
+  birth: date;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  nickname: string;
+};
+
+//회원가입 에러메세지
+export type Error = {
+  id: string;
+  name: string;
+  kakao: string;
+  birth: date;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+  nickname: string;
+};
+
+//회원가입 정보 체크박스 타입정의
+export type CheckBoxInterface = {
+  checkAll: boolean;
+  checkTerms: boolean;
+  checkPersonalInfo: boolean;
+  checkNewsletter: boolean;
+};
