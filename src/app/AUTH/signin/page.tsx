@@ -10,6 +10,7 @@ import {
   CardHeader,
   Divider,
   Input,
+  Link,
 } from "@nextui-org/react";
 import { useState } from "react";
 
@@ -20,7 +21,7 @@ export default function SignInPage() {
     return emailRegex.test(email);
   };
 
-  const [signUpState, setSignUpState] = useState({
+  const [signInState, setsignInState] = useState({
     email: "",
     password: "",
   });
@@ -31,19 +32,19 @@ export default function SignInPage() {
 
   const canSubmit = () => {
     const hasErrors = Object.values(error).some((e) => e !== "");
-    const hasEmptyFields = !signUpState.password || !signUpState.email;
+    const hasEmptyFields = !signInState.password || !signInState.email;
     return !hasErrors && !hasEmptyFields;
   };
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
-    setSignUpState((prev) => ({
+    setsignInState((prev) => ({
       ...prev,
       [name]: value,
     }));
 
     if (name === "email") {
-      if (value.length > 0 && !validateEmail(signUpState.email)) {
+      if (value.length > 0 && !validateEmail(signInState.email)) {
         setError((prev) => ({
           ...prev,
           email: "이메일 형식이 문제가 참 많습니다.",
@@ -72,20 +73,19 @@ export default function SignInPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ signUpState }),
+        body: JSON.stringify({ signInState }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
       const data = await response.json();
-      alert(data.message);
 
-      window.location.href = `/`;
-    } catch (error) {
-      console.error("Failed to submit the article:", error);
-      alert(error);
+      if (response.ok) {
+        alert(data.message);
+        window.location.href = `/`;
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      alert(error.message);
     }
   };
 
@@ -93,7 +93,7 @@ export default function SignInPage() {
     <div className="w-full max-w-[500px] mt-8 mx-auto">
       <Card className="w-full mx-auto">
         <CardHeader className="flex justify-center items-center px-4 py-2">
-          <div className="text-bold text-xl">회원 가입</div>
+          <div className="text-bold text-xl">로그인</div>
         </CardHeader>
         <Divider />
         <div className="flex flex-col gap-4 px-4 items-center text-center">
@@ -104,7 +104,7 @@ export default function SignInPage() {
               label="Email"
               labelPlacement={"outside"}
               placeholder="Email을 입력해주세요."
-              value={signUpState.email}
+              value={signInState.email}
               className="py-4"
               size="lg"
               onChange={handleInputChange}
@@ -117,7 +117,7 @@ export default function SignInPage() {
               label="비밀번호"
               labelPlacement={"outside"}
               placeholder="비밀번호를 입력해주세요. [8자 이상]"
-              value={signUpState.password}
+              value={signInState.password}
               className="py-4"
               size="lg"
               onChange={handleInputChange}
@@ -134,9 +134,12 @@ export default function SignInPage() {
                   canSubmit() ? "" : "bg-gray-400 hover:bg-gray-400"
                 }`}
               >
-                회원가입
+                로그인
               </Button>
             </div>
+            <Link href="/AUTH/signup">
+              <a className="pb-4">회원가입</a>
+            </Link>
             <p className="pb-4">아이디를 잃어버리셨나요? 아이디찾기</p>
           </div>
         </div>

@@ -14,6 +14,7 @@ export type User = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)
   avatar: string;
   name: string;
+  password: string;
   role: string;
   grade: number;
   point: number;
@@ -62,7 +63,6 @@ export type Post = {
 
 //회원가입 정보 타입정의
 export type Signup = {
-  id: string;
   name: string;
   kakao: string;
   birth: date;
@@ -75,7 +75,6 @@ export type Signup = {
 
 //회원가입 에러메세지
 export type Error = {
-  id: string;
   name: string;
   kakao: string;
   birth: date;

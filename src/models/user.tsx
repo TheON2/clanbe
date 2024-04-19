@@ -4,12 +4,12 @@ import { User } from "../../types/types";
 const userSchema = new mongoose.Schema(
   {
     avatar: String, // 사용자의 아바타 URL
-    id: String,
-    password: String,
-    email: String,
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true }, // 비밀번호 필드 추가
     kakao: String,
     birth: Date,
-    name: String, // 사용자 이름
+    nickname: String, //사용자 닉네임
+    name: String, // 사용자 실명
     role: String, // 사용자 역할
     grade: Number, // 사용자 등급
     point: Number, // 사용자 포인트

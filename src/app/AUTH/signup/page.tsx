@@ -14,6 +14,7 @@ import {
 import { NextRouter, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { CheckBoxInterface, Signup } from "../../../../types/types";
+import Link from "next/link";
 
 export default function SignUpPage() {
   const placements = ["inside", "outside", "outside-left"];
@@ -22,7 +23,6 @@ export default function SignUpPage() {
     return emailRegex.test(email);
   };
   const [signUpState, setSignUpState] = useState<Signup>({
-    id: "",
     email: "",
     password: "",
     passwordConfirm: "",
@@ -33,7 +33,6 @@ export default function SignUpPage() {
     race: "",
   });
   const [error, setError] = useState<Signup>({
-    id: "",
     email: "",
     password: "",
     passwordConfirm: "",
@@ -68,14 +67,14 @@ export default function SignUpPage() {
     }));
 
     // ID 유효성 검사
-    if (name === "id") {
+    if (name === "nickname") {
       if (value.length > 0 && value.length < 2) {
         setError((prev) => ({
           ...prev,
-          id: "닉네임은 2자 이상이어야 합니다.",
+          nickname: "닉네임은 2자 이상이어야 합니다.",
         }));
       } else {
-        setError((prev) => ({ ...prev, id: "" }));
+        setError((prev) => ({ ...prev, nickname: "" }));
       }
     }
 
@@ -134,7 +133,7 @@ export default function SignUpPage() {
           race: "종족을 선택해 주세요",
         }));
       } else {
-        setError((prev) => ({ ...prev, birth: "" }));
+        setError((prev) => ({ ...prev, race: "" }));
       }
     }
   };
@@ -142,7 +141,7 @@ export default function SignUpPage() {
   const canSubmit = () => {
     const hasErrors = Object.values(error).some((e) => e !== "");
     const hasEmptyFields =
-      !signUpState.id ||
+      !signUpState.nickname ||
       !signUpState.password ||
       !signUpState.passwordConfirm ||
       !signUpState.email ||
@@ -164,16 +163,16 @@ export default function SignUpPage() {
         body: JSON.stringify({ signUpState }),
       });
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
-
       const data = await response.json();
-      alert(data.message);
 
-      window.location.href = `/`;
-    } catch (error) {
-      console.error("Failed to submit the article:", error);
+      if (response.ok) {
+        alert(data.message);
+        window.location.href = `/`;
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      alert(error.message);
     }
   };
 
@@ -191,17 +190,17 @@ export default function SignUpPage() {
         <div className="flex flex-col gap-4 px-4 items-center text-center">
           <div className="w-4/5">
             <Input
-              type="text"
-              name="id"
-              label="ID"
+              type="email"
+              name="email"
+              label="Email"
               labelPlacement={"outside"}
-              value={signUpState.id}
-              placeholder="닉네임을 입력해주세요. [2~16자]"
+              placeholder="Email을 입력해주세요."
+              value={signUpState.email}
               className="py-4"
               size="lg"
               onChange={handleInputChange}
-              isInvalid={error.id.length >= 1}
-              errorMessage={error.id}
+              isInvalid={error.email.length >= 1}
+              errorMessage={error.email}
             />
             <Input
               type="password"
@@ -230,17 +229,17 @@ export default function SignUpPage() {
               errorMessage={error.passwordConfirm}
             />
             <Input
-              type="email"
-              name="email"
-              label="Email"
+              type="text"
+              name="nickname"
+              label="닉네임"
               labelPlacement={"outside"}
-              placeholder="Email을 입력해주세요."
-              value={signUpState.email}
+              value={signUpState.nickname}
+              placeholder="클랜닉네임을 입력해주세요. [2~16자]"
               className="py-4"
               size="lg"
               onChange={handleInputChange}
-              isInvalid={error.email.length >= 1}
-              errorMessage={error.email}
+              isInvalid={error.nickname.length >= 1}
+              errorMessage={error.nickname}
             />
             <Input
               type="text"
@@ -315,7 +314,9 @@ export default function SignUpPage() {
                 회원가입
               </Button>
             </div>
-            <p className="pb-4">이미 아이디가 있으신가요? 로그인</p>
+            <Link href={"/AUTH/signin"}>
+              <p className="pb-4">이미 아이디가 있으신가요? 로그인</p>
+            </Link>
           </div>
         </div>
       </Card>

@@ -1,10 +1,11 @@
 import UserModel from "@/models/user";
 import mongoose from "mongoose";
+import bcrypt from 'bcrypt';
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let { id, email, password, nickname, name, kakao, birth } = body.signUpState;
+  let { email, password, nickname, name, kakao, birth,race } = body.signUpState;
 
   console.log(body.signUpState);
 
@@ -14,10 +15,19 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
+    const existingUser = await UserModel.findOne({ email: email });
+    if (existingUser) {
+      return new Response(JSON.stringify({ message: "이미 등록된 이메일입니다." }), {
+        status: 409,
+      });
+    }
+
+    // 비밀번호 해싱
+    const hashedPassword = await bcrypt.hash(password, 10); // 10은 솔트 라운드 수입니다.
+
     const myProfile = {
-      id,
       email,
-      password,
+      password: hashedPassword, // 해싱된 비밀번호 저장
       nickname,
       name,
       kakao,
@@ -27,7 +37,7 @@ export async function POST(req: Request, res: Response) {
       grade: 1,
       point: 0,
       tear: "미배정",
-      BELO: { race: "P", pw: 0, pl: 0, tw: 0, tl: 0, zw: 0, zl: 0 },
+      BELO: { race: race, pw: 0, pl: 0, tw: 0, tl: 0, zw: 0, zl: 0 },
       team: "미배정",
     }
 
