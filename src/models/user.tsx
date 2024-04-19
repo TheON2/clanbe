@@ -4,6 +4,11 @@ import { User } from "../../types/types";
 const userSchema = new mongoose.Schema(
   {
     avatar: String, // 사용자의 아바타 URL
+    id: String,
+    password: String,
+    email: String,
+    kakao: String,
+    birth: Date,
     name: String, // 사용자 이름
     role: String, // 사용자 역할
     grade: Number, // 사용자 등급

@@ -51,7 +51,7 @@ export default function SignUpPage() {
   const [serverError, setServerError] = useState<string>("");
   const [serverNicknameError, setServerNicknameError] = useState<string>("");
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: any) => {
     const { name, value } = e.target;
     setSignUpState((prev) => ({
       ...prev,
@@ -116,6 +116,26 @@ export default function SignUpPage() {
       } else {
         setError((prev) => ({ ...prev, birth: "" }));
       }
+    }
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await fetch("/api/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ signUpState }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      //window.location.href = `/posts/${response.statusText}`;
+    } catch (error) {
+      console.error("Failed to submit the article:", error);
     }
   };
 
@@ -224,7 +244,9 @@ export default function SignUpPage() {
               errorMessage={error.birth}
             />
             <div className="flex justify-center gap-4 p-4">
-              <Button className="min-w-[250px]">회원가입</Button>
+              <Button onClick={handleSubmit} className="min-w-[250px]">
+                회원가입
+              </Button>
             </div>
             <p className="pb-4">이미 아이디가 있으신가요? 로그인</p>
           </div>
