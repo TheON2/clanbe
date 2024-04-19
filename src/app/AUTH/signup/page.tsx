@@ -30,6 +30,7 @@ export default function SignUpPage() {
     name: "",
     kakao: "",
     birth: "",
+    race: "",
   });
   const [error, setError] = useState<Signup>({
     id: "",
@@ -40,6 +41,7 @@ export default function SignUpPage() {
     name: "",
     kakao: "",
     birth: "",
+    race: "",
   });
   const [checkboxes, setCheckboxes] = useState<CheckBoxInterface>({
     checkAll: false,
@@ -50,6 +52,13 @@ export default function SignUpPage() {
   const [checkboxErrorMessage, setCheckboxErrorMessage] = useState("");
   const [serverError, setServerError] = useState<string>("");
   const [serverNicknameError, setServerNicknameError] = useState<string>("");
+
+  const handleRaceClick = (race: string) => {
+    setSignUpState((prev) => ({
+      ...prev,
+      race: race,
+    }));
+  };
 
   const handleInputChange = (e: any) => {
     const { name, value } = e.target;
@@ -117,6 +126,32 @@ export default function SignUpPage() {
         setError((prev) => ({ ...prev, birth: "" }));
       }
     }
+
+    if (name === "race") {
+      if (value.length === 0) {
+        setError((prev) => ({
+          ...prev,
+          race: "종족을 선택해 주세요",
+        }));
+      } else {
+        setError((prev) => ({ ...prev, birth: "" }));
+      }
+    }
+  };
+
+  const canSubmit = () => {
+    const hasErrors = Object.values(error).some((e) => e !== "");
+    const hasEmptyFields =
+      !signUpState.id ||
+      !signUpState.password ||
+      !signUpState.passwordConfirm ||
+      !signUpState.email ||
+      !signUpState.name ||
+      !signUpState.kakao ||
+      !signUpState.birth ||
+      !signUpState.race;
+
+    return !hasErrors && !hasEmptyFields;
   };
 
   const handleSubmit = async () => {
@@ -133,7 +168,10 @@ export default function SignUpPage() {
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      //window.location.href = `/posts/${response.statusText}`;
+      const data = await response.json();
+      alert(data.message);
+
+      window.location.href = `/`;
     } catch (error) {
       console.error("Failed to submit the article:", error);
     }
@@ -243,8 +281,37 @@ export default function SignUpPage() {
               isInvalid={error.birth.length !== 0}
               errorMessage={error.birth}
             />
+            <ButtonGroup>
+              <Button
+                color={signUpState.race === "z" ? "success" : "default"}
+                onClick={() => handleRaceClick("z")}
+              >
+                저그
+              </Button>
+              <Divider orientation="vertical" />
+              <Button
+                color={signUpState.race === "t" ? "success" : "default"}
+                onClick={() => handleRaceClick("t")}
+              >
+                테란
+              </Button>
+              <Divider orientation="vertical" />
+              <Button
+                color={signUpState.race === "p" ? "success" : "default"}
+                onClick={() => handleRaceClick("p")}
+              >
+                프로토스
+              </Button>
+            </ButtonGroup>
             <div className="flex justify-center gap-4 p-4">
-              <Button onClick={handleSubmit} className="min-w-[250px]">
+              <Button
+                onClick={handleSubmit}
+                disabled={!canSubmit()}
+                color="success"
+                className={`min-w-[250px] ${
+                  canSubmit() ? "" : "bg-gray-400 hover:bg-gray-400"
+                }`}
+              >
                 회원가입
               </Button>
             </div>

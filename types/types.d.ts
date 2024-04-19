@@ -70,6 +70,7 @@ export type Signup = {
   password: string;
   passwordConfirm: string;
   nickname: string;
+  race: string;
 };
 
 //회원가입 에러메세지
@@ -82,6 +83,7 @@ export type Error = {
   password: string;
   passwordConfirm: string;
   nickname: string;
+  race: string;
 };
 
 //회원가입 정보 체크박스 타입정의
