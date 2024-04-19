@@ -1,6 +1,7 @@
 import UserModel from "@/models/user";
 import mongoose from "mongoose";
-import bcrypt from 'bcrypt';
+import bcrypt from "bcrypt";
+import TeamModel from "@/models/team";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
@@ -18,24 +19,43 @@ export async function POST(req: Request, res: Response) {
     const myProfile = {
       email,
       password,
-    }
+    };
 
     const user = await UserModel.findOne({ email: email });
+    const teams = await TeamModel.find({});
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
-        return new Response(JSON.stringify({ message: "로그인 성공" }), {
+        const userData = {
+          email: user.email,
+          nickname: user.nickname,
+          name: user.name,
+          role: user.role,
+          grade: user.grade,
+          point: user.point,
+          tear: user.tear,
+          BELO: user.BELO,
+          team: user.team,
+          avatar: user.avatar, // 예를 들어 사용자 프로필 이미지 URL
+        };
+        return new Response(JSON.stringify({ message: "로그인 성공",user: userData,teams }), {
           status: 200,
         });
       } else {
-        return new Response(JSON.stringify({ message: "비밀번호가 일치하지 않습니다" }), {
-          status: 401,
-        });
+        return new Response(
+          JSON.stringify({ message: "비밀번호가 일치하지 않습니다" }),
+          {
+            status: 401,
+          }
+        );
       }
     } else {
-      return new Response(JSON.stringify({ message: "등록되지 않은 이메일입니다" }), {
-        status: 404,
-      });
+      return new Response(
+        JSON.stringify({ message: "등록되지 않은 이메일입니다" }),
+        {
+          status: 404,
+        }
+      );
     }
   } catch (error) {
     return new Response(JSON.stringify({ message: "로그인 실패" }), {

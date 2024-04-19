@@ -13,8 +13,14 @@ import {
   Link,
 } from "@nextui-org/react";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { LOGIN_USER } from "../../../../redux/reducers/userSlice";
+import { useRouter } from "next/navigation";
+import { LOGIN_TEAM } from "../../../../redux/reducers/teamSlice";
 
 export default function SignInPage() {
+  const dispatch = useDispatch();
+  const router = useRouter();
   const placements = ["inside", "outside", "outside-left"];
   const validateEmail = (email: string) => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
@@ -80,7 +86,9 @@ export default function SignInPage() {
 
       if (response.ok) {
         alert(data.message);
-        window.location.href = `/`;
+        dispatch(LOGIN_USER(data.user));
+        dispatch(LOGIN_TEAM(data.teams));
+        router.push("/");
       } else {
         throw new Error(data.message);
       }
@@ -138,7 +146,7 @@ export default function SignInPage() {
               </Button>
             </div>
             <Link href="/AUTH/signup">
-              <a className="pb-4">회원가입</a>
+              <p className="pb-4">회원가입</p>
             </Link>
             <p className="pb-4">아이디를 잃어버리셨나요? 아이디찾기</p>
           </div>

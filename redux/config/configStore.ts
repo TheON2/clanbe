@@ -4,9 +4,11 @@ import {
   PayloadAction,
 } from '@reduxjs/toolkit';
 import userReducer from '../reducers/userSlice';
+import teamReducer from '../reducers/teamSlice';
 
 const rootReducer = combineReducers({
   user: userReducer,
+  team: teamReducer
 });
 
 export type RootState = ReturnType<typeof rootReducer>;

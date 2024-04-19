@@ -55,7 +55,7 @@ const userSlice = createSlice({
   reducers: {
     LOGIN_USER: (state: UserState, action) => {
       state.email = action.payload.email;
-      state.avatar = action.payload.nickname;
+      state.avatar = action.payload.avatar;
       state.nickname = action.payload.nickname;
       state.name = action.payload.name;
       state.role = action.payload.role;

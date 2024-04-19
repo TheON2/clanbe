@@ -13,6 +13,8 @@ export type Team = {
 export type User = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)
   avatar: string;
+  nickname: string;
+  email: string;
   name: string;
   password: string;
   role: string;
