@@ -1,7 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export enum LocalStorageKey {
-  Token = 'token',
+  Token = "token",
 }
 
 // UserModel의 타입 정의
@@ -9,6 +9,7 @@ export type UserState = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)
   avatar: string;
   email: string;
+  nickname: string;
   name: string;
   role: string;
   grade: number;
@@ -26,28 +27,18 @@ export type UserState = {
   team: string;
 };
 
-export interface UserResponse {
-  email: string | null;
-  nickname: string | null;
-  userImage: string | null;
-  preset: number | null;
-  likePosts: number[] | null;
-  userId: number | null;
-  push: boolean | null;
-  super: boolean | null;
-}
-
 const initialState: UserState = {
   _id: "",
-  email:"",
+  email: "",
   avatar: "",
+  nickname: "",
   name: "",
-  role:  "",
+  role: "",
   grade: 0,
   point: 0,
   tear: "",
   BELO: {
-    race:  "",
+    race: "",
     pw: 0,
     pl: 0,
     tw: 0,
@@ -59,37 +50,58 @@ const initialState: UserState = {
 };
 
 const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     LOGIN_USER: (state: UserState, action) => {
       state.email = action.payload.email;
       state.avatar = action.payload.nickname;
-      state.user.userImage = action.payload.userImage;
-      state.user.preset = action.payload.preset;
+      state.nickname = action.payload.nickname;
+      state.name = action.payload.name;
+      state.role = action.payload.role;
+      state.grade = action.payload.grade;
+      state.point = action.payload.point;
+      state.tear = action.payload.tear;
+      state.BELO = action.payload.BELO;
+      state.team = action.payload.team;
       localStorage.setItem(LocalStorageKey.Token, action.payload.token);
     },
     LOGOUT_USER: (state: UserState) => {
-      state.user.email = null;
-      state.user.nickName = null;
+      state.email = "";
+      state.avatar = "";
+      state.nickname = "";
+      state.name = "";
+      state.role = "";
+      state.grade = 0;
+      state.point = 0;
+      state.tear = "";
+      state.BELO = {
+        race: "",
+        pw: 0,
+        pl: 0,
+        tw: 0,
+        tl: 0,
+        zw: 0,
+        zl: 0,
+      };
+      state.team = "";
       localStorage.removeItem(LocalStorageKey.Token);
     },
-    AUTH_USER: (state: UserState, action: PayloadAction<UserResponse>) => {
-      state.user.email = action.payload.email;
-      state.user.nickName = action.payload.nickname;
-      state.user.userImage = action.payload.userImage;
-      state.user.preset = action.payload.preset;
-      state.user.likePosts = action.payload.likePosts;
-      state.user.push = action.payload.push;
-      state.user.userId = action.payload.userId;
+    AUTH_USER: (state: UserState, action) => {
+      state.email = action.payload.email;
+      state.avatar = action.payload.nickname;
+      state.nickname = action.payload.nickname;
+      state.name = action.payload.name;
+      state.role = action.payload.role;
+      state.grade = action.payload.grade;
+      state.point = action.payload.point;
+      state.tear = action.payload.tear;
+      state.BELO = action.payload.BELO;
+      state.team = action.payload.team;
     },
   },
 });
 
-export const {
-  LOGIN_USER,
-  LOGOUT_USER,
-  AUTH_USER,
-} = userSlice.actions;
+export const { LOGIN_USER, LOGOUT_USER, AUTH_USER } = userSlice.actions;
 
 export default userSlice.reducer;
