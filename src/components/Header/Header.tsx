@@ -2,10 +2,10 @@ import { getCategoryData } from "@/service/admin";
 import HeaderComponent from "./HeaderComponent";
 
 async function Header() {
-  const { category } = await getCategoryData();
+  const { categories } = await getCategoryData(); // 'categories'로 수정
   return (
     <>
-      <HeaderComponent categoryData={category} />
+      <HeaderComponent categoryData={categories} />
     </>
   );
 }

@@ -38,6 +38,7 @@ export async function POST(req: Request, res: Response) {
           team: user.team,
           avatar: user.avatar, // 예를 들어 사용자 프로필 이미지 URL
         };
+        console.log(userData)
         return new Response(JSON.stringify({ message: "로그인 성공",user: userData,teams }), {
           status: 200,
         });

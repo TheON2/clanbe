@@ -50,62 +50,17 @@ export default function SignInPage() {
       ...prev,
       [name]: value,
     }));
-
-    // if (name === "email") {
-    //   if (value.length > 0 && !validateEmail(signInState.email)) {
-    //     setError((prev) => ({
-    //       ...prev,
-    //       email: "이메일 형식이 문제가 참 많습니다.",
-    //     }));
-    //   } else {
-    //     setError((prev) => ({ ...prev, email: "" }));
-    //   }
-    // }
-
-    // if (name === "password") {
-    //   if (value.length > 0 && value.length < 8) {
-    //     setError((prev) => ({
-    //       ...prev,
-    //       password: "비밀번호는 8자 이상이어야 합니다.",
-    //     }));
-    //   } else {
-    //     setError((prev) => ({ ...prev, password: "" }));
-    //   }
-    // }
   };
 
   const handleSubmit = async () => {
-    // try {
-    //   const response = await fetch("/api/signin", {
-    //     method: "POST",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     body: JSON.stringify({ signInState }),
-    //   });
-
-    //   const data = await response.json();
-
-    //   if (response.ok) {
-    //     alert(data.message);
-    //     dispatch(LOGIN_USER(data.user));
-    //     dispatch(LOGIN_TEAM(data.teams));
-    //     router.push("/");
-    //   } else {
-    //     throw new Error(data.message);
-    //   }
-    // } catch (error: any) {
-    //   alert(error.message);
-    // }
     try {
       const result = await signIn("credentials", {
         redirect: false,
-        username: signInState.email,
+        email: signInState.email,
         password: signInState.password,
       });
 
       if (result) {
-        console.log("Logged in user:", session);
         router.push("/");
       } else {
         // 로그인 실패 시 사용자에게 메시지 표시
