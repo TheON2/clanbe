@@ -12,14 +12,16 @@ import {
   Input,
   Link,
 } from "@nextui-org/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { LOGIN_USER } from "../../../../redux/reducers/userSlice";
 import { useRouter } from "next/navigation";
 import { LOGIN_TEAM } from "../../../../redux/reducers/teamSlice";
+import { signIn, useSession } from "next-auth/react";
 
 export default function SignInPage() {
   const dispatch = useDispatch();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const placements = ["inside", "outside", "outside-left"];
   const validateEmail = (email: string) => {
@@ -49,53 +51,96 @@ export default function SignInPage() {
       [name]: value,
     }));
 
-    if (name === "email") {
-      if (value.length > 0 && !validateEmail(signInState.email)) {
-        setError((prev) => ({
-          ...prev,
-          email: "이메일 형식이 문제가 참 많습니다.",
-        }));
-      } else {
-        setError((prev) => ({ ...prev, email: "" }));
-      }
-    }
+    // if (name === "email") {
+    //   if (value.length > 0 && !validateEmail(signInState.email)) {
+    //     setError((prev) => ({
+    //       ...prev,
+    //       email: "이메일 형식이 문제가 참 많습니다.",
+    //     }));
+    //   } else {
+    //     setError((prev) => ({ ...prev, email: "" }));
+    //   }
+    // }
 
-    if (name === "password") {
-      if (value.length > 0 && value.length < 8) {
-        setError((prev) => ({
-          ...prev,
-          password: "비밀번호는 8자 이상이어야 합니다.",
-        }));
-      } else {
-        setError((prev) => ({ ...prev, password: "" }));
-      }
-    }
+    // if (name === "password") {
+    //   if (value.length > 0 && value.length < 8) {
+    //     setError((prev) => ({
+    //       ...prev,
+    //       password: "비밀번호는 8자 이상이어야 합니다.",
+    //     }));
+    //   } else {
+    //     setError((prev) => ({ ...prev, password: "" }));
+    //   }
+    // }
   };
 
   const handleSubmit = async () => {
+    // try {
+    //   const response = await fetch("/api/signin", {
+    //     method: "POST",
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //     },
+    //     body: JSON.stringify({ signInState }),
+    //   });
+
+    //   const data = await response.json();
+
+    //   if (response.ok) {
+    //     alert(data.message);
+    //     dispatch(LOGIN_USER(data.user));
+    //     dispatch(LOGIN_TEAM(data.teams));
+    //     router.push("/");
+    //   } else {
+    //     throw new Error(data.message);
+    //   }
+    // } catch (error: any) {
+    //   alert(error.message);
+    // }
     try {
-      const response = await fetch("/api/signin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ signInState }),
+      const result = await signIn("credentials", {
+        redirect: false,
+        username: signInState.email,
+        password: signInState.password,
       });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert(data.message);
-        dispatch(LOGIN_USER(data.user));
-        dispatch(LOGIN_TEAM(data.teams));
+      if (result) {
+        console.log("Logged in user:", session);
         router.push("/");
       } else {
-        throw new Error(data.message);
+        // 로그인 실패 시 사용자에게 메시지 표시
+        alert("로그인 실패: 사용자 이름 또는 비밀번호를 확인해 주세요.");
       }
-    } catch (error: any) {
-      alert(error.message);
+    } catch (error) {
+      // 네트워크 오류나 기타 예외 처리
+      console.error("로그인 과정에서 오류가 발생했습니다:", error);
+      alert("로그인 중 오류가 발생했습니다.");
     }
   };
+
+  useEffect(() => {
+    // 이메일 유효성 검사를 useEffect 내부로 이동
+    if (signInState.email.length > 0 && !validateEmail(signInState.email)) {
+      setError((prev) => ({
+        ...prev,
+        email: "이메일 형식이 문제가 참 많습니다.",
+      }));
+    } else {
+      setError((prev) => ({ ...prev, email: "" }));
+    }
+  }, [signInState.email]); // 이메일 상태가 변경될 때만 실행
+
+  // 비밀번호 상태에 대해서도 비슷한 접근 방식 사용
+  useEffect(() => {
+    if (signInState.password.length > 0 && signInState.password.length < 8) {
+      setError((prev) => ({
+        ...prev,
+        password: "비밀번호는 8자 이상이어야 합니다.",
+      }));
+    } else {
+      setError((prev) => ({ ...prev, password: "" }));
+    }
+  }, [signInState.password]);
 
   return (
     <div className="w-full max-w-[500px] mt-8 mx-auto">

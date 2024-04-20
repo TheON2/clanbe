@@ -1,28 +1,29 @@
 import mongoose from "mongoose";
-import { Category } from "../../types/types";
-import { Document } from "mongoose";
-import CategoryModel from "@/models/category";
+import { Category } from "../../types/types"; // Category 타입 임포트
+import CategoryModel from "@/models/category"; // Mongoose 모델 임포트
 
-export const getCategoryData = async () => {
+export const getCategoryData = async (): Promise<{ categories: Category[] }> => {
   try {
     // MongoDB 데이터베이스에 연결
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
 
-    // 데이터베이스에서 모든 게시글을 검색
+    // 데이터베이스에서 모든 카테고리를 검색
     const categories = await CategoryModel.find({});
 
-    console.log(categories)
-
-    const transformedCategories: Category[] = categories.map((category: Document) => ({
-      ...category.toObject(),
-      _id: category._id.toString(), // MongoDB ObjectId를 문자열로 변환
+    // MongoDB 문서를 Category 타입으로 변환
+    const transformedCategories: Category[] = categories.map((doc) => ({
+      buttonTitle: doc.buttonTitle, // MongoDB에서 가져온 데이터 필드
+      menuItems: doc.menuItems.map((item) => ({
+        title: item.title,
+        description: item.description,
+        icon: item.icon,
+        href: item.href
+      }))
     }));
 
-    console.log(transformedCategories)
-
-    // 데이터 변환 로직은 필요에 따라 조정
+    // 변환된 데이터 반환
     return {
-      category:transformedCategories
+      categories: transformedCategories
     };
   } catch (error) {
     console.error("Error fetching data from MongoDB", error);
