@@ -30,6 +30,23 @@
   --ck-todo-list-checkmark-size: 16px;
 }
 
+.ckeditor-container .ck-editor__editable,
+.ckeditor-container .ck-content {
+  background-color: #fff !important;
+  /* 배경색을 항상 하얀색으로 설정 */
+  color: #000 !important;
+  /* 글씨색을 항상 검정색으로 설정 */
+  border: 1px solid #ccc;
+  /* 경계선을 보이게 하여 에디터가 잘 구분되도록 함 */
+}
+
+.ckeditor-container {
+  background-color: #fff;
+  /* 컨테이너 배경도 하얀색으로 설정 */
+  color: #000;
+  /* 컨테이너 글씨색도 검정으로 설정 */
+}
+
 /* @ckeditor/ckeditor5-table/theme/tablecolumnresize.css */
 .ck-content .table .ck-table-resized {
   table-layout: fixed;

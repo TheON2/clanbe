@@ -11,7 +11,7 @@ body {
 }
 
 .ckeditor-container .ck-editor__editable {
-  min-height: 300px;
+  min-height: 400px;
 }
 
 .ck-editor__editable li {

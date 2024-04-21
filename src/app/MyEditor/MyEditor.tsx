@@ -3,8 +3,9 @@ import { CKEditor } from "@ckeditor/ckeditor5-react";
 import CustomEditor from "@/ckeditor2";
 import { Markdown } from "@ckeditor/ckeditor5-markdown-gfm";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Alignment from "@ckeditor/ckeditor5-alignment/src/alignment";
+import { useTheme } from "next-themes";
 
 interface MyEditorProps {
   data: string;
@@ -12,114 +13,123 @@ interface MyEditorProps {
 }
 
 export default function MyEditor(props: MyEditorProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
   return (
     <div className="ckeditor-container">
-      <CKEditor
-        editor={CustomEditor}
-        data={props.data}
-        onChange={props.onChange}
-        config={{
-          ui: {
-            viewportOffset: { top: 200 },
-          },
-          mediaEmbed: {
-            previewsInData: true,
-          },
-          ckfinder: {
-            uploadUrl: "/api/uploadImage",
-          },
-          mention: {
-            feeds: [
-              {
-                marker: "@",
-                feed: [
-                  "@apple",
-                  "@bears",
-                  "@brownie",
-                  "@cake",
-                  "@cake",
-                  "@candy",
-                  "@canes",
-                  "@chocolate",
-                  "@cookie",
-                  "@cotton",
-                  "@cream",
-                  "@cupcake",
-                  "@danish",
-                  "@donut",
-                  "@dragée",
-                  "@fruitcake",
-                  "@gingerbread",
-                  "@gummi",
-                  "@ice",
-                  "@jelly-o",
-                  "@liquorice",
-                  "@macaroon",
-                  "@marzipan",
-                  "@oat",
-                  "@pie",
-                  "@plum",
-                  "@pudding",
-                  "@sesame",
-                  "@snaps",
-                  "@soufflé",
-                  "@sugar",
-                  "@sweet",
-                  "@topping",
-                  "@wafer",
-                ],
-                minimumCharacters: 1,
-              },
-            ],
-          },
-          toolbar: {
-            items: [
-              "bold",
-              "italic",
-              "underline",
-              "highlight",
-              "|",
-              "bulletedList",
-              "numberedList",
-              "|",
-              "outdent",
-              "indent",
-              "|",
-              "blockQuote",
-              "code",
-              "codeBlock",
-              "findAndReplace",
-              "|",
-              "alignment",
-              "fontBackgroundColor",
-              "fontFamily",
-              "fontColor",
-              "fontSize",
-              "|",
-              "horizontalLine",
-              "pageBreak",
-              "removeFormat",
-              "showBlocks",
-              "sourceEditing",
-              "style",
-              "subscript",
-              "textPartLanguage",
-              "todoList",
-              "selectAll",
-              "insertTable",
-              "imageInsert",
-              "link",
-              "imageUpload",
-              "mediaEmbed",
-              "undo",
-              "redo",
-            ],
-            shouldNotGroupWhenFull: true,
-          },
+      {mounted && (
+        <CKEditor
+          editor={CustomEditor}
+          data={props.data}
+          onChange={props.onChange}
+          config={{
+            // ui: {
+            //   viewportOffset: { top: 200 },
+            // },
+            mediaEmbed: {
+              previewsInData: true,
+            },
+            ckfinder: {
+              uploadUrl: "/api/uploadImage",
+            },
+            mention: {
+              feeds: [
+                {
+                  marker: "@",
+                  feed: [
+                    "@apple",
+                    "@bears",
+                    "@brownie",
+                    "@cake",
+                    "@cake",
+                    "@candy",
+                    "@canes",
+                    "@chocolate",
+                    "@cookie",
+                    "@cotton",
+                    "@cream",
+                    "@cupcake",
+                    "@danish",
+                    "@donut",
+                    "@dragée",
+                    "@fruitcake",
+                    "@gingerbread",
+                    "@gummi",
+                    "@ice",
+                    "@jelly-o",
+                    "@liquorice",
+                    "@macaroon",
+                    "@marzipan",
+                    "@oat",
+                    "@pie",
+                    "@plum",
+                    "@pudding",
+                    "@sesame",
+                    "@snaps",
+                    "@soufflé",
+                    "@sugar",
+                    "@sweet",
+                    "@topping",
+                    "@wafer",
+                  ],
+                  minimumCharacters: 1,
+                },
+              ],
+            },
+            toolbar: {
+              items: [
+                "bold",
+                "italic",
+                "underline",
+                "highlight",
+                "|",
+                "bulletedList",
+                "numberedList",
+                "|",
+                "outdent",
+                "indent",
+                "|",
+                "blockQuote",
+                "code",
+                "codeBlock",
+                "findAndReplace",
+                "|",
+                "alignment",
+                "fontBackgroundColor",
+                "fontFamily",
+                "fontColor",
+                "fontSize",
+                "|",
+                "horizontalLine",
+                "pageBreak",
+                "removeFormat",
+                "showBlocks",
+                "sourceEditing",
+                "style",
+                "subscript",
+                "textPartLanguage",
+                "todoList",
+                "selectAll",
+                "insertTable",
+                "imageInsert",
+                "link",
+                "imageUpload",
+                "mediaEmbed",
+                "undo",
+                "redo",
+              ],
+              shouldNotGroupWhenFull: true,
+            },
 
-          language: "ko",
-        }}
-      />
+            language: "ko",
+          }}
+        />
+      )}
     </div>
   );
 }
