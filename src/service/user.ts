@@ -33,3 +33,27 @@ export const getNavData = async () => {
     throw new Error("Error fetching data from MongoDB");
   }
 };
+
+export const getTeamData = async () => {
+  try {
+    // MongoDB 데이터베이스에 연결
+    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
+
+    // 데이터베이스에서 모든 게시글을 검색
+    const teams = await TeamModel.find({});
+
+
+    const transformedTeam: Team[] = teams.map((team: Document) => ({
+      ...team.toObject(),
+      _id: team._id.toString(), // MongoDB ObjectId를 문자열로 변환
+    }));
+
+    // 데이터 변환 로직은 필요에 따라 조정
+    return {
+      teams: transformedTeam,
+    };
+  } catch (error) {
+    console.error("Error fetching data from MongoDB", error);
+    throw new Error("Error fetching data from MongoDB");
+  }
+};
