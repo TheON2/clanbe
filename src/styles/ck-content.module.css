@@ -47,6 +47,10 @@
   /* 컨테이너 글씨색도 검정으로 설정 */
 }
 
+.ck-editor__editable {
+  min-height: 700px;
+}
+
 /* @ckeditor/ckeditor5-table/theme/tablecolumnresize.css */
 .ck-content .table .ck-table-resized {
   table-layout: fixed;

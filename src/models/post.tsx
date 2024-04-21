@@ -7,7 +7,9 @@ const postSchema = new mongoose.Schema(
     category: String, // 문자열
     thumbnail: String, // 문자열 (URL)
     featured: Boolean, // 불리언
-    fileUrl:String,
+    fileUrl: String,
+    author: String,
+    view: Number,
   },
   {
     timestamps: true, // createdAt 및 updatedAt 타임스탬프 자동 생성

@@ -150,7 +150,7 @@ export async function getPostHTML(contentUrl: string): Promise<string> {
 }
 
 export async function uploadImage(file: File): Promise<string> {
-  const fileName = file.name;
+  const fileName = `images/${Date.now()}.png`;
   const buffer = Buffer.from(await file.arrayBuffer());
 
   await s3Client.send(
