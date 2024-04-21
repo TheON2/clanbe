@@ -13,7 +13,7 @@ export const config = {
         const { email, password } = credentials;
 
         try {
-          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URI}/api/signin`, {
+          const response = await fetch(`${process.env.NEXT_AUTH_URL}`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -87,7 +87,7 @@ export const config = {
   session: {
     strategy: "jwt",
   },
-  secret: "1234",
+  secret: `${process.env.NEXT_AUTH_SECRET}`,
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);
