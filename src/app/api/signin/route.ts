@@ -22,7 +22,6 @@ export async function POST(req: Request, res: Response) {
     };
 
     const user = await UserModel.findOne({ email: email });
-    const teams = await TeamModel.find({});
     if (user) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
@@ -39,7 +38,7 @@ export async function POST(req: Request, res: Response) {
           avatar: user.avatar, // 예를 들어 사용자 프로필 이미지 URL
         };
         console.log(userData)
-        return new Response(JSON.stringify({ message: "로그인 성공",user: userData,teams }), {
+        return new Response(JSON.stringify({ message: "로그인 성공",user: userData }), {
           status: 200,
         });
       } else {

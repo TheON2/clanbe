@@ -18,6 +18,7 @@ import { LOGIN_USER } from "../../../../redux/reducers/userSlice";
 import { useRouter } from "next/navigation";
 import { LOGIN_TEAM } from "../../../../redux/reducers/teamSlice";
 import { signIn, useSession } from "next-auth/react";
+import { ok } from "assert";
 
 export default function SignInPage() {
   const dispatch = useDispatch();
@@ -60,11 +61,15 @@ export default function SignInPage() {
         password: signInState.password,
       });
 
-      if (result) {
-        router.push("/");
+      console.log(result); // 디버깅을 위해 결과 로깅
+
+      if (result?.error) {
+        // 로그인 실패 시 에러 메시지 처리
+        alert("아이디와 비밀번호를 확인해주세요.");
+        return;
       } else {
-        // 로그인 실패 시 사용자에게 메시지 표시
-        alert("로그인 실패: 사용자 이름 또는 비밀번호를 확인해 주세요.");
+        // 로그인 성공 시 홈 페이지로 리디렉트
+        router.push("/");
       }
     } catch (error) {
       // 네트워크 오류나 기타 예외 처리

@@ -1,27 +1,6 @@
 import NextAuth from "next-auth";
 import type { NextAuthConfig } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
-import { User as NextAuthUser } from "next-auth";
-// NextAuth의 User 타입을 확장하여 새로운 타입 정의
-export interface ExtendedUser extends NextAuthUser {
-  avatar?: string;
-  email?: string;
-  nickname?: string;
-  role?: string;
-  grade?: number;
-  point?: number;
-  tear?: string;
-  BELO?: {
-    race: string;
-    pw: number;
-    pl: number;
-    tw: number;
-    tl: number;
-    zw: number;
-    zl: number;
-  };
-  team?: string;
-}
 
 export const config = {
   providers: [
@@ -33,7 +12,8 @@ export const config = {
       async authorize(credentials) {
         const { email, password } = credentials;
 
-        const response = await fetch("http://localhost:3000/api/signin", {
+        try {
+          const response = await fetch("http://localhost:3000/api/signin", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -41,22 +21,19 @@ export const config = {
           body: JSON.stringify({ signInState: { email, password } }),
         });
 
-        const data = await response.json();
+          const data = await response.json();
 
-        // 데이터 검증
-        if (!response.ok || !data.user) {
-          console.error("Login failed or bad data", data);
-          return null;
+          if (response.ok && data.user) {
+            return data.user; // 성공적으로 사용자 정보를 받음
+          } else {
+            // API에서 반환된 에러 메시지 사용 또는 기본 에러 메시지 설정
+            throw new Error(data.message || '로그인에 실패했습니다. 다시 시도해 주세요.');
+          }
+        } catch (error:any) {
+          // catch 블록에서 오류를 잡아 에러를 던집니다.
+          throw new Error(error.message || '로그인 처리 중 오류가 발생했습니다.');
         }
-
-        if (data) {
-          // 유저 정보와 토큰을 NextAuth.js 세션에 저장합니다.
-          return data.user as ExtendedUser;
-        } else {
-          // 로그인 실패 시 null을 반환합니다.
-          return null;
-        }
-      },
+      }
     }),
   ],
   pages: {
@@ -71,19 +48,18 @@ export const config = {
       if (pathname === "/AUTH/signin") return !!auth;
       return true;
     },
-   jwt({ token, user }) {
+    jwt({ token, user }) {
       if (user) {
         // 사용자 정보 확장 필드 추가
-        const extendedUser = user as ExtendedUser;
-        token.avatar = extendedUser.avatar;
-        token.name = extendedUser.name;
-        token.nickname = extendedUser.nickname;
-        token.role = extendedUser.role;
-        token.grade = extendedUser.grade;
-        token.point = extendedUser.point;
-        token.tear = extendedUser.tear;
-        token.BELO = extendedUser.BELO;
-        token.team = extendedUser.team;
+        token.avatar = user.avatar;
+        token.name = user.name;
+        token.nickname = user.nickname;
+        token.role = user.role;
+        token.grade = user.grade;
+        token.point = user.point;
+        token.tear = user.tear;
+        token.BELO = user.BELO;
+        token.team = user.team;
       }
       return token;
     },
@@ -91,15 +67,18 @@ export const config = {
       // 세션 정보에 토큰에서 사용자 정보를 추가
       if (token) {
         session.user = {
-          avatar: token.avatar,
-          name: token.name,
-          nickname: token.nickname,
-          point: token.point,
-          BELO:token.BELO,
-          email: token.email,
-          role: token.role,
-          grade: token.grade,
-          tear:token.tear
+          avatar: token.avatar as string,
+          name: token.name as string,
+          nickname: token.nickname as string,
+          point: token.point as number,
+          BELO: token.BELO as any,
+          email: token.email as string,
+          role: token.role as string,
+          grade: token.grade as number,
+          tear: token.tear as string,
+          team: token.team as string,
+          id: "default-id", // 필요한 경우 token에서 id를 가져오거나 기본 id 제공
+          emailVerified: null, // emailVerified는 null이 가능
         };
       }
       return session;

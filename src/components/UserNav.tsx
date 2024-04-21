@@ -1,14 +1,31 @@
-import { Button, Card, CardBody, CircularProgress, Popover, PopoverContent, PopoverTrigger, Progress, Tab, Tabs, Tooltip, User } from '@nextui-org/react';
-import { NextPage } from 'next'
-import { UserTwitterCard } from './UserTwitterCard';
+import {
+  Button,
+  Card,
+  CardBody,
+  CircularProgress,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+  Progress,
+  Tab,
+  Tabs,
+  Tooltip,
+  User,
+} from "@nextui-org/react";
+import { NextPage } from "next";
+import { UserTwitterCard } from "./UserTwitterCard";
 import Image from "next/image";
-import { Team } from '../../types/types';
-import { tabs } from '../../public/data';
+import { Team } from "../../types/types";
+import { tabs } from "../../public/data";
+import { User as MyUser } from "next-auth";
+import { signOut } from "next-auth/react";
 
+type UserNavProps = {
+  user: MyUser;
+  teams: Team[];
+};
 
-const UserNav = (navData: any) => {
-  const { user, teams } = navData.navData;
-
+const UserNav = ({ user, teams }: UserNavProps) => {
   // 총 승리, 패배 횟수 및 각 종족별 승률 계산
   const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
   const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
@@ -69,7 +86,7 @@ const UserNav = (navData: any) => {
             />
             <div className="flex justify-center gap-4">
               <p>회원메뉴</p>
-              <p>로그아웃</p>
+              <p onClick={() => signOut()}>로그아웃</p>
             </div>
           </CardBody>
         </Card>
@@ -206,4 +223,4 @@ const UserNav = (navData: any) => {
   );
 };
 
-export default UserNav
+export default UserNav;
