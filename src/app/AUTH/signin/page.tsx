@@ -151,7 +151,7 @@ export default function SignInPage() {
               </Button>
             </div>
             <Link href="/AUTH/signup">
-              <p className="pb-4">회원가입</p>
+              <p className="pb-4">회원가입 </p>
             </Link>
             <p className="pb-4">아이디를 잃어버리셨나요? 아이디찾기</p>
           </div>
