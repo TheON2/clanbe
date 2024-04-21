@@ -13,7 +13,7 @@ export const config = {
         const { email, password } = credentials;
 
         try {
-          const response = await fetch("http://localhost:3000/api/signin", {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_API_URI}/api/signin`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
