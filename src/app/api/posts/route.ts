@@ -1,9 +1,12 @@
+'use server'
+
 import { NextApiRequest, NextApiResponse } from "next";
 import { uploadPostData } from "@/service/posts";
 import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function GET(req: Request, res: Response) {
   try {
@@ -20,6 +23,7 @@ export async function GET(req: Request, res: Response) {
         _id: post._id.toString(), // ObjectId를 문자열로 변환
       };
     });
+    revalidateTag("post");
      return new Response(JSON.stringify({ data: transformedPosts }), {
       status: 200,
       headers: {
