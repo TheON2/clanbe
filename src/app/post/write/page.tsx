@@ -79,7 +79,7 @@ export default function WritePage() {
         throw new Error(`Error: ${response.statusText}`);
       }
 
-      window.location.href = `/posts/${response.statusText}`;
+      window.location.href = `/post/read/${response.statusText}`;
     } catch (error) {
       console.error("Failed to submit the article:", error);
     }
