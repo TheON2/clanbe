@@ -12,6 +12,7 @@ import {
   Select,
   SelectItem,
   SelectSection,
+  Skeleton,
 } from "@nextui-org/react";
 import { marked } from "marked";
 import { useSession } from "next-auth/react";
@@ -90,8 +91,8 @@ export default function WritePage() {
     "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small";
 
   return (
-    <div className="flex flex-col md:flex-row w-full gap-4">
-      <Card className="flex flex-1 flex-col w-full lg:w-auto">
+    <div className="flex flex-col lg:flex-row w-full gap-4">
+      <Card className="flex flex-1 flex-col w-full lg:w-auto lg:max-w-[500px]">
         <CardHeader>글쓰기</CardHeader>
         <div className="">
           <div className="flex flex-wrap gap-4 p-4">
@@ -167,16 +168,22 @@ export default function WritePage() {
           </Button>
         </div>
       </Card>
-      <div className="hidden lg:block md:flex-1 overflow-y-auto h-[800px] max-w-[50%]">
+      <div className="hidden lg:block md:flex-1 overflow-y-auto h-[800px] max-w-[500px]">
         <div className="flex gap-4"></div>
         <Card>
           <CardHeader>
-            <h1 className="text-3xl font-bold pl-4 pt-4">{title}</h1>
+            <h1 className="text-3xl font-bold pl-4 pt-4">
+              {title.length > 0 ? title : "미리보기 페이지"}
+            </h1>
           </CardHeader>
           <div className="px-4">
-            {category.length >= 1 && (
+            {category.length >= 1 ? (
               <Chip className="my-4" color="default">
                 {category}
+              </Chip>
+            ) : (
+              <Chip className="my-4" color="default">
+                카테고리
               </Chip>
             )}
           </div>

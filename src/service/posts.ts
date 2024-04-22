@@ -17,7 +17,7 @@ export type Post = {
   category: string;
   thumbnail: string; // 추가된 필드
   featured: boolean;
-  createdAt?: Date; // 자동 생성되는 필드, 선택적으로 설정
+  createdAt: Date; // 자동 생성되는 필드, 선택적으로 설정
   fileUrl: string;
 };
 

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Avatar,
   Button,
@@ -26,6 +28,7 @@ import {
 import NoticeCardHeader from "./NoticeCardHeader";
 import PostCardComponent from "./PostCardComponent";
 import { Post } from "../../types/types";
+import { useMediaQuery } from "react-responsive";
 
 type BoardLayoutProps = {
   boardTitle: string;
@@ -63,15 +66,59 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
     setCurrentPage(page);
   };
 
+  function formatDate(date: Date) {
+    const options: Intl.DateTimeFormatOptions = {
+      year: "2-digit", // 'numeric' 또는 '2-digit' 중 하나를 사용
+      month: "2-digit", // 'long', 'short', 'narrow', 'numeric', '2-digit' 중 하나를 사용
+      day: "2-digit", // 'numeric' 또는 '2-digit' 중 하나를 사용
+      hour: "2-digit", // 'numeric' 또는 '2-digit' 중 하나를 사용
+      minute: "2-digit", // 'numeric' 또는 '2-digit' 중 하나를 사용
+      hour12: true,
+      timeZone: "Asia/Seoul",
+    };
+
+    return new Intl.DateTimeFormat("ko-KR", options).format(new Date(date));
+  }
+
+  function formatRelativeDate(date: Date) {
+    const now = new Date();
+    const postDate = new Date(date);
+    const diffInSeconds = Math.floor(
+      (now.getTime() - postDate.getTime()) / 1000
+    );
+    const diffInHours = Math.floor(diffInSeconds / 3600);
+    const diffInDays = Math.floor(diffInHours / 24);
+
+    if (diffInHours < 24) {
+      return `${diffInHours}시간 전`;
+    } else {
+      return `${diffInDays}일 전`;
+    }
+  }
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+
+  // 현재 게시물 렌더링
+  const getFormattedDate = (date: Date) => {
+    return isMobile ? formatRelativeDate(date) : formatDate(date);
+  };
+
   useEffect(() => {
     const sorted = [...posts].sort((a, b) => {
       switch (selectedSortKey) {
         case "default":
-          return b.id - a.id;
+          // MongoDB의 ObjectId를 기반으로 최신 순 정렬
+          return b._id.localeCompare(a._id);
         case "dateDesc":
-          return b.date - a.date;
+          // 날짜를 기준으로 내림차순 정렬, Date 객체로 변환하여 비교
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
         case "dateAsc":
-          return a.date - b.date;
+          // 날짜를 기준으로 오름차순 정렬, Date 객체로 변환하여 비교
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
         case "viewDesc":
           return b.view - a.view;
         case "viewAsc":
@@ -152,9 +199,9 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
       <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
         {announce.map((announce) => (
           <NoticeCardHeader
-            key={announce.id}
+            key={announce._id}
             title={announce.title}
-            date={announce.date}
+            date={getFormattedDate(announce.createdAt)}
           />
         ))}
         <Divider />
@@ -165,7 +212,8 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
             title={post.title}
             author={post.author}
             views={post.view}
-            date={post.date}
+            date={getFormattedDate(post.createdAt)}
+            id={post._id}
           />
         ))}
       </Card>

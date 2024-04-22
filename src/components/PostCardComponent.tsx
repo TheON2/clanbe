@@ -1,29 +1,25 @@
 import React from "react";
 import { Avatar, Divider } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 interface PostCardComponentProps {
+  id: string;
   title: string;
   author: string;
   views: number;
-  date: number;
+  date: string;
 }
 
 const PostCardComponent: React.FC<PostCardComponentProps> = ({
+  id,
   title,
   author,
   views,
   date,
 }) => {
-  const formatDate = (date: number): string => {
-    const dateString = date.toString().padStart(6, "0"); // 날짜를 6자리 문자열로 변환
-    return `${dateString.slice(0, 2)}.${dateString.slice(
-      2,
-      4
-    )}.${dateString.slice(4)}`;
-  };
-
+  const router = useRouter();
   return (
-    <div className="flex flex-col px-4 py-2 gap-4">
+    <div className="flex flex-col px-4 py-2 gap-4" onClick={()=>{router.push(`/post/read/${id}`);}}>
       <div className="font-bold text-xl">{title}</div>
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">
@@ -40,7 +36,7 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
           조회 수 {views}
         </div>
         <div className="flex-none" style={{ width: "auto" }}>
-          {formatDate(date)}
+          {date}
         </div>
       </div>
       <Divider />

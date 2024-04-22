@@ -26,6 +26,7 @@ import { ThemeSwitcher } from "./ThemeSwitcher";
 import { useSession } from "next-auth/react";
 import UserNav from "./UserNav";
 import UserNav2 from "./UserNav2";
+import { useRouter } from "next/navigation";
 
 type TapNavProps = {
   teams: Team[];
@@ -35,6 +36,7 @@ const TapNavComponent = ({ teams }: TapNavProps) => {
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
+  const router = useRouter(); // useRouter 훅을 사용하여 라우터 인스턴스를 가져옵니다.
 
   return (
     <div className="hidden sm:block mx-4 sticky top-16 my-32 sm:w-auto">
@@ -74,6 +76,7 @@ const TapNavComponent = ({ teams }: TapNavProps) => {
         </Tab>
       </Tabs>
       <ThemeSwitcher />
+      <Button onClick={() => router.push("/post/write")}>글쓰기</Button>
     </div>
   );
 };

@@ -55,11 +55,16 @@ export type NavData = {
 
 // 게시물 타입 정의
 export type Post = {
-  id: number;
-  category: string;
+  _id: string;
   title: string;
-  date: number;
+  description: string;
+  category: string;
+  thumbnail: string;
+  featured: boolean;
+  fileUrl: string;
   author: string;
+  createdAt: Date;
+  updatedAt: Date;
   view: number;
 };
 
