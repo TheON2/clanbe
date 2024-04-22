@@ -96,12 +96,12 @@ export default function PostForm({ post }: PostFormProps) {
         isOpen={isSubmit}
         onClose={() => router.push("/COMMUNITY/allposts")}
       />
-      <article className="overflow-hidden m-4">
+      {/* <article className="overflow-hidden m-4">
         <section className="flex shadow-md">
           {prev && <AdjacentPostCard post={prev} type="prev" />}
           {next && <AdjacentPostCard post={next} type="next" />}
         </section>
-      </article>
+      </article> */}
     </div>
   );
 }
