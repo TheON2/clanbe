@@ -54,15 +54,20 @@ export default function PostForm({ post }: PostFormProps) {
     }
   };
 
+  if (!post) {
+    // Optionally, return a loading spinner here
+    return <div>Loading...</div>;
+  }
+
+  const triggerDelete = () => {
+    setIsDeleting(true);
+  };
   useEffect(() => {
     if (isDeleting) {
       handleSubmit();
     }
   }, [isDeleting]);
 
-  const triggerDelete = () => {
-    setIsDeleting(true);
-  };
   return (
     <div>
       <Card className="py-4">
