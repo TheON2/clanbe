@@ -5,28 +5,9 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
 
-export const config = {
-  api: {
-    bodyParser: {
-      parse: true,
-    },
-  },
-};
-
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
-  const chunks = [];
-  const stream = req.body;
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const body = Buffer.concat(chunks).toString("utf-8");
-
-  const json = JSON.parse(body);
+export async function POST(req: Request, res: Response) {
+ 
+  const body = await req.json();
 
   let {
     htmlContent,
@@ -37,9 +18,9 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     featured,
     fileName,
     postId,
-  } = json.postData;
+  } = body.postData;
 
-  console.log(json.postData);
+  console.log(body.postData);
 
   try {
     const fileUrl = await updatePostData(fileName, htmlContent);
@@ -49,7 +30,7 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
 
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     const updatedPost = await PostModel.findOneAndUpdate(
-      { _id: json.postData.postId },
+      { _id: body.postData.postId },
       {
         title,
         description,

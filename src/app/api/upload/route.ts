@@ -5,31 +5,11 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
 
-export const config = {
-  api: {
-    bodyParser: {
-      parse: true,
-    },
-  },
-};
-
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
-  const chunks = [];
-  const stream = req.body;
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const body = Buffer.concat(chunks).toString("utf-8");
-
-  const json = JSON.parse(body);
+export async function POST(req: Request, res: Response) {
+  const body = await req.json();
 
   let { htmlContent, title, description, category, thumbnail, featured,author,view } =
-    json.postData;
+    body.postData;
 
   try {
     const fileUrl = await uploadPostData(htmlContent);

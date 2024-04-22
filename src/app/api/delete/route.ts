@@ -9,32 +9,12 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
 
-export const config = {
-  api: {
-    bodyParser: {
-      parse: true,
-    },
-  },
-};
+export async function DELETE(req: Request, res: Response) {
+const body = await req.json();
 
-export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "DELETE") {
-    res.setHeader("Allow", ["DELETE"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
+  let { fileName, postId } = body.postData;
 
-  const chunks = [];
-  const stream = req.body;
-  for await (const chunk of stream) {
-    chunks.push(chunk);
-  }
-  const body = Buffer.concat(chunks).toString("utf-8");
-
-  const json = JSON.parse(body);
-
-  let { fileName, postId } = json.postData;
-
-  console.log(json.postData);
+  console.log(body.postData);
 
   try {
     await deletePostData(fileName);
@@ -42,7 +22,12 @@ export async function DELETE(req: NextApiRequest, res: NextApiResponse) {
     const deletedPost = await PostModel.findByIdAndDelete(postId);
 
     if (!deletedPost) {
-      return res.status(404).json({ message: "게시글을 찾을 수 없음" });
+      return new Response(
+          JSON.stringify({ message: "게시글을 찾을 수 없음" }),
+          {
+            status: 401,
+          }
+        );
     }
 
     console.log("게시글 삭제 성공");

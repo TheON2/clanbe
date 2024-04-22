@@ -3,19 +3,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { NextRequest, NextResponse } from "next/server";
 import { uploadImage } from "@/service/posts";
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-export async function POST(req: NextRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    res.setHeader("Allow", ["POST"]);
-    return res.status(405).end(`Method ${req.method} Not Allowed`);
-  }
-
-  console.log(res);
+export async function POST(req: Request, res: Response) {
 
   const formData = await req.formData();
 
@@ -23,9 +11,7 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     console.log(formData.get("upload"));
     const file = formData.get("upload") as File | null;
     if (!file) {
-      return res
-        .status(400)
-        .json({ error: 'No file uploaded with key "upload"' });
+      throw new Error("게시글을 찾을 수 없음");
     }
     const fileUrl = await uploadImage(file);
 
@@ -36,9 +22,13 @@ export async function POST(req: NextRequest, res: NextApiResponse) {
     });
   } catch (error: unknown) {
     if (error instanceof Error) {
-      res.status(500).json({ error: error.message });
+      new Response(JSON.stringify({ error: error.message }), {
+        status: 500,
+      });
     } else {
-      res.status(500).json({ error: "An unknown error occurred" });
+      new Response(JSON.stringify({ error: "An unknown error occurred" }), {
+        status: 500,
+      });
     }
   }
 }
