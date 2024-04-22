@@ -54,11 +54,6 @@ export default function PostForm({ post }: PostFormProps) {
     }
   };
 
-  if (!post) {
-    // Optionally, return a loading spinner here
-    return <div>Loading...</div>;
-  }
-
   const triggerDelete = () => {
     setIsDeleting(true);
   };
@@ -67,6 +62,11 @@ export default function PostForm({ post }: PostFormProps) {
       handleSubmit();
     }
   }, [isDeleting]);
+
+  if (!post) {
+    // Optionally, return a loading spinner here
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
