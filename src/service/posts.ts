@@ -76,6 +76,23 @@ export const getAllPosts = async () => {
   }
 };
 
+export const getAllPostSlugs = async () => {
+  try {
+    // MongoDB 데이터베이스에 연결
+    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
+
+    // 데이터베이스에서 모든 게시글의 _id만 검색
+    const posts = await PostModel.find({}, '_id'); // '_id' 필드만 선택하여 검색
+
+    // 검색된 게시글들에서 _id만 추출하고 문자열로 변환
+    const slugs = posts.map(post => post._id.toString());
+    return slugs;
+  } catch (error) {
+    console.error("Error fetching slugs from MongoDB", error);
+    throw new Error("Error fetching slugs from MongoDB");
+  }
+};
+
 export const getUserData = async () => {
   try {
     // MongoDB 데이터베이스에 연결

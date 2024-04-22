@@ -17,6 +17,7 @@ import {
 import ButtonModal from "./ButtonModal";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
+import { revalidatePath, revalidateTag } from "next/cache";
 
 const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
