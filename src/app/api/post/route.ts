@@ -20,7 +20,6 @@ export async function POST(req: Request, res: Response) {
 
     const { fileUrl, title, description, category, createdAt, _id, featured, thumbnail } = post;
     
-    revalidateTag("post");
     return new Response(
       JSON.stringify({
         title,

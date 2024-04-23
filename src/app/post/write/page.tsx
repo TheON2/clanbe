@@ -76,8 +76,6 @@ export default function WritePage() {
         body: JSON.stringify({ postData }),
       });
 
-      revalidateTag("post");
-
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }

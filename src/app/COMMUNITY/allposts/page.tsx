@@ -9,7 +9,8 @@ export default async function AllPostPage() {
     headers: {
       "Content-Type": "application/json",
     },
-    next: { tags: ["post"] },
+    next: { tags: ["post"], revalidate: 10 },
+    cache: "no-store",
   });
 
   // 응답을 JSON으로 변환

@@ -38,7 +38,7 @@ export default function PostForm({ post }: PostFormProps) {
       };
 
       const response = await fetch("/api/delete", {
-        method: "DELETE",
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
