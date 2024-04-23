@@ -52,7 +52,7 @@ export async function POST(req: Request, res: Response) {
 
     console.log("게시글 수정 성공");
     revalidateTag("post");
-    revalidatePath("/update");
+    revalidatePath("/");
     return new Response(JSON.stringify({ message: "게시글 수정 성공" }), {
       status: 200,
       statusText: updatedPost._id.toString(),
