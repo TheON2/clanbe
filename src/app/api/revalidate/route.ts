@@ -3,6 +3,7 @@ import { revalidateTag } from 'next/cache';
 
 export async function GET(request: NextRequest) {
   const tag = request.nextUrl.searchParams.get('tag');
+  console.log(tag)
 
   // tag가 null이 아닐 때만 revalidateTag 호출
   if (tag !== null) {

@@ -16,7 +16,7 @@ export default async function PostPage({ params: { slug } }: Props) {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ slug }),
-    next: { tags: ["post"] },
+    next: { tags: ["post"], revalidate: 5 },
   });
 
   // 응답을 JSON으로 변환
