@@ -9,7 +9,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
 
-export async function DELETE(req: Request, res: Response) {
+export async function POST(req: Request, res: Response) {
 const body = await req.json();
 
   let { fileName, postId } = body.postData;
