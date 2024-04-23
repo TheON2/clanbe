@@ -10,12 +10,11 @@ export default async function AllPostPage() {
       "Content-Type": "application/json",
     },
     next: { tags: ["post"] },
-    //cache: "no-store",
   });
 
   // 응답을 JSON으로 변환
   const posts = await response.json();
-  console.log(posts);
+
   return (
     <BoardLayout
       boardTitle={"전체 게시글"}
