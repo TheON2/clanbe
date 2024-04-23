@@ -9,7 +9,7 @@ export default async function AllPostPage() {
     headers: {
       "Content-Type": "application/json",
     },
-    next: { tags: ["post"], revalidate: 10 },
+    next: { tags: ["post"], revalidate: 0 },
     cache: "no-store",
   });
 
