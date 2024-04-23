@@ -17,6 +17,7 @@ export default async function PostPage({ params: { slug } }: Props) {
     },
     body: JSON.stringify({ slug }),
     next: { tags: ["post"], revalidate: 5 },
+    cache: "no-store",
   });
 
   // 응답을 JSON으로 변환
