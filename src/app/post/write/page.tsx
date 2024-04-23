@@ -16,6 +16,7 @@ import {
 } from "@nextui-org/react";
 import { marked } from "marked";
 import { useSession } from "next-auth/react";
+import { revalidateTag } from "next/cache";
 
 const MyEditorWithNoSSR = dynamic(() => import("../../MyEditor/MyEditor"), {
   ssr: false,
@@ -74,6 +75,8 @@ export default function WritePage() {
         },
         body: JSON.stringify({ postData }),
       });
+
+      revalidateTag("post");
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);

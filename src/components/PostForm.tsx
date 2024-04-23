@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
+import { revalidateTag } from "next/cache";
 
 type PostFormProps = {
   post: {
@@ -44,6 +45,7 @@ export default function PostForm({ post }: PostFormProps) {
         body: JSON.stringify({ postData }),
       });
       setIsSubmit(true);
+      revalidateTag("post");
       //   window.location.href = `/posts`;
 
       if (!response.ok) {
