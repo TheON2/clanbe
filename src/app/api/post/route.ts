@@ -4,6 +4,7 @@ import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
+import { revalidateTag } from "next/cache";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
@@ -18,7 +19,8 @@ export async function POST(req: Request, res: Response) {
     console.log(post);
 
     const { fileUrl, title, description, category, createdAt, _id, featured, thumbnail } = post;
-
+    
+    revalidateTag("post");
     return new Response(
       JSON.stringify({
         title,
