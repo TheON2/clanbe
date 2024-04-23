@@ -8,7 +8,7 @@ import mongoose from "mongoose";
 import PostModel from "@/models/post";
 import { revalidatePath, revalidateTag } from "next/cache";
 
-export async function GET(req: Request, res: Response) {
+export async function POST(req: Request, res: Response) {
   try {
     // MongoDB 데이터베이스에 연결
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
