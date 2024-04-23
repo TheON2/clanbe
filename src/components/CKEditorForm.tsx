@@ -99,6 +99,7 @@ export default function CKEditorForm({
         body: JSON.stringify({ postData }),
       });
       setIsSubmit(true);
+      revalidateTag("post");
       //window.location.href = `/posts/${response.statusText}`;
 
       if (!response.ok) {
