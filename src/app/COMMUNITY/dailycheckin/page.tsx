@@ -9,7 +9,9 @@ export default async function DailyCheckInPage() {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ category: "dailycheckin" }),
     next: { tags: ["post"] },
+    cache: "no-store",
   });
   // 응답을 JSON으로 변환
   const posts = await response.json();

@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import { NextApiRequest, NextApiResponse } from "next";
 import { uploadPostData } from "@/service/posts";
@@ -9,12 +9,20 @@ import PostModel from "@/models/post";
 import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function POST(req: Request, res: Response) {
+  const body = await req.json();
+  console.log(body);
+
   try {
     // MongoDB 데이터베이스에 연결
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
 
+    let posts
     // 데이터베이스에서 모든 게시글을 검색
-    const posts = await PostModel.find({}); // 모든 게시글을 검색
+    if (body.category === "allposts") {
+      posts = await PostModel.find({});
+    } else {
+      posts = await PostModel.find({ category: body.category });
+    } // 모든 게시글을 검색
     console.log(posts);
 
     const transformedPosts = posts.map((post) => {
@@ -23,8 +31,7 @@ export async function POST(req: Request, res: Response) {
         _id: post._id.toString(), // ObjectId를 문자열로 변환
       };
     });
-    revalidateTag("post");
-     return new Response(JSON.stringify({ data: transformedPosts }), {
+    return new Response(JSON.stringify({ data: transformedPosts }), {
       status: 200,
       headers: {
         "Content-Type": "application/json",

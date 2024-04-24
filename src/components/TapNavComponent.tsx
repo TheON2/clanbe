@@ -76,7 +76,6 @@ const TapNavComponent = ({ teams }: TapNavProps) => {
         </Tab>
       </Tabs>
       <ThemeSwitcher />
-      <Button onClick={() => router.push("/post/write")}>글쓰기</Button>
     </div>
   );
 };

@@ -67,6 +67,7 @@ export default function WritePage() {
         featured,
         author: user?.email,
         view: 0,
+        comment:{},
       };
       const response = await fetch("/api/upload", {
         method: "POST",
@@ -127,7 +128,7 @@ export default function WritePage() {
                   heading: headingClasses,
                 }}
               >
-                <SelectItem key="allposts">자유게시판</SelectItem>
+                <SelectItem key="forum">자유게시판</SelectItem>
                 <SelectItem key="introduce">가입인사</SelectItem>
                 <SelectItem key="feedback">건의사항</SelectItem>
                 <SelectItem key="tactics">전략전술</SelectItem>

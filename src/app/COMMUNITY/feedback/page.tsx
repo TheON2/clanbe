@@ -9,7 +9,9 @@ export default async function FeedBackPage() {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ category: "feedback" }),
     next: { tags: ["post"] },
+    cache: "no-store",
   });
 
   // 응답을 JSON으로 변환

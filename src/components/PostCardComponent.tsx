@@ -8,6 +8,7 @@ interface PostCardComponentProps {
   author: string;
   views: number;
   date: string;
+  category: string;
 }
 
 const PostCardComponent: React.FC<PostCardComponentProps> = ({
@@ -16,10 +17,16 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
   author,
   views,
   date,
+  category,
 }) => {
   const router = useRouter();
   return (
-    <div className="flex flex-col px-4 py-2 gap-4" onClick={()=>{router.push(`/post/read/${id}`);}}>
+    <div
+      className="flex flex-col px-4 py-2 gap-4"
+      onClick={() => {
+        router.push(`/post/read/${id}/${category}`);
+      }}
+    >
       <div className="font-bold text-xl">{title}</div>
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">

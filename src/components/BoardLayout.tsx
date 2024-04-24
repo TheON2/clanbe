@@ -29,6 +29,7 @@ import NoticeCardHeader from "./NoticeCardHeader";
 import PostCardComponent from "./PostCardComponent";
 import { Post } from "../../types/types";
 import { useMediaQuery } from "react-responsive";
+import { useRouter } from "next/navigation";
 
 type BoardLayoutProps = {
   boardTitle: string;
@@ -41,6 +42,7 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
   announce,
   posts,
 }) => {
+  const router = useRouter();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [currentPage, setCurrentPage] = useState(1);
   const postsPerPage = 10;
@@ -152,7 +154,7 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
           <Button onPress={onOpen} color="primary">
             검색
           </Button>
-          <Button onPress={onOpen} color="primary">
+          <Button onClick={() => router.push("/post/write")} color="primary">
             글쓰기
           </Button>
         </div>
@@ -214,6 +216,7 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
             views={post.view}
             date={getFormattedDate(post.createdAt)}
             id={post._id}
+            category={post.category}
           />
         ))}
       </Card>

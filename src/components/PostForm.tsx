@@ -11,21 +11,37 @@ import { useEffect, useState } from "react";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
 import { revalidateTag } from "next/cache";
+import {
+  CardFooter,
+  User,
+  Link as MyLink,
+  Divider,
+  Button,
+} from "@nextui-org/react";
+import { useTheme } from "next-themes";
+import CommentCard from "./CommentCard";
+import ReplyCard from "./ReplyCard";
+import { Comment } from "../../types/types";
+import CommentComponent from "./CommentComponent";
+import ProfileCard from "./ProfileCard";
 
 type PostFormProps = {
   post: {
     title: string;
     category: string;
     fileUrl: string;
+    comment: Comment[];
     next: Post | null;
     prev: Post | null;
-    postId: string;
+    _id: string;
   };
 };
 
 export default function PostForm({ post }: PostFormProps) {
   const router = useRouter();
-  const { title, category, fileUrl, next, prev, postId } = post;
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  const { title, category, fileUrl, next, prev, _id } = post;
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
   const handleSubmit = async () => {
@@ -34,7 +50,7 @@ export default function PostForm({ post }: PostFormProps) {
       const fileName = fileNameWithExtension.replace(".html", "");
       const postData = {
         fileName,
-        postId,
+        _id,
       };
 
       const response = await fetch("/api/delete", {
@@ -65,23 +81,28 @@ export default function PostForm({ post }: PostFormProps) {
     }
   }, [isDeleting]);
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   if (!post) {
     // Optionally, return a loading spinner here
     return <div>Loading...</div>;
   }
 
+  if (!mounted) return null;
+
   return (
     <div>
-      <Card className="py-4">
-        <CardHeader className="pb-0 pt-2 px-4 flex justify-between items-center">
+      <Card className="py-4 m-4">
+        <CardHeader className="m-4 pb-0 pt-2 px-4 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">{title}</h1>
-            <div className="flex gap-4">
+            <div className="flex gap-4 mt-2">
               <Chip color="default">{category}</Chip>
             </div>
           </div>
           <div className="flex gap-2 mr-8">
-            <Link href={`/post/update/${post.postId}`}>
+            <Link href={`/post/update/${_id}`}>
               <h1>수정</h1>
             </Link>
             <Link href={``}>
@@ -96,6 +117,17 @@ export default function PostForm({ post }: PostFormProps) {
         <CardBody className="overflow-visible py-2">
           <CKEditorContent contentUrl={fileUrl} />
         </CardBody>
+        <CardFooter>
+          <ProfileCard />
+        </CardFooter>
+      </Card>
+      <Card className="my-4 mx-4 p-4 min-h-[300px]">
+        <p>댓글 1개</p>
+        <CommentCard />
+        <ReplyCard />
+        <CommentCard />
+        <CommentCard />
+        <CommentComponent />
       </Card>
       <SubmitModal
         title={"삭제완료"}
@@ -103,12 +135,6 @@ export default function PostForm({ post }: PostFormProps) {
         isOpen={isSubmit}
         onClose={() => router.push("/COMMUNITY/allposts")}
       />
-      {/* <article className="overflow-hidden m-4">
-        <section className="flex shadow-md">
-          {prev && <AdjacentPostCard post={prev} type="prev" />}
-          {next && <AdjacentPostCard post={next} type="next" />}
-        </section>
-      </article> */}
     </div>
   );
 }

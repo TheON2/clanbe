@@ -1,13 +1,21 @@
 "use client";
 
 import {
-  Link,
+  Accordion,
+  AccordionItem,
+  Card,
+  CardBody,
+  CardHeader,
+  DropdownItem,
+  menuItem,
   Navbar,
   NavbarContent,
   NavbarMenu,
   NavbarMenuItem,
   NavbarMenuToggle,
 } from "@nextui-org/react";
+
+import Link from "next/link";
 
 import { useState } from "react";
 import { HeaderLogo } from "./HeaderLogo";
@@ -20,22 +28,13 @@ import {
   headerPOINT,
 } from "../../../public/data";
 import { HeaderEnd } from "./HeaderEnd";
+import { useRouter } from "next/navigation";
+import UserNav2 from "../UserNav2";
 
 export default function HeaderComponent(categoryData: any) {
   // console.log(categoryData);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const menuItems = [
-    "Profile",
-    "Dashboard",
-    "Activity",
-    "Analytics",
-    "System",
-    "Deployments",
-    "My Settings",
-    "Team Settings",
-    "Help & Feedback",
-    "Log Out",
-  ];
+  const router = useRouter();
 
   return (
     <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" className="w-full">
@@ -71,25 +70,94 @@ export default function HeaderComponent(categoryData: any) {
       <NavbarContent>
         <HeaderEnd />
       </NavbarContent>
-      <NavbarMenu>
-        {menuItems.map((item, index) => (
-          <NavbarMenuItem key={`${item}-${index}`}>
-            <Link
-              color={
-                index === 2
-                  ? "primary"
-                  : index === menuItems.length - 1
-                  ? "danger"
-                  : "foreground"
-              }
-              className="w-auto"
-              href="#"
-              size="md"
-            >
-              {item}
-            </Link>
-          </NavbarMenuItem>
-        ))}
+      <NavbarMenu className="w-2/3">
+        <Accordion variant="splitted">
+          <AccordionItem
+            key="1"
+            aria-label="Accordion 1"
+            title={headerCLANBE.buttonTitle}
+          >
+            {headerCLANBE.menuItems.map((menuItem) => (
+              <Link key={menuItem.title} href={menuItem.href}>
+                <Card
+                  className="m-2 dark:bg-gray-dark"
+                  key={menuItem.title}
+                  onClick={() => router.push(menuItem.href)}
+                >
+                  <CardHeader>{menuItem.title}</CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </AccordionItem>
+          <AccordionItem
+            key="2"
+            aria-label="Accordion 2"
+            title={headerCOMMUNITY.buttonTitle}
+          >
+            {headerCOMMUNITY.menuItems.map((menuItem) => (
+              <Link key={menuItem.title} href={menuItem.href}>
+                <Card
+                  className="m-2 dark:bg-gray-dark"
+                  key={menuItem.title}
+                  onClick={() => router.push(menuItem.href)}
+                >
+                  <CardHeader>{menuItem.title}</CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </AccordionItem>
+          <AccordionItem
+            key="3"
+            aria-label="Accordion 3"
+            title={headerBELO.buttonTitle}
+          >
+            {headerBELO.menuItems.map((menuItem) => (
+              <Link key={menuItem.title} href={menuItem.href}>
+                <Card
+                  className="m-2 dark:bg-gray-dark"
+                  key={menuItem.title}
+                  onClick={() => router.push(menuItem.href)}
+                >
+                  <CardHeader>{menuItem.title}</CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </AccordionItem>
+          <AccordionItem
+            key="4"
+            aria-label="Accordion 4"
+            title={headerLEAGUE.buttonTitle}
+          >
+            {headerLEAGUE.menuItems.map((menuItem) => (
+              <Link key={menuItem.title} href={menuItem.href}>
+                <Card
+                  className="m-2 dark:bg-gray-dark"
+                  key={menuItem.title}
+                  onClick={() => router.push(menuItem.href)}
+                >
+                  <CardHeader>{menuItem.title}</CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </AccordionItem>
+          <AccordionItem
+            key="5"
+            aria-label="Accordion 5"
+            title={headerPOINT.buttonTitle}
+          >
+            {headerPOINT.menuItems.map((menuItem) => (
+              <Link key={menuItem.title} href={menuItem.href}>
+                <Card
+                  className="m-2 dark:bg-gray-dark"
+                  key={menuItem.title}
+                  onClick={() => router.push(menuItem.href)}
+                >
+                  <CardHeader>{menuItem.title}</CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </AccordionItem>
+        </Accordion>
       </NavbarMenu>
     </Navbar>
   );

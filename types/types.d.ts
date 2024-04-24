@@ -66,6 +66,20 @@ export type Post = {
   createdAt: Date;
   updatedAt: Date;
   view: number;
+  comments: Comment[];
+};
+
+export type Reply = {
+  author: string;
+  text: string;
+  createdAt: Date;
+};
+
+export type Comment = {
+  author: string;
+  text: string;
+  replies: Reply[];
+  createdAt: Date;
 };
 
 //회원가입 정보 타입정의

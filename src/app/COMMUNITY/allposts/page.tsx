@@ -9,7 +9,8 @@ export default async function AllPostPage() {
     headers: {
       "Content-Type": "application/json",
     },
-    next: { tags: ["post"], revalidate: 0 },
+    body: JSON.stringify({ category: "allposts" }),
+    next: { tags: ["post"] },
     cache: "no-store",
   });
 
