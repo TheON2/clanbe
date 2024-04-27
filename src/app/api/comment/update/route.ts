@@ -22,7 +22,6 @@ export async function POST(req: Request, res: Response) {
     postId,
   } = body.postData;
 
-  console.log(body.postData);
 
   try {
     const fileUrl = await updatePostData(fileName, htmlContent);
@@ -47,8 +46,6 @@ export async function POST(req: Request, res: Response) {
     if (!updatedPost) {
       throw new Error("게시글을 찾을 수 없음");
     }
-
-    console.log(updatedPost);
 
     console.log("게시글 수정 성공");
     revalidateTag("post");

@@ -10,7 +10,6 @@ import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
-  console.log(body);
 
   try {
     // MongoDB 데이터베이스에 연결
@@ -23,7 +22,6 @@ export async function POST(req: Request, res: Response) {
     } else {
       posts = await PostModel.find({ category: body.category });
     } // 모든 게시글을 검색
-    console.log(posts);
 
     const transformedPosts = posts.map((post) => {
       return {

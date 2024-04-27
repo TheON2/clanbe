@@ -61,8 +61,6 @@ export default function SignInPage() {
         password: signInState.password,
       });
 
-      console.log(result); // 디버깅을 위해 결과 로깅
-
       if (result?.error) {
         // 로그인 실패 시 에러 메시지 처리
         alert("아이디와 비밀번호를 확인해주세요.");

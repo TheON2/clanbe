@@ -1,3 +1,5 @@
+'use server'
+
 import { NextApiRequest, NextApiResponse } from "next";
 import {
   deletePostData,
@@ -9,26 +11,24 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
 
-export async function POST(req: Request, res: Response) {
+export async function DELETE(req: Request, res: Response) {
 const body = await req.json();
 
-  let { fileName, postId } = body.postData;
-
-  console.log(body.postData);
+  let { fileName } = body.postData;
 
   try {
-    await deletePostData(fileName);
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
-    const deletedPost = await PostModel.findByIdAndDelete(postId);
-
+    const deletedPost = await PostModel.findByIdAndDelete(body.postData._id);
+    
     if (!deletedPost) {
       return new Response(
-          JSON.stringify({ message: "게시글을 찾을 수 없음" }),
-          {
-            status: 401,
-          }
-        );
+        JSON.stringify({ message: "게시글을 찾을 수 없음" }),
+        {
+          status: 402,
+        }
+      );
     }
+    await deletePostData(fileName);
 
     console.log("게시글 삭제 성공");
     return new Response(JSON.stringify({ message: "게시글 삭제 성공" }), {

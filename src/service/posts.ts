@@ -61,7 +61,6 @@ export const getAllPosts = async () => {
 
     // 데이터베이스에서 모든 게시글을 검색
     const posts = await PostModel.find({}); // 모든 게시글을 검색
-    console.log(posts);
 
     const transformedPosts = posts.map((post) => {
       return {
@@ -100,7 +99,6 @@ export const getUserData = async () => {
 
     // 데이터베이스에서 모든 게시글을 검색
     const posts = await PostModel.find({}); // 모든 게시글을 검색
-    console.log(posts);
 
     const transformedPosts = posts.map((post) => {
       return {
@@ -117,10 +115,9 @@ export const getUserData = async () => {
 
 export async function getPostData(slug: string): Promise<PostData> {
   const posts = await getAllPosts();
-  console.log(posts);
+
   const post = posts.find((post) => post._id.toString() === slug);
 
-  console.log("post" + post);
 
   if (!post) throw new Error(`${slug}에 해당하는 포스트를 찾을 수 없음`);
 

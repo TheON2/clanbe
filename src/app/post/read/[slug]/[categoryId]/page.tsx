@@ -29,8 +29,6 @@ export default async function PostPage({
   const posts = await response.json();
 
   const post = posts.data.find((post: Post) => post._id === slug);
-  console.log("개별 포스트");
-  console.log(post);
 
   // PostForm 컴포넌트에 post 데이터 전달
   return (

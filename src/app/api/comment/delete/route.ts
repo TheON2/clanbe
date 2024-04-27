@@ -14,7 +14,6 @@ export async function POST(req: Request, res: Response) {
 
   let { postid, commentid } = body;
 
-  console.log(body);
 
   try {
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);

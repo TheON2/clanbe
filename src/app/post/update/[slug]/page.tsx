@@ -19,8 +19,6 @@ export default async function UpdatePage({ params: { slug } }: Props) {
     next: { tags: ["post"] },
   });
 
-  console.log(slug);
-
   // 응답을 JSON으로 변환
   const post = await response.json();
   const postHTML = await getPostHTML(post.fileUrl);

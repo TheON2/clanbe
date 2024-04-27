@@ -15,8 +15,6 @@ export async function POST(req: Request, res: Response) {
 
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
 
-    console.log(body.postData.postid);
-
     try {
       const post = await PostModel.findOne({ _id: postid });
       console.log("찾아낸포스트" + post);
@@ -26,7 +24,7 @@ export async function POST(req: Request, res: Response) {
       const newReply = { author, text };
       comment.replies.push(newReply);
       await post.save();
-      
+
       console.log("댓글 저장 성공");
       return new Response(
         JSON.stringify({

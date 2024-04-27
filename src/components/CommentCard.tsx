@@ -7,6 +7,7 @@ import ReplyComponent from "./ReplyComponent";
 import SubmitModal from "./SubmitModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { revalidatePath } from "next/cache";
 
 type CommentCardProps = {
   commentid: string;
@@ -85,12 +86,6 @@ export default function CommentCard({
           삭제
         </Button>
       </div>
-      <SubmitModal
-        title={"삭제완료"}
-        text={"삭제가 완료되었습니다."}
-        isOpen={isDelete}
-        onClose={() => router.push("/COMMUNITY/allposts")}
-      />
     </div>
   );
 }

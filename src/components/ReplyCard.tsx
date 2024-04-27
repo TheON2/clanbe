@@ -5,12 +5,34 @@ import { Image } from "@nextui-org/react";
 import UserProfile from "./UserProfile";
 
 type CommentCardProps = {
+  commentid: string;
+  replyid: string;
   author: string;
   text: string;
+  postid: string;
   date: Date;
 };
 
-export default function ReplyCard({ author, text, date }: CommentCardProps) {
+export default function ReplyCard({ author, text, date,postid,commentid,replyid }: CommentCardProps) {
+
+const handleDelete = async () => {
+  try {
+    const response = await fetch("/api/reply/delete", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ postid, commentid,replyid }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error("Failed to submit the article:", error);
+  }
+};
+
   return (
     <div className="m-4 ml-24 max-w-[700px] ">
       <Card className="">
@@ -21,7 +43,12 @@ export default function ReplyCard({ author, text, date }: CommentCardProps) {
             <Button color="primary" size="sm" variant="ghost">
               수정
             </Button>
-            <Button color="danger" size="sm" variant="ghost">
+            <Button
+              color="danger"
+              size="sm"
+              variant="ghost"
+              onClick={handleDelete}
+            >
               삭제
             </Button>
           </div>
@@ -39,7 +66,7 @@ export default function ReplyCard({ author, text, date }: CommentCardProps) {
         <Button color="primary" size="sm" variant="ghost">
           수정
         </Button>
-        <Button color="danger" size="sm" variant="ghost">
+        <Button color="danger" size="sm" variant="ghost" onClick={handleDelete}>
           삭제
         </Button>
       </div>

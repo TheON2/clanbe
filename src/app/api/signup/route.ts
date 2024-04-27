@@ -7,8 +7,6 @@ export async function POST(req: Request, res: Response) {
 
   let { email, password, nickname, name, kakao, birth,race } = body.signUpState;
 
-  console.log(body.signUpState);
-
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
     if (mongoose.connection.readyState !== 1) {

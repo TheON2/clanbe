@@ -7,7 +7,6 @@ export async function POST(req: Request, res: Response) {
 
   let { email } = body;
 
-  console.log(email);
 
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
@@ -19,7 +18,6 @@ export async function POST(req: Request, res: Response) {
       "-password"
     );
 
-    console.log(existingUser);
 
     if (!existingUser) {
       return new Response(

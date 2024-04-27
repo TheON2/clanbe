@@ -69,14 +69,13 @@ export default function PostForm({ post }: PostFormProps) {
       };
 
       const response = await fetch("/api/delete", {
-        method: "POST",
+        method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ postData }),
       });
       setIsSubmit(true);
-      revalidateTag("post");
       //   window.location.href = `/posts`;
 
       if (!response.ok) {
@@ -90,8 +89,6 @@ export default function PostForm({ post }: PostFormProps) {
   const triggerDelete = () => {
     setIsDeleting(true);
   };
-
-  console.log(post);
 
   useEffect(() => {
     if (isDeleting) {
@@ -164,6 +161,9 @@ export default function PostForm({ post }: PostFormProps) {
                       author={reply.author}
                       text={reply.text}
                       date={reply.createdAt}
+                      commentid={cmt._id}
+                      replyid={reply._id}
+                      postid={_id}
                     />
                   ))}
               </div>

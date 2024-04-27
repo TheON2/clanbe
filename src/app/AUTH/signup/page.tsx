@@ -176,10 +176,6 @@ export default function SignUpPage() {
     }
   };
 
-  useEffect(() => {
-    console.log(signUpState);
-  }, [signUpState]);
-
   return (
     <div className="w-full max-w-[500px] mt-8 mx-auto">
       <Card className="w-full mx-auto">

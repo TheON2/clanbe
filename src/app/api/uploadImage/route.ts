@@ -8,7 +8,6 @@ export async function POST(req: Request, res: Response) {
   const formData = await req.formData();
 
   try {
-    console.log(formData.get("upload"));
     const file = formData.get("upload") as File | null;
     if (!file) {
       throw new Error("게시글을 찾을 수 없음");

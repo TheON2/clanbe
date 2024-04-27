@@ -1,9 +1,10 @@
 import BoardLayout from "@/components/BoardLayout";
 import { announce, board } from "../../../../public/data";
 import { getAllPosts } from "@/service/posts";
+import { revalidateTag } from "next/cache";
 
-export default async function AllPostPage() {
-  // API 호출을 통해 포스트 데이터를 가져옴
+async function getAllPost() {
+  "use server";
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
     method: "POST",
     headers: {
@@ -11,11 +12,17 @@ export default async function AllPostPage() {
     },
     body: JSON.stringify({ category: "allposts" }),
     next: { tags: ["post"] },
-    cache: "no-store",
+    // cache: "no-store",
   });
 
-  // 응답을 JSON으로 변환
   const posts = await response.json();
+  return posts;
+}
+
+export default async function AllPostPage() {
+  // 응답을 JSON으로 변환
+  const posts = await getAllPost();
+  revalidateTag("post");
 
   return (
     <BoardLayout

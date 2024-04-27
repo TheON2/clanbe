@@ -8,8 +8,6 @@ export async function POST(req: Request, res: Response) {
 
   let { email, password } = body.signInState;
 
-  console.log(body.signInState);
-
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
     if (mongoose.connection.readyState !== 1) {
@@ -37,7 +35,6 @@ export async function POST(req: Request, res: Response) {
           team: user.team,
           avatar: user.avatar, // 예를 들어 사용자 프로필 이미지 URL
         };
-        console.log(userData)
         return new Response(JSON.stringify({ message: "로그인 성공",user: userData }), {
           status: 200,
         });

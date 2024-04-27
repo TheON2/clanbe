@@ -31,8 +31,6 @@ export async function POST(req: Request, res: Response) {
       view
     });
 
-    console.log(post);
-
     try {
       const savedPost = await post.save();
       console.log("게시글 저장 성공");
