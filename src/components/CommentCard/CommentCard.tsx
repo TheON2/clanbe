@@ -1,13 +1,14 @@
 import { Button, Card, CardHeader, User } from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
-import UserProfile from "./UserProfile";
+import UserProfile from "../UserProfile";
 import { useSession } from "next-auth/react";
-import CommentComponent from "./CommentComponent";
-import ReplyComponent from "./ReplyComponent";
-import SubmitModal from "./SubmitModal";
+import CommentComponent from "../CommentComponent/CommentComponent";
+import ReplyComponent from "../ReplyComponent";
+import SubmitModal from "../SubmitModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { deleteComment } from "./actions";
 
 type CommentCardProps = {
   commentid: string;
@@ -15,6 +16,7 @@ type CommentCardProps = {
   text: string;
   postid: string;
   date: Date;
+  category: string;
 };
 
 export default function CommentCard({
@@ -23,6 +25,7 @@ export default function CommentCard({
   date,
   postid,
   commentid,
+  category,
 }: CommentCardProps) {
   const router = useRouter();
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
@@ -33,17 +36,13 @@ export default function CommentCard({
 
   const handleDelete = async () => {
     try {
-      const response = await fetch("/api/comment/delete", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postid, commentid }),
-      });
+      const response = await deleteComment({ postid, commentid });
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
+
+      router.push(`/post/read/${postid}/${category}`);
     } catch (error) {
       console.error("Failed to submit the article:", error);
     }

@@ -19,10 +19,10 @@ import {
   Button,
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
-import CommentCard from "../CommentCard";
+import CommentCard from "../CommentCard/CommentCard";
 import ReplyCard from "../ReplyCard";
 import { Comment } from "../../../types/types";
-import CommentComponent from "../CommentComponent";
+import CommentComponent from "../CommentComponent/CommentComponent";
 import ProfileCard from "../ProfileCard";
 import { useSession } from "next-auth/react";
 import ReplyComponent from "../ReplyComponent";
@@ -152,6 +152,7 @@ export default function PostForm({ post }: PostFormProps) {
                   author={cmt.author}
                   text={cmt.text}
                   date={cmt.createdAt}
+                  category={category}
                 />
                 {cmt.replies &&
                   cmt.replies.map((reply) => (
@@ -171,7 +172,11 @@ export default function PostForm({ post }: PostFormProps) {
               )}
             </div>
           ))}
-        <CommentComponent postid={_id} author={user?.email} />
+        <CommentComponent
+          postid={_id}
+          author={user?.email}
+          category={category}
+        />
       </Card>
       <SubmitModal
         title={"삭제완료"}

@@ -8,44 +8,39 @@ import {
 } from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import { useState } from "react";
-import UserProfile from "./UserProfile";
+import UserProfile from "../UserProfile";
+import { createComment } from "./actions";
+import { useRouter } from "next/navigation";
 
 type CommentFormProps = {
   postid: string;
   author: string | null | undefined;
+  category: string;
 };
 
-export default function CommentComponent({ postid, author }: CommentFormProps) {
+export default function CommentComponent({
+  postid,
+  author,
+  category,
+}: CommentFormProps) {
   const [isSubmit, setIsSubmit] = useState(false);
   const [text, setText] = useState("");
-
+  const router = useRouter();
   const handleSubmit = async () => {
     if (!text.trim()) {
       alert("댓글 내용을 입력해주세요.");
       return;
     }
     try {
-      const postData = {
-        postid,
-        author,
-        text,
-      };
+      const response = await createComment({ postid, author, text });
 
-      const response = await fetch("/api/comment/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postData }),
-      });
-
-      if (!response.ok) {
+      if (!response) {
         throw new Error(`Error: ${response.statusText}`);
       }
 
       setText(""); // 성공한 후 텍스트 필드 초기화
       setIsSubmit(true);
-      // window.location.href = `/posts/${postid}`;  // Optional: Redirect to post page
+      // router.push(`/post/read/${postid}/${category}`);
     } catch (error) {
       console.error("Failed to submit the comment:", error);
     }
