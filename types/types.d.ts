@@ -70,12 +70,14 @@ export type Post = {
 };
 
 export type Reply = {
+  _id: string;
   author: string;
   text: string;
   createdAt: Date;
 };
 
 export type Comment = {
+  _id: string;
   author: string;
   text: string;
   replies: Reply[];

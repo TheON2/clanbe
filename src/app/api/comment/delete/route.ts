@@ -10,28 +10,41 @@ import mongoose from "mongoose";
 import PostModel from "@/models/post";
 
 export async function POST(req: Request, res: Response) {
-const body = await req.json();
+  const body = await req.json();
 
-  let { fileName, postId } = body.postData;
+  let { postid, commentid } = body;
 
-  console.log(body.postData);
+  console.log(body);
 
   try {
-    await deletePostData(fileName);
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
-    const deletedPost = await PostModel.findByIdAndDelete(postId);
 
-    if (!deletedPost) {
-      return new Response(
-          JSON.stringify({ message: "게시글을 찾을 수 없음" }),
-          {
-            status: 401,
-          }
-        );
+    const post = await PostModel.findById(postid);
+    if (!post) {
+      return new Response(JSON.stringify({ message: "게시글이 없습니다" }), {
+      status: 401,
+    });
     }
 
-    console.log("게시글 삭제 성공");
-    return new Response(JSON.stringify({ message: "게시글 삭제 성공" }), {
+    const comment = post.comments.id(commentid);
+    if (!comment) {
+      return new Response(JSON.stringify({ message: "댓글이 없습니다" }), {
+      status: 401,
+    });
+    }
+     // commentid를 이용하여 댓글 직접 제거
+    const commentIndex = post.comments.findIndex((c: any) => c.id === commentid);
+    if (commentIndex === -1) {
+      return new Response(JSON.stringify({ message: "댓글이 없습니다" }), {
+      status: 401,
+    });
+    }
+
+    post.comments.splice(commentIndex, 1); // 배열에서 댓글 제거
+    await post.save(); // 변경사항 저장
+
+    console.log("댓글 삭제 성공");
+    return new Response(JSON.stringify({ message: "댓글 삭제 성공" }), {
       status: 200,
     });
   } catch (error: unknown) {

@@ -24,13 +24,15 @@ import ReplyCard from "./ReplyCard";
 import { Comment } from "../../types/types";
 import CommentComponent from "./CommentComponent";
 import ProfileCard from "./ProfileCard";
+import { useSession } from "next-auth/react";
+import ReplyComponent from "./ReplyComponent";
 
 type PostFormProps = {
   post: {
     title: string;
     category: string;
     fileUrl: string;
-    comment: Comment[];
+    comments: Comment[];
     next: Post | null;
     prev: Post | null;
     _id: string;
@@ -39,11 +41,24 @@ type PostFormProps = {
 
 export default function PostForm({ post }: PostFormProps) {
   const router = useRouter();
+  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const { title, category, fileUrl, next, prev, _id } = post;
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [activeCommentId, setActiveCommentId] = useState(null);
+
+  const handleCommentClick = (commentId) => {
+    // 이미 활성화된 댓글을 다시 클릭하면 비활성화합니다.
+    if (activeCommentId === commentId) {
+      setActiveCommentId(null);
+    } else {
+      setActiveCommentId(commentId); // 활성화된 댓글 ID 설정
+    }
+  };
   const handleSubmit = async () => {
     try {
       const fileNameWithExtension = post.fileUrl.split("/").pop() as string;
@@ -75,6 +90,9 @@ export default function PostForm({ post }: PostFormProps) {
   const triggerDelete = () => {
     setIsDeleting(true);
   };
+
+  console.log(post);
+
   useEffect(() => {
     if (isDeleting) {
       handleSubmit();
@@ -97,6 +115,7 @@ export default function PostForm({ post }: PostFormProps) {
         <CardHeader className="m-4 pb-0 pt-2 px-4 flex justify-between items-center">
           <div>
             <h1 className="text-3xl font-bold">{title}</h1>
+            <p>2024.04.14 오후 4시 13분</p>
             <div className="flex gap-4 mt-2">
               <Chip color="default">{category}</Chip>
             </div>
@@ -122,12 +141,38 @@ export default function PostForm({ post }: PostFormProps) {
         </CardFooter>
       </Card>
       <Card className="my-4 mx-4 p-4 min-h-[300px]">
-        <p>댓글 1개</p>
-        <CommentCard />
-        <ReplyCard />
-        <CommentCard />
-        <CommentCard />
-        <CommentComponent />
+        <p>
+          {post.comments.length > 0
+            ? `${post.comments.length}개의 댓글`
+            : "댓글 없음"}
+        </p>
+        {post.comments.length > 0 &&
+          post.comments.map((cmt) => (
+            <div key={cmt._id}>
+              <div onClick={() => handleCommentClick(cmt._id)}>
+                <CommentCard
+                  commentid={cmt._id}
+                  postid={post._id}
+                  author={cmt.author}
+                  text={cmt.text}
+                  date={cmt.createdAt}
+                />
+                {cmt.replies &&
+                  cmt.replies.map((reply) => (
+                    <ReplyCard
+                      key={reply._id}
+                      author={reply.author}
+                      text={reply.text}
+                      date={reply.createdAt}
+                    />
+                  ))}
+              </div>
+              {activeCommentId === cmt._id && (
+                <ReplyComponent postid={post._id} commentid={cmt._id} />
+              )}
+            </div>
+          ))}
+        <CommentComponent postid={_id} author={user?.email} />
       </Card>
       <SubmitModal
         title={"삭제완료"}
