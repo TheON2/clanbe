@@ -27,7 +27,7 @@ export default async function AllPostPage() {
     },
     body: JSON.stringify({ category: "allposts" }),
     next: { tags: ["post"] },
-    // cache: "no-store",
+    cache: "no-store",
   });
 
   const posts = await response.json();
