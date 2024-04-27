@@ -10,6 +10,7 @@ import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
+import { revalidateTag } from "next/cache";
 
 export async function DELETE(req: Request, res: Response) {
 const body = await req.json();
@@ -24,7 +25,7 @@ const body = await req.json();
       return new Response(
         JSON.stringify({ message: "게시글을 찾을 수 없음" }),
         {
-          status: 402,
+          status: 401,
         }
       );
     }

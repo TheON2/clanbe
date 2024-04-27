@@ -9,6 +9,7 @@ export default async function SupportPage() {
     headers: {
       "Content-Type": "application/json",
     },
+    body: JSON.stringify({ category: "support" }),
     next: { tags: ["post"] },
   });
 

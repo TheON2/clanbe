@@ -69,7 +69,7 @@ export default function CommentCard({
             </Button>
           </div>
         </CardHeader>
-        <div className="pl-4 text-sm">{date}</div>
+        {/* <div className="pl-4 text-sm">{date}</div> */}
         <Card
           className="flex-1 p-2 m-2 overflow-hidden"
           style={{ maxWidth: "700px", overflowWrap: "break-word" }}

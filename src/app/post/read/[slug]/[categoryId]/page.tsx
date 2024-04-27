@@ -1,7 +1,22 @@
 import BoardLayout from "@/components/BoardLayout";
-import PostForm from "@/components/PostForm";
+import PostForm from "@/components/PostForm/PostForm";
 import { Post } from "@/service/posts";
+import { revalidateTag } from "next/cache";
 import React from "react";
+
+async function getAllPost() {
+  "use server";
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ category: "allposts" }),
+    next: { tags: ["post"] },
+  });
+  const posts = await response.json();
+  return posts;
+}
 
 type Props = {
   params: {
@@ -14,19 +29,8 @@ type Props = {
 export default async function PostPage({
   params: { slug, categoryId },
 }: Props) {
-  // API 호출을 통해 포스트 데이터를 가져옴
-  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ category: categoryId }),
-    next: { tags: ["post"] },
-    cache: "no-store",
-  });
-
-  // 응답을 JSON으로 변환
-  const posts = await response.json();
+  const posts = await getAllPost();
+  revalidateTag("post");
 
   const post = posts.data.find((post: Post) => post._id === slug);
 

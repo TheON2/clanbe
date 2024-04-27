@@ -8,7 +8,7 @@ import { Card, CardBody, CardHeader } from "@nextui-org/card";
 import { Chip } from "@nextui-org/chip";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import SubmitModal from "./SubmitModal";
+import SubmitModal from "../SubmitModal";
 import { useRouter } from "next/navigation";
 import { revalidateTag } from "next/cache";
 import {
@@ -19,13 +19,13 @@ import {
   Button,
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
-import CommentCard from "./CommentCard";
-import ReplyCard from "./ReplyCard";
-import { Comment } from "../../types/types";
-import CommentComponent from "./CommentComponent";
-import ProfileCard from "./ProfileCard";
+import CommentCard from "../CommentCard";
+import ReplyCard from "../ReplyCard";
+import { Comment } from "../../../types/types";
+import CommentComponent from "../CommentComponent";
+import ProfileCard from "../ProfileCard";
 import { useSession } from "next-auth/react";
-import ReplyComponent from "./ReplyComponent";
+import ReplyComponent from "../ReplyComponent";
 
 type PostFormProps = {
   post: {
@@ -51,7 +51,7 @@ export default function PostForm({ post }: PostFormProps) {
   const [isSubmit, setIsSubmit] = useState(false);
   const [activeCommentId, setActiveCommentId] = useState(null);
 
-  const handleCommentClick = (commentId) => {
+  const handleCommentClick = (commentId: any) => {
     // 이미 활성화된 댓글을 다시 클릭하면 비활성화합니다.
     if (activeCommentId === commentId) {
       setActiveCommentId(null);
@@ -76,7 +76,6 @@ export default function PostForm({ post }: PostFormProps) {
         body: JSON.stringify({ postData }),
       });
       setIsSubmit(true);
-      //   window.location.href = `/posts`;
 
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
@@ -178,7 +177,7 @@ export default function PostForm({ post }: PostFormProps) {
         title={"삭제완료"}
         text={"삭제가 완료되었습니다."}
         isOpen={isSubmit}
-        onClose={() => router.push("/COMMUNITY/allposts")}
+        onClose={() => (window.location.href = `/COMMUNITY/allposts`)}
       />
     </div>
   );

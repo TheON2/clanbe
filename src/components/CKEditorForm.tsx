@@ -18,6 +18,7 @@ import ButtonModal from "./ButtonModal";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
+import { updatePost } from "@/app/post/update/[slug]/actions";
 
 const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
@@ -91,19 +92,12 @@ export default function CKEditorForm({
       };
 
       console.log("썸네일" + thumbnail);
-      const response = await fetch("/api/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postData }),
-      });
+      const response = await updatePost(postData);
       setIsSubmit(true);
-      revalidateTag("post");
       //window.location.href = `/posts/${response.statusText}`;
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
+      if (!response.message) {
+        throw new Error(`Error: 게시글 수정 실패`);
       }
     } catch (error) {
       console.error("Failed to submit the article:", error);
@@ -185,7 +179,7 @@ export default function CKEditorForm({
               title={"수정완료"}
               text={"수정이 완료되었습니다."}
               isOpen={isSubmit}
-              onClose={() => (window.location.href = `/post/read/${postId}`)}
+              onClose={() => router.push(`/post/read/${postId}/${category}`)}
             />
           </div>
         </div>

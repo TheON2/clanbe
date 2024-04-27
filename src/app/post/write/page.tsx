@@ -17,6 +17,8 @@ import {
 import { marked } from "marked";
 import { useSession } from "next-auth/react";
 import { revalidateTag } from "next/cache";
+import { submitPost } from "@/components/PostForm/actions";
+import { useRouter } from "next/navigation";
 
 const MyEditorWithNoSSR = dynamic(() => import("../../MyEditor/MyEditor"), {
   ssr: false,
@@ -26,6 +28,7 @@ export default function WritePage() {
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
+  const router = useRouter();
 
   const [editorData, setEditorData] = useState("");
   const [title, setTitle] = useState("");
@@ -67,21 +70,17 @@ export default function WritePage() {
         featured,
         author: user?.email,
         view: 0,
-        comment:{},
+        comment: {},
       };
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postData }),
-      });
+      const response = await submitPost(postData);
+      console.log(response);
 
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
+      if (!response.message) {
+        throw new Error(`Error: 업로드 실패`);
       }
 
-      window.location.href = `/post/read/${response.statusText}`;
+      // window.location.href = `/post/read/${response.message}/${category}`;
+      router.push(`/post/read/${response.message}/${category}`);
     } catch (error) {
       console.error("Failed to submit the article:", error);
     }

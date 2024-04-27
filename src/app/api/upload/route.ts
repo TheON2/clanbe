@@ -36,7 +36,7 @@ export async function POST(req: Request, res: Response) {
       console.log("게시글 저장 성공");
       return new Response(
         JSON.stringify({
-          message: "게시글 업로드 성공",
+          message: savedPost._id.toString(),
         }),
         {
           status: 200,
