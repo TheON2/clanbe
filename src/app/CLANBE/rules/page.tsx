@@ -19,7 +19,7 @@ export default function RulesPage() {
         className={`w-full mt-28 ml-12 mr-12 overflow-visible min-w-[350px]`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="/Belogo.png"
@@ -62,7 +62,7 @@ export default function RulesPage() {
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="https://img.icons8.com/ios/100/swearing-male.png"
@@ -72,7 +72,7 @@ export default function RulesPage() {
           </div>
           <div className="relative pt-20 px-4 pb-4 w-full">
             <p className="text-4xl font-bold block text-center">욕설</p>
-            <p className="text-xl text-gray-500 block text-center">
+            <p className="text-xl dark:dark:text-gray-default block text-center">
               비하발언 및 클랜이미지 실추등
             </p>
           </div>
@@ -109,7 +109,7 @@ export default function RulesPage() {
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="https://img.icons8.com/ios-filled/100/laptop-coding.png"
@@ -121,7 +121,7 @@ export default function RulesPage() {
             <p className="text-4xl font-bold block text-center">
               불법프로그램사용
             </p>
-            <p className="text-xl text-gray-500 block text-center">
+            <p className="text-xl dark:text-gray-default block text-center">
               맵핵 / 미네랄핵 / etc
             </p>
           </div>
@@ -158,7 +158,7 @@ export default function RulesPage() {
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="https://img.icons8.com/ios/100/sparring.png"
@@ -170,7 +170,7 @@ export default function RulesPage() {
             <p className="text-4xl font-bold block text-center">
               클랜원간 불화
             </p>
-            <p className="text-xl text-gray-500 block text-center">
+            <p className="text-xl dark:text-gray-default block text-center">
               말싸움 / 파벌 / etc
             </p>
           </div>
@@ -207,7 +207,7 @@ export default function RulesPage() {
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="https://img.icons8.com/external-outline-geotatah/100/external-clan-estate-planning-outline-geotatah.png"
@@ -217,7 +217,7 @@ export default function RulesPage() {
           </div>
           <div className="relative pt-20 px-4 pb-4 w-full">
             <p className="text-4xl font-bold block text-center">이중클랜</p>
-            <p className="text-xl text-gray-500 block text-center">
+            <p className="text-xl dark:text-gray-default block text-center">
               타클랜 병행활동
             </p>
           </div>
@@ -242,7 +242,7 @@ export default function RulesPage() {
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="https://img.icons8.com/ios-filled/100/twitch.png"
@@ -254,7 +254,7 @@ export default function RulesPage() {
             <p className="text-4xl font-bold block text-center">
               방송경기 치팅
             </p>
-            <p className="text-xl text-gray-500 block text-center">
+            <p className="text-xl dark:text-gray-default block text-center">
               방송경기 중 부정행위
             </p>
           </div>
@@ -293,7 +293,7 @@ export default function RulesPage() {
         className={`min-w-[350px] max-w-[400px] mt-24 overflow-visible w-1/3 ${styles.customCard}`}
       >
         <CardHeader className="relative p-0">
-          <div className="w-36 h-36 rounded-full bg-blue-500 absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
+          <div className="w-36 h-36 rounded-full bg-blue-dark absolute -top-20 left-1/2 transform -translate-x-1/2 flex justify-center items-center">
             <Image
               alt="nextui logo"
               src="https://img.icons8.com/ios-filled/100/box-important--v1.png"
@@ -303,7 +303,7 @@ export default function RulesPage() {
           </div>
           <div className="relative pt-20 px-4 pb-4 w-full">
             <p className="text-4xl font-bold block text-center">경고</p>
-            <p className="text-xl text-gray-500 block text-center">
+            <p className="text-xl dark:text-gray-default block text-center">
               규정에 의거한 모든 경고
             </p>
           </div>
