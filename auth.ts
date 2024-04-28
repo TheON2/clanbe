@@ -44,7 +44,6 @@ export const config = {
   callbacks: {
     authorized({ request, auth }) {
       const { pathname } = request.nextUrl;
-      alert(pathname);
       if (pathname === "/AUTH/signin") return !!auth;
       return true;
     },
@@ -84,8 +83,12 @@ export const config = {
       return session;
     },
   },
-  session: {
+   session: {
     strategy: "jwt",
+    maxAge: 3600, // 1시간 동안 세션 유지
+  },
+  jwt: {
+    maxAge: 3600, // JWT 토큰의 최대 유효 시간은 1시간
   },
   secret: `${process.env.NEXT_AUTH_SECRET}`,
 } satisfies NextAuthConfig;

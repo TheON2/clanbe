@@ -28,7 +28,7 @@ export default function CommentCard({
   category,
 }: CommentCardProps) {
   const router = useRouter();
-  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
 
@@ -39,14 +39,12 @@ export default function CommentCard({
   const handleDelete = async () => {
     try {
       const response = await deleteComment({ postid, commentid });
-
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-
       router.push(`/post/read/${postid}/${category}`);
     } catch (error) {
-      console.error("Failed to submit the article:", error);
+      console.error("Failed to delete the comment:", error);
     }
   };
 
@@ -59,15 +57,21 @@ export default function CommentCard({
         editedText,
       });
       setEditMode(false);
-      //router.push(`/post/read/${postid}/${category}`);
     } catch (error) {
-      console.error("Failed to submit the article:", error);
+      console.error("Failed to update the comment:", error);
     }
   };
 
+  const isAuthor = user?.email === author;
+
+  // Determine the card's border style based on authorship
+  const cardStyle = isAuthor
+    ? { border: "1px solid #0070f3", boxShadow: "0 2px 6px #0070f350" }
+    : {};
+
   return (
-    <div className="m-4 max-w-[700px] ">
-      <Card className="">
+    <div className="m-4 max-w-[700px]">
+      <Card style={cardStyle}>
         <CardHeader className="justify-between">
           <UserProfile email={author} />
           {editMode ? (
@@ -93,27 +97,29 @@ export default function CommentCard({
               </Button>
             </div>
           ) : (
-            <div className="hidden md:flex gap-2">
-              <Button
-                color="primary"
-                size="sm"
-                variant="ghost"
-                onClick={() => setEditMode(true)}
-              >
-                수정
-              </Button>
-              <Button
-                color="danger"
-                size="sm"
-                variant="ghost"
-                onClick={handleDelete}
-              >
-                삭제
-              </Button>
-            </div>
+            isLoggedIn &&
+            isAuthor && (
+              <div className="hidden md:flex gap-2">
+                <Button
+                  color="primary"
+                  size="sm"
+                  variant="ghost"
+                  onClick={() => setEditMode(true)}
+                >
+                  수정
+                </Button>
+                <Button
+                  color="danger"
+                  size="sm"
+                  variant="ghost"
+                  onClick={handleDelete}
+                >
+                  삭제
+                </Button>
+              </div>
+            )
           )}
         </CardHeader>
-        {/* <div className="pl-4 text-sm">{date}</div> */}
         <Card
           className="flex-1 p-2 m-2 overflow-hidden"
           style={{ maxWidth: "700px", overflowWrap: "break-word" }}
@@ -153,24 +159,27 @@ export default function CommentCard({
           </Button>
         </div>
       ) : (
-        <div className="block md:hidden flex gap-2">
-          <Button
-            color="primary"
-            size="sm"
-            variant="ghost"
-            onClick={() => setEditMode(true)}
-          >
-            수정
-          </Button>
-          <Button
-            color="danger"
-            size="sm"
-            variant="ghost"
-            onClick={handleDelete}
-          >
-            삭제
-          </Button>
-        </div>
+        isLoggedIn &&
+        isAuthor && (
+          <div className="block md:hidden flex gap-2">
+            <Button
+              color="primary"
+              size="sm"
+              variant="ghost"
+              onClick={() => setEditMode(true)}
+            >
+              수정
+            </Button>
+            <Button
+              color="danger"
+              size="sm"
+              variant="ghost"
+              onClick={handleDelete}
+            >
+              삭제
+            </Button>
+          </div>
+        )
       )}
     </div>
   );

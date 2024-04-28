@@ -63,7 +63,7 @@ export default function ReplyComponent({
     setText(""); // 취소 버튼 클릭 시 텍스트 필드 초기화
   };
   return (
-    <Card className="p-4 mt-4 flex flex-nowrap w-full">
+    <Card className="p-4 mr-4 mb-4 flex flex-nowrap w-full">
       <div className="flex-1  w-full min-h-[100px]">
         <Textarea
           value={text}

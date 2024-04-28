@@ -3,6 +3,7 @@ import {
   Card,
   Divider,
   Input,
+  Link,
   Textarea,
   User,
 } from "@nextui-org/react";
@@ -11,6 +12,7 @@ import { useState } from "react";
 import UserProfile from "../UserProfile";
 import { createComment } from "./actions";
 import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 type CommentFormProps = {
   postid: string;
@@ -26,6 +28,9 @@ export default function CommentComponent({
   const [isSubmit, setIsSubmit] = useState(false);
   const [text, setText] = useState("");
   const router = useRouter();
+  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
   const handleSubmit = async () => {
     if (!text.trim()) {
       alert("댓글 내용을 입력해주세요.");
@@ -53,21 +58,22 @@ export default function CommentComponent({
   const handleCancel = () => {
     setText(""); // 취소 버튼 클릭 시 텍스트 필드 초기화
   };
+
+  if (!isLoggedIn) {
+    return (
+      <Card className="p-4 flex flex-col items-center justify-center w-full h-32">
+        <p>권한이 없습니다. 로그인을 해주세요.</p>
+        <Link href="/api/auth/signin">
+          <Button color="primary" size="sm">
+            로그인
+          </Button>
+        </Link>
+      </Card>
+    );
+  }
+
   return (
     <Card className="p-4 flex flex-nowrap w-full">
-      {/* <div className="flex items-center p-4">
-        <User
-          name="Junior Garcia"
-          description={
-            <MyLink href="https://twitter.com/jrgarciadev" size="sm" isExternal>
-              @jrgarciadev
-            </MyLink>
-          }
-          avatarProps={{
-            src: "https://avatars.githubusercontent.com/u/30373425?v=4",
-          }}
-        />
-      </div> */}
       <UserProfile email={author} />
       <div className="flex-1  w-full min-h-[200px]">
         <Textarea

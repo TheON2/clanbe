@@ -32,6 +32,7 @@ type PostFormProps = {
     title: string;
     category: string;
     fileUrl: string;
+    author: string;
     comments: Comment[];
     next: Post | null;
     prev: Post | null;
@@ -116,18 +117,19 @@ export default function PostForm({ post }: PostFormProps) {
               <Chip color="default">{category}</Chip>
             </div>
           </div>
-          <div className="flex gap-2 mr-8">
-            <Link href={`/post/update/${_id}`}>
-              <h1>수정</h1>
-            </Link>
-            <Link href={``}>
-              <TextModal
-                title={"삭제"}
-                text={"삭제 하시겠습니까?"}
-                action={triggerDelete}
-              ></TextModal>
-            </Link>
-          </div>
+          {user?.email === post.author &&
+            <div className="flex gap-2 mr-8">
+              <Link href={`/post/update/${_id}`}>
+                <h1>수정</h1>
+              </Link>
+              <Link href={``}>
+                <TextModal
+                  title={"삭제"}
+                  text={"삭제 하시겠습니까?"}
+                  action={triggerDelete}
+                ></TextModal>
+              </Link>
+            </div>}
         </CardHeader>
         <CardBody className="overflow-visible py-2">
           <CKEditorContent contentUrl={fileUrl} />
