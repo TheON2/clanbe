@@ -3,7 +3,7 @@ import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import UserProfile from "../UserProfile";
 import { useSession } from "next-auth/react";
 import CommentComponent from "../CommentComponent/CommentComponent";
-import ReplyComponent from "../ReplyComponent";
+import ReplyComponent from "../ReplyComponent/ReplyComponent";
 import SubmitModal from "../SubmitModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";

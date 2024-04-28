@@ -8,8 +8,9 @@ import {
 } from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import { useState } from "react";
-import UserProfile from "./UserProfile";
+import UserProfile from "../UserProfile";
 import { useSession } from "next-auth/react";
+import { createReply } from "./actions";
 
 type CommentFormProps = {
   postid: string;
@@ -39,17 +40,12 @@ export default function ReplyComponent({
         author: user?.email || "",
       };
 
-      const response = await fetch("/api/reply/create", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postData }),
+      await createReply({
+        postid,
+        author: user?.email || "",
+        text,
+        commentid,
       });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.statusText}`);
-      }
 
       setText(""); // 성공한 후 텍스트 필드 초기화
       setIsSubmit(true);

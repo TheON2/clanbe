@@ -20,12 +20,12 @@ import {
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import CommentCard from "../CommentCard/CommentCard";
-import ReplyCard from "../ReplyCard";
+import ReplyCard from "../ReplyCard/ReplyCard";
 import { Comment } from "../../../types/types";
 import CommentComponent from "../CommentComponent/CommentComponent";
 import ProfileCard from "../ProfileCard";
 import { useSession } from "next-auth/react";
-import ReplyComponent from "../ReplyComponent";
+import ReplyComponent from "../ReplyComponent/ReplyComponent";
 
 type PostFormProps = {
   post: {
