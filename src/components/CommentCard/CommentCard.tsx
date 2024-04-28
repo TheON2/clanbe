@@ -1,4 +1,4 @@
-import { Button, Card, CardHeader, User } from "@nextui-org/react";
+import { Button, Card, CardHeader, Textarea, User } from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import UserProfile from "../UserProfile";
 import { useSession } from "next-auth/react";
@@ -8,7 +8,7 @@ import SubmitModal from "../SubmitModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
-import { deleteComment } from "./actions";
+import { deleteComment, updateComment } from "./actions";
 
 type CommentCardProps = {
   commentid: string;
@@ -33,6 +33,8 @@ export default function CommentCard({
   const user = session?.user;
 
   const [isDelete, setIsDelete] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editedText, setEditedText] = useState(text);
 
   const handleDelete = async () => {
     try {
@@ -48,43 +50,128 @@ export default function CommentCard({
     }
   };
 
+  const handleUpdate = async () => {
+    try {
+      await updateComment({
+        postid,
+        commentid,
+        author,
+        editedText,
+      });
+      setEditMode(false);
+      //router.push(`/post/read/${postid}/${category}`);
+    } catch (error) {
+      console.error("Failed to submit the article:", error);
+    }
+  };
+
   return (
     <div className="m-4 max-w-[700px] ">
       <Card className="">
         <CardHeader className="justify-between">
           <UserProfile email={author} />
-          <div className="hidden md:block flex gap-4">
-            {/* 이 부분에 ml-auto를 추가하여 우측 정렬 */}
-            <Button color="primary" size="sm" variant="ghost">
-              수정
-            </Button>
-            <Button
-              color="danger"
-              size="sm"
-              variant="ghost"
-              onClick={handleDelete}
-            >
-              삭제
-            </Button>
-          </div>
+          {editMode ? (
+            <div className="hidden md:flex gap-2">
+              <Button
+                color="success"
+                size="sm"
+                variant="ghost"
+                onClick={handleUpdate}
+              >
+                저장
+              </Button>
+              <Button
+                color="danger"
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setEditMode(false);
+                  setEditedText(text);
+                }}
+              >
+                취소
+              </Button>
+            </div>
+          ) : (
+            <div className="hidden md:flex gap-2">
+              <Button
+                color="primary"
+                size="sm"
+                variant="ghost"
+                onClick={() => setEditMode(true)}
+              >
+                수정
+              </Button>
+              <Button
+                color="danger"
+                size="sm"
+                variant="ghost"
+                onClick={handleDelete}
+              >
+                삭제
+              </Button>
+            </div>
+          )}
         </CardHeader>
         {/* <div className="pl-4 text-sm">{date}</div> */}
         <Card
           className="flex-1 p-2 m-2 overflow-hidden"
           style={{ maxWidth: "700px", overflowWrap: "break-word" }}
         >
-          {text}
+          {editMode ? (
+            <Textarea
+              value={editedText}
+              onChange={(e) => setEditedText(e.target.value)}
+              fullWidth
+              autoFocus
+            />
+          ) : (
+            text
+          )}
         </Card>
       </Card>
-      <div className="block md:hidden flex gap-2 m-2">
-        {/* 이 부분에 ml-auto를 추가하여 우측 정렬 */}
-        <Button color="primary" size="sm" variant="ghost">
-          수정
-        </Button>
-        <Button color="danger" size="sm" variant="ghost" onClick={handleDelete}>
-          삭제
-        </Button>
-      </div>
+      {editMode ? (
+        <div className="block md:hidden flex gap-2">
+          <Button
+            color="success"
+            size="sm"
+            variant="ghost"
+            onClick={handleUpdate}
+          >
+            저장
+          </Button>
+          <Button
+            color="danger"
+            size="sm"
+            variant="ghost"
+            onClick={() => {
+              setEditMode(false);
+              setEditedText(text);
+            }}
+          >
+            취소
+          </Button>
+        </div>
+      ) : (
+        <div className="block md:hidden flex gap-2">
+          <Button
+            color="primary"
+            size="sm"
+            variant="ghost"
+            onClick={() => setEditMode(true)}
+          >
+            수정
+          </Button>
+          <Button
+            color="danger"
+            size="sm"
+            variant="ghost"
+            onClick={handleDelete}
+          >
+            삭제
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,68 +1,56 @@
-'use server'
-
 import { NextApiRequest, NextApiResponse } from "next";
-import { updatePostData, uploadPostData } from "@/service/posts";
-import { MongoClient } from "mongodb";
-import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
-import { revalidatePath, revalidateTag } from "next/cache";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let {
-    htmlContent,
-    title,
-    description,
-    category,
-    thumbnail,
-    featured,
-    fileName,
-    postId,
-  } = body.postData;
-
+  let { postid, commentid, replyid, editedText } = body.postData;
 
   try {
-    const fileUrl = await updatePostData(fileName, htmlContent);
-
-    // MongoDB에 데이터 저장
-    console.log("업데이트 라우트 진입함");
-
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
-    const updatedPost = await PostModel.findOneAndUpdate(
-      { _id: body.postData.postId },
-      {
-        title,
-        description,
-        category,
-        thumbnail,
-        featured,
-        fileUrl,
-      },
-      { new: true }
-    );
 
-    if (!updatedPost) {
-      throw new Error("게시글을 찾을 수 없음");
+    const post = await PostModel.findById(postid);
+    if (!post) {
+      return new Response(JSON.stringify({ message: "게시글이 없습니다" }), {
+        status: 404,
+      });
     }
 
-    console.log("게시글 수정 성공");
-    revalidateTag("post");
-    revalidatePath("/");
-    return new Response(JSON.stringify({ message: "게시글 수정 성공" }), {
+    const comment = post.comments.id(commentid);
+    if (!comment) {
+      return new Response(JSON.stringify({ message: "댓글이 없습니다" }), {
+        status: 404,
+      });
+    }
+
+    const reply = comment.replies.id(replyid);
+    if (!reply) {
+      return new Response(JSON.stringify({ message: "대댓글이 없습니다" }), {
+        status: 404,
+      });
+    }
+
+    reply.text = editedText;
+    await post.save(); // 변경사항 저장
+
+    console.log("대댓글 수정 성공");
+    return new Response(JSON.stringify({ message: "대댓글 수정 성공" }), {
       status: 200,
-      statusText: updatedPost._id.toString(),
     });
-  } catch (error: unknown) {
+  } catch (error) {
+    console.error("오류 발생", error);
     if (error instanceof Error) {
-      new Response(JSON.stringify({ error: error.message }), {
+      return new Response(JSON.stringify({ error: error.message }), {
         status: 500,
       });
     } else {
-      new Response(JSON.stringify({ error: "An unknown error occurred" }), {
-        status: 500,
-      });
+      return new Response(
+        JSON.stringify({ error: "An unknown error occurred" }),
+        {
+          status: 500,
+        }
+      );
     }
   }
 }
