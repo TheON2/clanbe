@@ -19,6 +19,7 @@ import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { updatePost } from "@/app/post/update/[slug]/actions";
+import { useSession } from "next-auth/react";
 
 const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
@@ -41,19 +42,33 @@ export default function CKEditorForm({
   const [category, setCategory] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [noticed, setNoticed] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
-  const router = useRouter();
 
-  console.log(post);
-  console.log(postHTML);
+  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
+  const router = useRouter();
 
   useEffect(() => {
     setEditorData(postHTML);
     setTitle(post.title);
     setCategory(post.category);
     setFeatured(post.featured);
+    setNoticed(post.noticed);
     setThumbnail(post.thumbnail);
-  }, [postHTML, post]);
+  }, [
+    postHTML,
+    post.title,
+    post.category,
+    post.featured,
+    post.noticed,
+    post.thumbnail,
+  ]);
+
+  useEffect(() => {
+    console.log(featured, noticed);
+  }, [noticed, featured]);
 
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
@@ -69,7 +84,6 @@ export default function CKEditorForm({
     const parser = new DOMParser();
     const doc = parser.parseFromString(newData, "text/html");
     const firstImage = doc.querySelector("img");
-    console.log(firstImage);
     if (firstImage && firstImage.src) {
       setThumbnail(firstImage.src);
     }
@@ -85,13 +99,13 @@ export default function CKEditorForm({
         title,
         description,
         category,
+        noticed,
         thumbnail,
         featured,
         fileName,
         postId,
       };
 
-      console.log("썸네일" + thumbnail);
       const response = await updatePost(postData);
       setIsSubmit(true);
       //window.location.href = `/posts/${response.statusText}`;
@@ -163,13 +177,24 @@ export default function CKEditorForm({
                 <SelectItem key="versus">끝장전</SelectItem>
               </SelectSection>
             </Select>
-            <Checkbox
-              className="my-4"
-              size="md"
-              onChange={(e) => setFeatured(e.target.checked)}
-            >
-              비밀글
-            </Checkbox>
+            <div className="flex flex-col gap-2 w-full">
+              <Checkbox
+                isSelected={featured}
+                size="md"
+                onValueChange={setFeatured}
+              >
+                비밀글
+              </Checkbox>
+              {typeof user?.grade === "number" && user.grade >= 4 && (
+                <Checkbox
+                  isSelected={noticed}
+                  size="md"
+                  onValueChange={setNoticed}
+                >
+                  공지로 등록
+                </Checkbox>
+              )}
+            </div>
             <ButtonModal
               title={"수정하기"}
               text={"글을 수정하시겠습니까?"}

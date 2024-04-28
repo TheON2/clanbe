@@ -17,6 +17,7 @@ export type Post = {
   category: string;
   thumbnail: string; // 추가된 필드
   featured: boolean;
+  noticed: boolean;
   createdAt: Date; // 자동 생성되는 필드, 선택적으로 설정
   fileUrl: string;
 };
@@ -29,6 +30,7 @@ export type PostData = {
   date: string;
   postId: string;
   featured: boolean;
+  noticed: boolean;
   description: string;
   next: Post | null;
   prev: Post | null;
@@ -81,10 +83,10 @@ export const getAllPostSlugs = async () => {
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
 
     // 데이터베이스에서 모든 게시글의 _id만 검색
-    const posts = await PostModel.find({}, '_id'); // '_id' 필드만 선택하여 검색
+    const posts = await PostModel.find({}, "_id"); // '_id' 필드만 선택하여 검색
 
     // 검색된 게시글들에서 _id만 추출하고 문자열로 변환
-    const slugs = posts.map(post => post._id.toString());
+    const slugs = posts.map((post) => post._id.toString());
     return slugs;
   } catch (error) {
     console.error("Error fetching slugs from MongoDB", error);
@@ -118,7 +120,6 @@ export async function getPostData(slug: string): Promise<PostData> {
 
   const post = posts.find((post) => post._id.toString() === slug);
 
-
   if (!post) throw new Error(`${slug}에 해당하는 포스트를 찾을 수 없음`);
 
   const index = posts.indexOf(post);
@@ -132,6 +133,7 @@ export async function getPostData(slug: string): Promise<PostData> {
   const postId = post._id;
   const featured = post.featured;
   const thumbnail = post.thumbnail;
+  const noticed = post.noticed;
 
   return {
     title,
@@ -139,6 +141,7 @@ export async function getPostData(slug: string): Promise<PostData> {
     date,
     description,
     featured,
+    noticed,
     fileUrl,
     thumbnail,
     next,

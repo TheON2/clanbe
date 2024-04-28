@@ -11,12 +11,8 @@ export async function POST(req: Request, res: Response) {
   try {
     // MongoDB 데이터베이스에 연결
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
-
-    console.log(body);
-
     // 데이터베이스에서 모든 게시글을 검색
     const post = await PostModel.findOne({ _id: body.slug }); // 모든 게시글을 검색
-    console.log(post);
 
     const {
       fileUrl,
@@ -28,6 +24,7 @@ export async function POST(req: Request, res: Response) {
       _id,
       featured,
       thumbnail,
+      noticed
     } = post;
 
     return new Response(
@@ -40,6 +37,7 @@ export async function POST(req: Request, res: Response) {
         fileUrl,
         author,
         thumbnail,
+        noticed,
         postId: _id.toString(),
       }),
       {

@@ -61,6 +61,7 @@ export type Post = {
   category: string;
   thumbnail: string;
   featured: boolean;
+  noticed: boolean;
   fileUrl: string;
   author: string;
   createdAt: Date;

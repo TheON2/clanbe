@@ -21,7 +21,6 @@ export async function deleteReply({
   commentid,
   replyid,
 }: deleteCommentProps) {
-  console.log(postid, commentid);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/reply/delete`,
     {
@@ -43,7 +42,6 @@ export async function updateReply({
   editedText,
   replyid,
 }: updateCommentProps) {
-  console.log(postid, commentid, author, editedText, replyid);
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/reply/update`,
     {

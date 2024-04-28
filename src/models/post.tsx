@@ -34,6 +34,7 @@ const postSchema = new mongoose.Schema(
     category: String,
     thumbnail: String,
     featured: Boolean,
+    noticed:Boolean,
     fileUrl: String,
     author: String,
     view: Number,

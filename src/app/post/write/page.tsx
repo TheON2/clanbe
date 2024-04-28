@@ -36,6 +36,7 @@ export default function WritePage() {
   const [category, setCategory] = useState("");
   const [thumbnail, setThumbnail] = useState("");
   const [featured, setFeatured] = useState(false);
+  const [noticed, setNoticed] = useState(false);
 
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
@@ -68,12 +69,12 @@ export default function WritePage() {
         category,
         thumbnail,
         featured,
+        noticed,
         author: user?.email,
         view: 0,
         comment: {},
       };
       const response = await submitPost(postData);
-      console.log(response);
 
       if (!response.message) {
         throw new Error(`Error: 업로드 실패`);
@@ -104,54 +105,67 @@ export default function WritePage() {
               value={title}
               onChange={handleTitleChange}
             />
-            <Select
-              label="게시판 선택"
-              placeholder="Select an animal"
-              className="max-w-xs"
-              scrollShadowProps={{
-                isEnabled: false,
-              }}
-              onChange={(e) => handleCategoryChange(e)} // onChange 이벤트 핸들러 추가
-            >
-              <SelectSection
-                title="CLANBE"
-                classNames={{
-                  heading: headingClasses,
+            <div className="flex gap-4 m-0">
+              <Select
+                label="게시판 선택"
+                placeholder="Select an animal"
+                className="max-w-xs"
+                scrollShadowProps={{
+                  isEnabled: false,
                 }}
+                onChange={(e) => handleCategoryChange(e)} // onChange 이벤트 핸들러 추가
               >
-                <SelectItem key="support">클랜후원</SelectItem>
-              </SelectSection>
-              <SelectSection
-                title="커뮤니티"
-                classNames={{
-                  heading: headingClasses,
-                }}
-              >
-                <SelectItem key="forum">자유게시판</SelectItem>
-                <SelectItem key="introduce">가입인사</SelectItem>
-                <SelectItem key="feedback">건의사항</SelectItem>
-                <SelectItem key="tactics">전략전술</SelectItem>
-                <SelectItem key="dailycheckin">출석체크</SelectItem>
-              </SelectSection>
-              <SelectSection
-                title="리그"
-                classNames={{
-                  heading: headingClasses,
-                }}
-              >
-                <SelectItem key="ranking">랭킹전</SelectItem>
-                <SelectItem key="event">이벤트</SelectItem>
-                <SelectItem key="opponent">외부리그</SelectItem>
-                <SelectItem key="versus">끝장전</SelectItem>
-              </SelectSection>
-            </Select>
-            <Checkbox
-              className="my-4"
-              size="md"
-              onChange={(e) => setFeatured(e.target.checked)}
-            >
-              비밀글
-            </Checkbox>
+                <SelectSection
+                  title="CLANBE"
+                  classNames={{
+                    heading: headingClasses,
+                  }}
+                >
+                  <SelectItem key="support">클랜후원</SelectItem>
+                </SelectSection>
+                <SelectSection
+                  title="커뮤니티"
+                  classNames={{
+                    heading: headingClasses,
+                  }}
+                >
+                  <SelectItem key="forum">자유게시판</SelectItem>
+                  <SelectItem key="introduce">가입인사</SelectItem>
+                  <SelectItem key="feedback">건의사항</SelectItem>
+                  <SelectItem key="tactics">전략전술</SelectItem>
+                  <SelectItem key="dailycheckin">출석체크</SelectItem>
+                </SelectSection>
+                <SelectSection
+                  title="리그"
+                  classNames={{
+                    heading: headingClasses,
+                  }}
+                >
+                  <SelectItem key="ranking">랭킹전</SelectItem>
+                  <SelectItem key="event">이벤트</SelectItem>
+                  <SelectItem key="opponent">외부리그</SelectItem>
+                  <SelectItem key="versus">끝장전</SelectItem>
+                </SelectSection>
+              </Select>
+
+              <div className="flex flex-col gap-2 w-full">
+                <Checkbox
+                  className=""
+                  size="md"
+                  onChange={(e) => setFeatured(e.target.checked)}
+                >
+                  비밀글
+                </Checkbox>
+                {typeof user?.grade === "number" && user.grade >= 4 && (
+                  <Checkbox
+                    size="md"
+                    onChange={(e) => setNoticed(e.target.checked)}
+                  >
+                    공지로 등록
+                  </Checkbox>
+                )}
+              </div>
+            </div>
           </div>
         </div>
         {/* 글쓰기 에디터 섹션 */}

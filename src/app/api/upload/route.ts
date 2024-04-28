@@ -8,8 +8,9 @@ import PostModel from "@/models/post";
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let { htmlContent, title, description, category, thumbnail, featured,author,view } =
+  let { htmlContent,noticed, title, description, category, thumbnail, featured,author,view } =
     body.postData;
+
 
   try {
     const fileUrl = await uploadPostData(htmlContent);
@@ -28,6 +29,7 @@ export async function POST(req: Request, res: Response) {
       featured,
       fileUrl,
       author,
+      noticed,
       view
     });
 

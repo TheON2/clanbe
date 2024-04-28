@@ -3,7 +3,7 @@
 import { getPostHTML } from "@/service/posts";
 import { revalidateTag } from "next/cache";
 
-export async function getPost(slug:any) {
+export async function getPost(slug: any) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/post`, {
     method: "POST",
     headers: {
@@ -22,14 +22,15 @@ export async function getPost(slug:any) {
   return { post, postHTML, fileName };
 }
 
-export async function updatePost(postData:any) {
-    const response= await fetch(`${process.env.NEXT_PUBLIC_URL}/api/update`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ postData }),
-     });
-    revalidateTag("post");
-    return await response.json()
+export async function updatePost(postData: any) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/update`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ postData }),
+    cache: "no-store",
+  });
+  revalidateTag("post");
+  return await response.json();
 }

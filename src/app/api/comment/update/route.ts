@@ -12,7 +12,6 @@ export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
   let { postid, commentid, author, editedText } = body.postData;
-  console.log(body)
 
   try {
 
