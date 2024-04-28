@@ -21,11 +21,12 @@ import {
 import { useTheme } from "next-themes";
 import CommentCard from "../CommentCard/CommentCard";
 import ReplyCard from "../ReplyCard/ReplyCard";
-import { Comment } from "../../../types/types";
+import { Comment, User as MyUser } from "../../../types/types";
 import CommentComponent from "../CommentComponent/CommentComponent";
-import ProfileCard from "../ProfileCard";
+import ProfileCard from "../ProfileCard/ProfileCard";
 import { useSession } from "next-auth/react";
 import ReplyComponent from "../ReplyComponent/ReplyComponent";
+import { formatDate } from "@/utils/dateUtils";
 
 type PostFormProps = {
   post: {
@@ -37,10 +38,29 @@ type PostFormProps = {
     next: Post | null;
     prev: Post | null;
     _id: string;
+    createdAt: Date;
   };
+  userData: any;
 };
 
-export default function PostForm({ post }: PostFormProps) {
+type CategoryLabels = {
+  [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
+};
+
+export default function PostForm({ post, userData }: PostFormProps) {
+  const categoryLabels: CategoryLabels = {
+    forum: "자유게시판",
+    support: "클랜 후원",
+    introduce: "가입인사",
+    feedback: "건의사항",
+    tactics: "전략전술",
+    dailycheckin: "출석체크",
+    ranking: "랭킹전",
+    event: "이벤트",
+    opponent: "외부리그",
+    versus: "끝장전",
+  };
+
   const router = useRouter();
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
@@ -111,13 +131,13 @@ export default function PostForm({ post }: PostFormProps) {
       <Card className="py-4 m-4">
         <CardHeader className="m-4 pb-0 pt-2 px-4 flex justify-between items-center">
           <div>
-            <h1 className="text-3xl font-bold">{title}</h1>
-            <p>2024.04.14 오후 4시 13분</p>
+            <h1 className="text-4xl font-bold">{title}</h1>
+            <p className="pt-4 pb-4">{formatDate(post.createdAt)}</p>
             <div className="flex gap-4 mt-2">
-              <Chip color="default">{category}</Chip>
+              <Chip color="default">{categoryLabels[category]}</Chip>
             </div>
           </div>
-          {user?.email === post.author &&
+          {user?.email === post.author && (
             <div className="flex gap-2 mr-8">
               <Link href={`/post/update/${_id}`}>
                 <h1>수정</h1>
@@ -129,13 +149,14 @@ export default function PostForm({ post }: PostFormProps) {
                   action={triggerDelete}
                 ></TextModal>
               </Link>
-            </div>}
+            </div>
+          )}
         </CardHeader>
         <CardBody className="overflow-visible py-2">
           <CKEditorContent contentUrl={fileUrl} />
         </CardBody>
         <CardFooter>
-          <ProfileCard />
+          <ProfileCard userData={userData} />
         </CardFooter>
       </Card>
       <Card className="my-4 mx-4 p-4 min-h-[300px]">

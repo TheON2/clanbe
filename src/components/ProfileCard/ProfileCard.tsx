@@ -1,7 +1,18 @@
-import { Card, User } from "@nextui-org/react";
+import { Card, Spinner, User } from "@nextui-org/react";
 import { CardFooter, Link as MyLink, Avatar } from "@nextui-org/react";
+import { User as MyUser } from "../../../types/types";
+import { formatDate } from "@/utils/dateUtils";
 
-export default function CommentCard() {
+type ProfileCardProps = {
+  userData: any;
+};
+
+export default function ProfileCard({ userData }: ProfileCardProps) {
+  if (!userData) {
+    // user 데이터가 없을 경우 로딩 컴포넌트 표시
+    return <Spinner size="lg" />;
+  }
+  // console.log(user);
   return (
     <>
       <Card
@@ -11,12 +22,12 @@ export default function CommentCard() {
         <div className="flex items-start p-4">
           {/* Avatar 위치를 조정합니다. */}
           <Avatar
-            src="https://i.pravatar.cc/150?u=a04258114e29026302d"
+            src={userData.avatar}
             className="w-25 h-25 text-large absolute -top-10 left-12"
           />
           <div className="ml-48">
-            <p className="font-bold text-4xl">PLUGPOWER</p>
-            <p className="font-bold text-xl text-blue">@김도원</p>
+            <p className="font-bold text-4xl">{userData.nickname}</p>
+            <p className="font-bold text-xl text-blue">@{userData.name}</p>
           </div>
         </div>
         <Card
@@ -25,7 +36,9 @@ export default function CommentCard() {
         >
           옴게메게페고십다
         </Card>
-        <p className="ml-6 mb-4 font-bold text-sm">가입일 : 2021.04.12</p>
+        <p className="ml-6 mb-4 font-bold text-sm">
+          가입일 : {formatDate(userData.createdAt)}
+        </p>
       </Card>
       <Card className="block md:hidden m-8 w-full flex items-center">
         <User

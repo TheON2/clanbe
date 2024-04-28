@@ -13,6 +13,7 @@ import UserProfile from "../UserProfile";
 import { deleteReply, updateReply } from "./actions";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
+import { formatDate } from "@/utils/dateUtils";
 
 type CommentCardProps = {
   commentid: string;
@@ -120,6 +121,7 @@ export default function ReplyCard({
             )
           )}
         </CardHeader>
+        <div className="ml-4">{formatDate(date)}</div>
         <Card
           className="flex-1 p-2 m-2 overflow-hidden"
           style={{ maxWidth: "700px", overflowWrap: "break-word" }}

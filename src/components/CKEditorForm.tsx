@@ -35,7 +35,8 @@ export default function CKEditorForm({
   postHTML: string;
   fileName: string;
   postId: string;
-}) {
+  }) {
+  
   const [editorData, setEditorData] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -138,11 +139,12 @@ export default function CKEditorForm({
             />
             <Select
               label="게시판 선택"
-              placeholder="Select an animal"
+              placeholder="게시판 선택"
               className="max-w-xs"
               scrollShadowProps={{
                 isEnabled: false,
               }}
+              selectedKeys={[category]}
               onChange={(e) => handleCategoryChange(e)} // onChange 이벤트 핸들러 추가
             >
               <SelectSection

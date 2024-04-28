@@ -199,13 +199,15 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
         </ModalContent>
       </Modal>
       <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
-        {announce.map((announce) => (
-          <NoticeCardHeader
-            key={announce._id}
-            title={announce.title}
-            date={getFormattedDate(announce.createdAt)}
-          />
-        ))}
+        {announce
+          .filter((a) => a.noticed)
+          .map((announce) => (
+            <NoticeCardHeader
+              key={announce._id}
+              title={announce.title}
+              date={getFormattedDate(announce.createdAt)}
+            />
+          ))}
         <Divider />
         {/* 현재 페이지의 게시물 렌더링 */}
         {currentPosts.map((post, index) => (

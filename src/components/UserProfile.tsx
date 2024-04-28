@@ -36,7 +36,7 @@ const UserProfile = ({ email }: { email: string | null | undefined }) => {
   }
 
   return (
-    <div className="flex items-center p-4">
+    <div className="flex items-center pl-4 pt-4">
       <User
         name={user.nickname || "Unknown User"}
         description={

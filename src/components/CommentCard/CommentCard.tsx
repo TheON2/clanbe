@@ -9,6 +9,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { deleteComment, updateComment } from "./actions";
+import { formatDate } from "@/utils/dateUtils";
 
 type CommentCardProps = {
   commentid: string;
@@ -120,6 +121,7 @@ export default function CommentCard({
             )
           )}
         </CardHeader>
+        <div className="ml-4">{formatDate(date)}</div>
         <Card
           className="flex-1 p-2 m-2 overflow-hidden"
           style={{ maxWidth: "700px", overflowWrap: "break-word" }}
