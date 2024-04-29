@@ -20,7 +20,9 @@ export async function POST(req: Request, res: Response) {
     if (body.category === "allposts") {
       posts = await PostModel.find({});
     } else {
-      posts = await PostModel.find({ category: body.category });
+      posts = await PostModel.find({
+        $or: [{ category: body.category }, { category: "notice" }]
+      });
     } // 모든 게시글을 검색
 
     const transformedPosts = posts.map((post) => {

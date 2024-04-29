@@ -142,7 +142,9 @@ export default function SignInPage() {
                 disabled={!canSubmit()}
                 color="success"
                 className={`min-w-[250px] ${
-                  canSubmit() ? "" : "bg-gray-400 hover:bg-gray-400"
+                  canSubmit()
+                    ? "bg-blue-default"
+                    : "bg-gray-default hover:bg-gray-default"
                 }`}
               >
                 로그인

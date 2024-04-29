@@ -37,11 +37,9 @@ type BoardLayoutProps = {
   boardTitle: string;
   announce: Post[];
   posts: Post[];
-  category: string;
 };
 
-const BoardLayout: React.FC<BoardLayoutProps> = ({
-  category,
+const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
   boardTitle,
   announce,
   posts,
@@ -186,37 +184,19 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
         </ModalContent>
       </Modal>
       <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
-        {[...announce]
-          .filter((a) => a.noticed && a.category === "notice")
-          .reverse()
+        {/* {announce
+          .filter((a) => a.noticed)
           .map((announce) => (
             <NoticeCardHeader
               key={announce._id}
-              announce={announce}
+              title={announce.title}
               date={getFormattedDate(announce.createdAt)}
             />
           ))}
-        {[...announce]
-          .filter(
-            (a) =>
-              a.noticed && a.category === category && a.category !== "notice"
-          )
-          .reverse()
-          .map((announce) => (
-            <NoticeCardHeader
-              key={announce._id}
-              announce={announce}
-              date={getFormattedDate(announce.createdAt)}
-            />
-          ))}
-        <Divider />
+        <Divider /> */}
         {/* 현재 페이지의 게시물 렌더링 */}
         {currentPosts
-          .filter(
-            (a) =>
-              (a.category === category || category === "allposts") &&
-              a.category !== "notice"
-          )
+          .filter((a) => a.noticed)
           .map((post, index) => (
             <PostCardComponent
               key={index}
@@ -242,4 +222,4 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
   );
 };
 
-export default BoardLayout;
+export default NoticeBoardLayout;

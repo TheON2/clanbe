@@ -1,6 +1,25 @@
 import React from "react";
 import { ChevronDown } from "./Icons";
 
+type CategoryLabels = {
+  [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
+};
+
+export const categoryLabels: CategoryLabels = {
+  forum: "자유게시판",
+  support: "클랜 후원",
+  introduce: "가입인사",
+  feedback: "건의사항",
+  tactics: "전략전술",
+  dailycheckin: "출석체크",
+  ranking: "랭킹전",
+  event: "이벤트",
+  opponent: "외부리그",
+  versus: "끝장전",
+  notice: "공지사항",
+};
+
+
 export const aligns = [
   {
     label: "기본",

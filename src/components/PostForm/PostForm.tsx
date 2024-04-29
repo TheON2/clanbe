@@ -59,6 +59,7 @@ export default function PostForm({ post, userData }: PostFormProps) {
     event: "이벤트",
     opponent: "외부리그",
     versus: "끝장전",
+    notice: "공지사항",
   };
 
   const router = useRouter();

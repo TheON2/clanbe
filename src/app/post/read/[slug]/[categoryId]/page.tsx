@@ -57,6 +57,7 @@ export default async function PostPage({
         boardTitle={"전체 게시글"}
         announce={posts.data}
         posts={posts.data}
+        category={categoryId}
       />
     </div>
   );

@@ -9,6 +9,14 @@ export type Team = {
   winpoint: number;
 };
 
+export type EventType = {
+  id?: string;
+  title: string;
+  date: string;
+  description: string;
+  author: string;
+}
+
 // UserModel의 타입 정의
 export type User = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)

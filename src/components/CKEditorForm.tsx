@@ -35,8 +35,7 @@ export default function CKEditorForm({
   postHTML: string;
   fileName: string;
   postId: string;
-  }) {
-  
+}) {
   const [editorData, setEditorData] = useState("");
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -76,6 +75,11 @@ export default function CKEditorForm({
   };
 
   const handleCategoryChange = (event: any) => {
+    if (user && user?.grade < 4 && event.target.value === "notice") {
+      alert("운영자만 접근 가능합니다.");
+      setCategory("forum");
+      return;
+    }
     setCategory(event.target.value);
   };
 
@@ -153,6 +157,7 @@ export default function CKEditorForm({
                   heading: headingClasses,
                 }}
               >
+                <SelectItem key="notice">공지사항</SelectItem>
                 <SelectItem key="support">클랜후원</SelectItem>
               </SelectSection>
               <SelectSection

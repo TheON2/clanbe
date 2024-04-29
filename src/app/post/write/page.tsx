@@ -43,6 +43,11 @@ export default function WritePage() {
   };
 
   const handleCategoryChange = (event: any) => {
+    if (user && user?.grade < 4 && event.target.value === "notice") {
+      alert("운영자만 접근 가능합니다.");
+      setCategory("forum");
+      return;
+    }
     setCategory(event.target.value);
   };
 
@@ -105,11 +110,10 @@ export default function WritePage() {
               value={title}
               onChange={handleTitleChange}
             />
-            <div className="flex gap-4 m-0">
+            <div className="flex gap-4 m-0 w-full">
               <Select
                 label="게시판 선택"
-                placeholder="Select an animal"
-                className="max-w-xs"
+                placeholder="게시판 선택"
                 scrollShadowProps={{
                   isEnabled: false,
                 }}
@@ -121,6 +125,7 @@ export default function WritePage() {
                     heading: headingClasses,
                   }}
                 >
+                  <SelectItem key="notice">공지사항</SelectItem>
                   <SelectItem key="support">클랜후원</SelectItem>
                 </SelectSection>
                 <SelectSection
