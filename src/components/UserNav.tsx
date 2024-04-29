@@ -57,169 +57,340 @@ const UserNav = ({ user, teams }: UserNavProps) => {
   const imagePath = teamImagePaths[user.team] || "/default.jpg";
 
   return (
-    <Tabs aria-label="Dynamic tabs" items={tabs}>
-      <Tab key={"Profile"} title={"Profile"}>
-        <Card>
-          <CardBody>
-            <User
-              className="my-4"
-              name={user.nickname}
-              description={user.role}
-              avatarProps={{
-                src: user.avatar,
-              }}
-            />
-            <br />
-            <Progress
-              size="sm"
-              radius="sm"
-              classNames={{
-                base: "max-w-md",
-                track: "drop-shadow-md border border-default",
-                indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
-                label: "tracking-wider font-medium text-default-600",
-                value: "text-foreground/60",
-              }}
-              label={"LV" + level}
-              value={expPercentage}
-              showValueLabel={true}
-            />
-            <div className="flex justify-center gap-4">
-              <p>회원메뉴</p>
-              <p onClick={() => signOut()}>로그아웃</p>
-            </div>
-          </CardBody>
-        </Card>
-      </Tab>
-      <Tab key={"BELO"} title={"BELO"}>
-        <Card>
-          <CardBody className="my-4">
-            <User
-              name={user.name}
-              description={user.role}
-              avatarProps={{
-                src: user.avatar,
-              }}
-            />
-            <div className="flex my-4">
-              <CircularProgress
-                aria-label="Loading..."
-                size="lg"
-                value={winRateTotal}
-                color="success"
-                showValueLabel={true}
-              />
-              <div>
-                <p className="mx-4 font-bold">
-                  {totalWins}W {totalLosses}L
-                </p>
-                <p className="mx-4 font-bold">{user.tear} Tier</p>
-              </div>
-            </div>
-            <div className="flex my-2">
-              <CircularProgress
-                aria-label="Loading..."
-                size="lg"
-                value={winRateP}
-                color="success"
-                showValueLabel={true}
-              />
-              <p className="mx-4 font-bold">
-                vs P {user.BELO.pw}W {user.BELO.pl}L
-              </p>
-            </div>
-            <div className="flex my-2">
-              <CircularProgress
-                aria-label="Loading..."
-                size="lg"
-                value={winRateZ}
-                color="success"
-                showValueLabel={true}
-              />
-              <p className="mx-4 font-bold">
-                vs Z {user.BELO.zw}W {user.BELO.zl}L
-              </p>
-            </div>
-            <div className="flex my-2">
-              <CircularProgress
-                aria-label="Loading..."
-                size="lg"
-                value={winRateT}
-                color="danger"
-                showValueLabel={true}
-              />
-              <p className="mx-4 font-bold">
-                vs T {user.BELO.tw}W {user.BELO.tl}L
-              </p>
-            </div>
-            <div className="flex flex-col gap-4 my-4">
-              <Button>BELO 순위</Button>
-              <Button>BELO 등록</Button>
-            </div>
-          </CardBody>
-        </Card>
-      </Tab>
-      <Tab key={"LEAGUE"} title={"LEAGUE"}>
-        <Card>
-          <CardBody className="my-4">
-            <User
-              name={user.name}
-              description={user.role}
-              avatarProps={{
-                src: user.avatar,
-              }}
-            />
-            <Image
-              alt="Card background"
-              src={imagePath}
-              width={200}
-              height={200}
-              className="my-4"
-            />
-            <div className="flex my-2">
-              <CircularProgress
-                aria-label="Loading..."
-                size="lg"
-                value={winRateTeam}
-                color="success"
-                showValueLabel={true}
-              />
-              <div>
-                <p className="mx-4 font-bold">
-                  {myTeam?.ranking}위 {myTeam?.w}W {myTeam?.l}L
-                </p>
-                <p className="mx-4 font-bold">득실 {myTeam?.point}</p>
-                <p className="mx-4 font-bold">승점 {myTeam?.winpoint}</p>
-              </div>
-            </div>
-            <div className="flex flex-col mx-auto my-4">
-              <p>Next Match</p>
-              <div className="p-4">
-                <Popover showArrow placement="bottom">
-                  <PopoverTrigger>
-                    <User
-                      as="button"
-                      name="Zoe Lang"
-                      description="Product Designer"
-                      className="transition-transform"
-                      avatarProps={{
-                        src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-                      }}
-                    />
-                  </PopoverTrigger>
-                  <PopoverContent className="p-1">
-                    <UserTwitterCard />
-                  </PopoverContent>
-                </Popover>
-              </div>
-              <Tooltip showArrow={true} content="D-2">
-                <Button>2023-07-04</Button>
-              </Tooltip>
-            </div>
-          </CardBody>
-        </Card>
-      </Tab>
-    </Tabs>
+    <>
+      <div className="hidden md:block">
+        <Tabs aria-label="Dynamic tabs" items={tabs}>
+          <Tab key={"Profile"} title={"Profile"}>
+            <Card>
+              <CardBody>
+                <User
+                  className="my-4"
+                  name={user.nickname}
+                  description={user.role}
+                  avatarProps={{
+                    src: user.avatar,
+                  }}
+                />
+                <br />
+                <Progress
+                  size="sm"
+                  radius="sm"
+                  classNames={{
+                    base: "max-w-md",
+                    track: "drop-shadow-md border border-default",
+                    indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
+                    label: "tracking-wider font-medium text-default-600",
+                    value: "text-foreground/60",
+                  }}
+                  label={"LV" + level}
+                  value={expPercentage}
+                  showValueLabel={true}
+                />
+                <div className="flex justify-center gap-4">
+                  <p>회원메뉴</p>
+                  <p onClick={() => signOut()}>로그아웃</p>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab key={"BELO"} title={"BELO"}>
+            <Card>
+              <CardBody className="my-4">
+                <User
+                  name={user.name}
+                  description={user.role}
+                  avatarProps={{
+                    src: user.avatar,
+                  }}
+                />
+                <div className="flex my-4 ">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateTotal}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <div>
+                    <p className="mx-4 font-bold">
+                      {totalWins}W {totalLosses}L
+                    </p>
+                    <p className="mx-4 font-bold">{user.tear} Tier</p>
+                  </div>
+                </div>
+                <div className="flex my-2">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateP}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <p className="mx-4 font-bold">
+                    vs P {user.BELO.pw}W {user.BELO.pl}L
+                  </p>
+                </div>
+                <div className="flex my-2">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateZ}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <p className="mx-4 font-bold">
+                    vs Z {user.BELO.zw}W {user.BELO.zl}L
+                  </p>
+                </div>
+                <div className="flex my-2">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateT}
+                    color="danger"
+                    showValueLabel={true}
+                  />
+                  <p className="mx-4 font-bold">
+                    vs T {user.BELO.tw}W {user.BELO.tl}L
+                  </p>
+                </div>
+                <div className="flex flex-col gap-4 my-4">
+                  <Button>BELO 순위</Button>
+                  <Button>BELO 등록</Button>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab key={"LEAGUE"} title={"LEAGUE"}>
+            <Card>
+              <CardBody className="my-4">
+                <User
+                  name={user.name}
+                  description={user.role}
+                  avatarProps={{
+                    src: user.avatar,
+                  }}
+                />
+                <Image
+                  alt="Card background"
+                  src={imagePath}
+                  width={200}
+                  height={200}
+                  className="my-4"
+                />
+                <div className="flex my-2">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateTeam}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <div>
+                    <p className="mx-4 font-bold">
+                      {myTeam?.ranking}위 {myTeam?.w}W {myTeam?.l}L
+                    </p>
+                    <p className="mx-4 font-bold">득실 {myTeam?.point}</p>
+                    <p className="mx-4 font-bold">승점 {myTeam?.winpoint}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col mx-auto my-4">
+                  <p>Next Match</p>
+                  <div className="p-4">
+                    <Popover showArrow placement="bottom">
+                      <PopoverTrigger>
+                        <User
+                          as="button"
+                          name="Zoe Lang"
+                          description="Product Designer"
+                          className="transition-transform"
+                          avatarProps={{
+                            src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                          }}
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent className="p-1">
+                        <UserTwitterCard />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <Tooltip showArrow={true} content="D-2">
+                    <Button>2023-07-04</Button>
+                  </Tooltip>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+        </Tabs>
+      </div>
+      <div className="block md:hidden">
+        <Tabs aria-label="Dynamic tabs" items={tabs}>
+          <Tab key={"Profile"} title={"Profile"}>
+            <Card>
+              <CardBody>
+                <User
+                  className="my-4"
+                  name={user.nickname}
+                  description={user.role}
+                  avatarProps={{
+                    src: user.avatar,
+                  }}
+                />
+                <br />
+                <Progress
+                  size="sm"
+                  radius="sm"
+                  classNames={{
+                    base: "max-w-md",
+                    track: "drop-shadow-md border border-default",
+                    indicator: "bg-gradient-to-r from-pink-500 to-yellow-500",
+                    label: "tracking-wider font-medium text-default-600",
+                    value: "text-foreground/60",
+                  }}
+                  label={"LV" + level}
+                  value={expPercentage}
+                  showValueLabel={true}
+                />
+                <div className="flex justify-center gap-4">
+                  <p>회원메뉴</p>
+                  <p onClick={() => signOut()}>로그아웃</p>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab key={"BELO"} title={"BELO"}>
+            <Card>
+              <CardBody className="my-4">
+                <User
+                  name={user.name}
+                  description={user.role}
+                  avatarProps={{
+                    src: user.avatar,
+                  }}
+                />
+                <div className="flex my-4 justify-center">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateTotal}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <div>
+                    <p className="mx-4 font-bold">
+                      {totalWins}W {totalLosses}L
+                    </p>
+                    <p className="mx-4 font-bold">{user.tear} Tier</p>
+                  </div>
+                </div>
+                <div className="flex my-2 justify-center">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateP}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <p className="mx-4 font-bold">
+                    vs P {user.BELO.pw}W {user.BELO.pl}L
+                  </p>
+                </div>
+                <div className="flex my-2 justify-center">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateZ}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <p className="mx-4 font-bold">
+                    vs Z {user.BELO.zw}W {user.BELO.zl}L
+                  </p>
+                </div>
+                <div className="flex my-2 justify-center">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateT}
+                    color="danger"
+                    showValueLabel={true}
+                  />
+                  <p className="mx-4 font-bold">
+                    vs T {user.BELO.tw}W {user.BELO.tl}L
+                  </p>
+                </div>
+                <div className="flex flex-col gap-4 my-4">
+                  <Button>BELO 순위</Button>
+                  <Button>BELO 등록</Button>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+          <Tab key={"LEAGUE"} title={"LEAGUE"}>
+            <Card>
+              <CardBody className="my-4">
+                <User
+                  name={user.name}
+                  description={user.role}
+                  avatarProps={{
+                    src: user.avatar,
+                  }}
+                />
+                <div className="flex justify-center">
+                  <Image
+                    alt="Card background"
+                    src={imagePath}
+                    width={300}
+                    height={300}
+                    className="my-4"
+                  />
+                </div>
+                <div className="flex my-2 justify-center">
+                  <CircularProgress
+                    aria-label="Loading..."
+                    size="lg"
+                    value={winRateTeam}
+                    color="success"
+                    showValueLabel={true}
+                  />
+                  <div>
+                    <p className="mx-4 font-bold">
+                      {myTeam?.ranking}위 {myTeam?.w}W {myTeam?.l}L
+                    </p>
+                    <p className="mx-4 font-bold">득실 {myTeam?.point}</p>
+                    <p className="mx-4 font-bold">승점 {myTeam?.winpoint}</p>
+                  </div>
+                </div>
+                <div className="flex flex-col mx-auto my-4">
+                  <p>Next Match</p>
+                  <div className="p-4">
+                    <Popover showArrow placement="bottom">
+                      <PopoverTrigger>
+                        <User
+                          as="button"
+                          name="Zoe Lang"
+                          description="Product Designer"
+                          className="transition-transform"
+                          avatarProps={{
+                            src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                          }}
+                        />
+                      </PopoverTrigger>
+                      <PopoverContent className="p-1">
+                        <UserTwitterCard />
+                      </PopoverContent>
+                    </Popover>
+                  </div>
+                  <Tooltip showArrow={true} content="D-2">
+                    <Button>2023-07-04</Button>
+                  </Tooltip>
+                </div>
+              </CardBody>
+            </Card>
+          </Tab>
+        </Tabs>
+      </div>
+    </>
   );
 };
 
