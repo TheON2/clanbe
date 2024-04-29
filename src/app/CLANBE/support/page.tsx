@@ -3,13 +3,14 @@ import { announce, board } from "../../../../public/data";
 import { getAllPosts } from "@/service/posts";
 
 export default async function SupportPage() {
+  const category = "support";
   // API 호출을 통해 포스트 데이터를 가져옴
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ category: "support" }),
+    body: JSON.stringify({ category }),
     next: { tags: ["post"] },
   });
 
@@ -21,6 +22,7 @@ export default async function SupportPage() {
       boardTitle={"클랜 후원"}
       announce={posts.data}
       posts={posts.data}
+      category={category}
     />
   );
 }
