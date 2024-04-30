@@ -52,12 +52,7 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
   };
   const router = useRouter();
   return (
-    <div
-      className="flex flex-col px-4 py-2 gap-4 hover:text-blue-default cursor-pointer"
-      onClick={() => {
-        router.push(`/post/read/${id}/${category}`);
-      }}
-    >
+    <div className="flex flex-col px-4 py-2 gap-4">
       <div className="flex gap-4">
         <Button
           className="h-[30px]"
@@ -71,7 +66,14 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
         >
           {labels[category]}
         </Button>
-        <div className="font-bold text-xl">{title}</div>
+        <div
+          className="font-bold text-xl hover:text-blue-default cursor-pointer"
+          onClick={() => {
+            router.push(`/post/read/${id}/${category}`);
+          }}
+        >
+          {title}
+        </div>
       </div>
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">
