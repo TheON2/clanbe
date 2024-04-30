@@ -53,7 +53,7 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
   const router = useRouter();
   return (
     <div
-      className="flex flex-col px-4 py-2 gap-4"
+      className="flex flex-col px-4 py-2 gap-4 hover:text-blue-default cursor-pointer"
       onClick={() => {
         router.push(`/post/read/${id}/${category}`);
       }}
