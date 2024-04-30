@@ -1,29 +1,10 @@
 "use client";
 
-import {
-  Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
-  Chip,
-  Divider,
-  Link,
-  Listbox,
-  ListboxItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  Tooltip,
-  User,
-} from "@nextui-org/react";
+import { Divider } from "@nextui-org/react";
 import Banner from "@/components/Banner";
-import Notice from "@/components/Notice";
+import Notice from "@/components/Notice/Notice";
 import Upcoming from "@/components/Upcoming";
-import PublicPosts from "@/components/PublicPosts";
+import PublicPosts from "@/components/PublicPosts/PublicPosts";
 import PlayerPosts from "@/components/PlayerPosts";
 import MobileUserComponent from "@/components/MobileUserComponent";
 

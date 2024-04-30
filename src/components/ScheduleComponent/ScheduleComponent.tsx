@@ -15,8 +15,6 @@ import {
   ModalContent,
   ModalFooter,
   ModalHeader,
-  Select,
-  SelectItem,
   Textarea,
   useDisclosure,
 } from "@nextui-org/react";

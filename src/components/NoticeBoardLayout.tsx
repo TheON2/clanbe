@@ -91,29 +91,31 @@ const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
   };
 
   useEffect(() => {
-    const sorted = [...posts].sort((a, b) => {
-      switch (selectedSortKey) {
-        case "default":
-          // MongoDB의 ObjectId를 기반으로 최신 순 정렬
-          return b._id.localeCompare(a._id);
-        case "dateDesc":
-          // 날짜를 기준으로 내림차순 정렬, Date 객체로 변환하여 비교
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        case "dateAsc":
-          // 날짜를 기준으로 오름차순 정렬, Date 객체로 변환하여 비교
-          return (
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-        case "viewDesc":
-          return b.view - a.view;
-        case "viewAsc":
-          return a.view - b.view;
-        default:
-          return 0;
-      }
-    });
+    const sorted = [...posts]
+      .filter((post) => post.noticed)
+      .sort((a, b) => {
+        switch (selectedSortKey) {
+          case "default":
+            // MongoDB의 ObjectId를 기반으로 최신 순 정렬
+            return b._id.localeCompare(a._id);
+          case "dateDesc":
+            // 날짜를 기준으로 내림차순 정렬, Date 객체로 변환하여 비교
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          case "dateAsc":
+            // 날짜를 기준으로 오름차순 정렬, Date 객체로 변환하여 비교
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          case "viewDesc":
+            return b.view - a.view;
+          case "viewAsc":
+            return a.view - b.view;
+          default:
+            return 0;
+        }
+      });
     setSortedBoard(sorted);
   }, [selectedSortKey, posts]);
 
@@ -184,30 +186,17 @@ const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
         </ModalContent>
       </Modal>
       <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
-        {/* {announce
-          .filter((a) => a.noticed)
-          .map((announce) => (
-            <NoticeCardHeader
-              key={announce._id}
-              title={announce.title}
-              date={getFormattedDate(announce.createdAt)}
-            />
-          ))}
-        <Divider /> */}
-        {/* 현재 페이지의 게시물 렌더링 */}
-        {currentPosts
-          .filter((a) => a.noticed)
-          .map((post, index) => (
-            <PostCardComponent
-              key={index}
-              title={post.title}
-              author={post.author}
-              views={post.view}
-              date={getFormattedDate(post.createdAt)}
-              id={post._id}
-              category={post.category}
-            />
-          ))}
+        {currentPosts.map((post, index) => (
+          <PostCardComponent
+            key={index}
+            title={post.title}
+            author={post.author}
+            views={post.view}
+            date={getFormattedDate(post.createdAt)}
+            id={post._id}
+            category={post.category}
+          />
+        ))}
       </Card>
       <div className="flex justify-center py-2">
         <Pagination

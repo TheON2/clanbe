@@ -1,6 +1,7 @@
 import React from "react";
-import { Avatar, Chip, Divider } from "@nextui-org/react";
+import { Avatar, Button, Chip, Divider } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { categoryLabels } from "../../public/data";
 
 interface PostCardComponentProps {
   id: string;
@@ -11,10 +12,6 @@ interface PostCardComponentProps {
   category: string;
 }
 
-type CategoryLabels = {
-  [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
-};
-
 const PostCardComponent: React.FC<PostCardComponentProps> = ({
   id,
   title,
@@ -23,18 +20,35 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
   date,
   category,
 }) => {
-  const categoryLabels: CategoryLabels = {
-    forum: "자유게시판",
-    support: "클랜 후원",
-    introduce: "가입인사",
-    feedback: "건의사항",
-    tactics: "전략전술",
-    dailycheckin: "출석체크",
-    ranking: "랭킹전",
-    event: "이벤트",
-    opponent: "외부리그",
-    versus: "끝장전",
-    notice: "공지사항",
+  const labels = categoryLabels;
+
+  const getCategoryPath = (category: string) => {
+    switch (category) {
+      case "공지사항":
+        return "/CLANBE/notices";
+      case "클랜 후원":
+        return "/CLANBE/support";
+      case "자유게시판":
+        return "/COMMUNITY/forum";
+      case "가입인사":
+        return "/COMMUNITY/introduce";
+      case "건의사항":
+        return "/COMMUNITY/feedback";
+      case "전략전술":
+        return "/COMMUNITY/tactics";
+      case "출석체크":
+        return "/COMMUNITY/dailycheckin";
+      case "랭킹전":
+        return "/LEAGUE/ranking";
+      case "이벤트":
+        return "/LEAGUE/event";
+      case "외부리그":
+        return "/LEAGUE/opponent";
+      case "끝장전":
+        return "/LEAGUE/versus";
+      default:
+        return "/"; // 기본 경로
+    }
   };
   const router = useRouter();
   return (
@@ -45,10 +59,19 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
       }}
     >
       <div className="flex gap-4">
+        <Button
+          className="h-[30px]"
+          radius="full"
+          color="primary"
+          variant="ghost"
+          onClick={() => {
+            const path = getCategoryPath(categoryLabels[category]);
+            router.push(`${path}`);
+          }}
+        >
+          {labels[category]}
+        </Button>
         <div className="font-bold text-xl">{title}</div>
-        <div>
-          <Chip>{categoryLabels[category]}</Chip>
-        </div>
       </div>
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">
@@ -60,7 +83,6 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
           />
           <span>{author}</span>
         </div>
-        {/* 간격을 최소화하면서 조회수와 날짜를 옆으로 배치 */}
         <div className="flex-none ml-auto mr-2" style={{ width: "auto" }}>
           조회 수 {views}
         </div>

@@ -62,6 +62,35 @@ export default function PostForm({ post, userData }: PostFormProps) {
     notice: "공지사항",
   };
 
+  const getCategoryPath = (category: string) => {
+    switch (category) {
+      case "공지사항":
+        return "/CLANBE/notices";
+      case "클랜 후원":
+        return "/CLANBE/support";
+      case "자유게시판":
+        return "/COMMUNITY/forum";
+      case "가입인사":
+        return "/COMMUNITY/introduce";
+      case "건의사항":
+        return "/COMMUNITY/feedback";
+      case "전략전술":
+        return "/COMMUNITY/tactics";
+      case "출석체크":
+        return "/COMMUNITY/dailycheckin";
+      case "랭킹전":
+        return "/LEAGUE/ranking";
+      case "이벤트":
+        return "/LEAGUE/event";
+      case "외부리그":
+        return "/LEAGUE/opponent";
+      case "끝장전":
+        return "/LEAGUE/versus";
+      default:
+        return "/"; // 기본 경로
+    }
+  };
+
   const router = useRouter();
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
@@ -135,7 +164,18 @@ export default function PostForm({ post, userData }: PostFormProps) {
             <h1 className="text-4xl font-bold">{title}</h1>
             <p className="pt-4 pb-4">{formatDate(post.createdAt)}</p>
             <div className="flex gap-4 mt-2">
-              <Chip color="default">{categoryLabels[category]}</Chip>
+              <Button
+                className="h-[30px] m-2 mr-4"
+                radius="full"
+                color="primary"
+                variant="ghost"
+                onClick={() => {
+                  const path = getCategoryPath(categoryLabels[category]);
+                  router.push(`${path}`);
+                }}
+              >
+                {categoryLabels[category]}
+              </Button>
             </div>
           </div>
           {user?.email === post.author && (
