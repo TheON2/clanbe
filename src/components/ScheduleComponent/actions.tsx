@@ -28,7 +28,6 @@ export async function createEvent(newEvent: EventType) {
 
 export async function updateEvent(newEvent: EventType) {
   try {
-    console.log("newEvent:" + newEvent);
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/event/update`,
       {

@@ -29,15 +29,10 @@ export const HeaderEnd = () => {
         </Button>
       </NavbarItem> */}
       {/* <NavbarItem>
-          <Button
-            color="primary"
-            href="#"
-            variant="flat"
-            onClick={handleSubmit}
-          >
-            Dummy
-          </Button>
-        </NavbarItem> */}
+        <Button color="primary" href="#" variant="flat" onClick={handleSubmit}>
+          Dummy
+        </Button>
+      </NavbarItem> */}
     </NavbarContent>
   );
 };

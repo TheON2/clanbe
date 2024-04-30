@@ -23,7 +23,6 @@ const Upcoming = () => {
     fetchData();
   }, []);
 
-  console.log(events);
   return (
     <Card className={`w-full lg:w-1/2 ${styles.customCard} h-[400px]`}>
       <CardHeader className="flex gap-3">

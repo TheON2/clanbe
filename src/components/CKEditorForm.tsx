@@ -66,10 +66,6 @@ export default function CKEditorForm({
     post.thumbnail,
   ]);
 
-  useEffect(() => {
-    console.log(featured, noticed);
-  }, [noticed, featured]);
-
   const handleTitleChange = (event: any) => {
     setTitle(event.target.value);
   };

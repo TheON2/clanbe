@@ -18,8 +18,6 @@ export default async function ForumPage() {
   // 응답을 JSON으로 변환
   const posts = await response.json();
 
-  console.log(posts);
-
   return (
     <BoardLayout
       boardTitle={"자유 게시판"}

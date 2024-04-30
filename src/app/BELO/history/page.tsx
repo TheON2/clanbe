@@ -1,5 +1,7 @@
 "use client";
 
+import BELOMatchComponent from "@/components/BELOMatchComponent/BELOMatchComponent";
+
 export default function HistoryPage() {
-  return "멤버 페이지";
+  return <BELOMatchComponent />;
 }

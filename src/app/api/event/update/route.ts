@@ -5,8 +5,6 @@ export async function POST(req: Request) {
   const body = await req.json();
   let { title, date, description, author, id } = body;
 
-  console.log(body);
-
   try {
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     const findEvent = await EventModel.findById(id);

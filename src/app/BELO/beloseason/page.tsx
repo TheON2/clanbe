@@ -1,5 +1,5 @@
-"use client";
+import BELOComponent from "@/components/BELOComponent/BELOCompoent";
 
 export default function BeloSeasonPage() {
-  return "멤버 페이지";
+  return <BELOComponent />;
 }

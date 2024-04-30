@@ -24,3 +24,7 @@ export function formatRelativeDate(date: Date): string {
     return `${diffInDays}일 전`;
   }
 }
+
+export function capitalize(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
