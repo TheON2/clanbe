@@ -14,7 +14,7 @@ import { useSession } from "next-auth/react";
 import { getTeamData } from "@/service/user";
 import { Team } from "../../types/types";
 import { getTeam } from "@/app/actions";
-import UserNav from "./UserNav";
+import UserNav from "./UserNav/UserNav";
 
 export default function MobileUserComponent() {
   const router = useRouter();

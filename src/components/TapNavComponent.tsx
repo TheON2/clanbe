@@ -24,9 +24,9 @@ import { tabs } from "../../public/data";
 import { Team } from "../../types/types";
 import { ThemeSwitcher } from "./ThemeSwitcher";
 import { useSession } from "next-auth/react";
-import UserNav from "./UserNav";
 import UserNav2 from "./UserNav2";
 import { useRouter } from "next/navigation";
+import UserNav from "./UserNav/UserNav";
 
 type TapNavProps = {
   teams: Team[];
