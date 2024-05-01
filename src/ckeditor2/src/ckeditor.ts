@@ -176,6 +176,7 @@ class Editor extends ClassicEditor {
         "pageBreak",
         "todoList",
         "htmlEmbed",
+        'IFrame'
       ],
     },
     language: "ko",

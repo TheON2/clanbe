@@ -13,7 +13,8 @@ const nextConfig = {
       { hostname: "velog.velcdn.com" },
       { hostname: "avatars.githubusercontent.com" },
       { hostname: "upload3.inven.co.kr" },
-      {hostname:"clanbe.s3.ap-northeast-2.amazonaws.com"}
+      { hostname: "clanbe.s3.ap-northeast-2.amazonaws.com" },
+      {hostname:"img.icons8.com"}
     ],
   },
 };

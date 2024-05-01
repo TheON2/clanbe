@@ -122,6 +122,7 @@ export default function MyEditor(props: MyEditorProps) {
                 "mediaEmbed",
                 "undo",
                 "redo",
+                "IFrame",
               ],
               shouldNotGroupWhenFull: true,
             },

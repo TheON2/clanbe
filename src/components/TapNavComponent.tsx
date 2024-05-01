@@ -39,13 +39,13 @@ const TapNavComponent = ({ teams }: TapNavProps) => {
   const router = useRouter(); // useRouter 훅을 사용하여 라우터 인스턴스를 가져옵니다.
 
   return (
-    <div className="hidden sm:block mx-4 sticky top-16 my-32 sm:w-auto">
+    <div className="hidden sm:block mx-4 sticky top-20 w-[280px] ">
       {isLoggedIn && user ? (
         <UserNav user={user} teams={teams} />
       ) : (
         <UserNav2 />
       )}
-      <Tabs aria-label="Dynamic tabs" items={tabs}>
+      {/* <Tabs aria-label="Dynamic tabs" items={tabs}>
         <Tab key={"후원"} title={"후원"}>
           <Card>
             <CardHeader>
@@ -74,7 +74,7 @@ const TapNavComponent = ({ teams }: TapNavProps) => {
             <CardBody></CardBody>
           </Card>
         </Tab>
-      </Tabs>
+      </Tabs> */}
       <ThemeSwitcher />
     </div>
   );
