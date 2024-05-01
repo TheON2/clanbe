@@ -9,6 +9,17 @@ export type Team = {
   winpoint: number;
 };
 
+export type Match = {
+  _id: string;
+  name: string;
+  winner: string;
+  wrace: string;
+  loser: string;
+  lrace: string;
+  map: string;
+  date: Date;
+}
+
 export type EventType = {
   id?: string;
   title: string;

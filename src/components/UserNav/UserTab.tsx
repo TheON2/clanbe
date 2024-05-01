@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Button,
@@ -15,7 +15,25 @@ import {
   Tabs,
   Tab,
   User,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Select,
+  SelectItem,
+  Input,
+  Autocomplete,
+  AutocompleteItem,
+  DatePicker,
 } from "@nextui-org/react";
+import {
+  DateValue,
+  parseDate,
+  getLocalTimeZone,
+  CalendarDate,
+} from "@internationalized/date";
 import { UserTwitterCard } from ".././UserTwitterCard";
 import { User as MyUser } from "next-auth";
 import { Team } from "../../../types/types";
@@ -23,13 +41,36 @@ import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
 import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
+import { useDateFormatter } from "@react-aria/i18n";
 
 type UserTabProps = {
   user: MyUser;
   teams: Team[];
+  users: MyUser[];
 };
 
-const UserTab = ({ user, teams }: UserTabProps) => {
+const UserTab = ({ user, teams, users }: UserTabProps) => {
+  const maps = [
+    { id: "1", name: "폴리포이드" },
+    { id: "2", name: "투혼" },
+    { id: "3", name: "블리츠" },
+    { id: "4", name: "다크오리진" },
+    { id: "5", name: "아포칼립스" },
+    { id: "6", name: "시타델" },
+    { id: "7", name: "라데온" },
+    { id: "8", name: "레트로" },
+    { id: "9", name: "레트로" },
+    { id: "10", name: "버미어" },
+  ];
+
+  const [winnerNickname, setWinnerNickname] = useState("");
+  const [loserNickname, setLoserNickname] = useState("");
+  const [winnerRace, setWinnerRace] = useState("");
+  const [loserRace, setLoserRace] = useState("");
+  const [selectedMap, setSelectedMap] = useState("");
+  const [matchDateValue, setMatchDateValue] = useState(parseDate("2024-04-04"));
+  const [matchDate, setMatchDate] = useState(new Date());
+
   const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
   const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
 
@@ -58,6 +99,24 @@ const UserTab = ({ user, teams }: UserTabProps) => {
 
   // 선택한 팀에 따른 이미지 경로 결정
   const imagePath = teamImagePaths[user.team] || "/Belogo.png";
+
+  let formatter = useDateFormatter({ dateStyle: "full" });
+
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
+
+  useEffect(() => {
+    // CalendarDate를 Date 객체로 변환
+    const newDate = new Date(
+      matchDateValue.year,
+      matchDateValue.month - 1,
+      matchDateValue.day
+    );
+    setMatchDate(newDate);
+  }, [matchDateValue]);
+
+  const handleDateChange = (newDateValue: CalendarDate) => {
+    setMatchDateValue(newDateValue);
+  };
 
   return (
     <>
@@ -173,7 +232,7 @@ const UserTab = ({ user, teams }: UserTabProps) => {
               </div>
               <div className="flex flex-col gap-4 my-4">
                 <Button>BELO 순위</Button>
-                <Button>BELO 등록</Button>
+                <Button onPress={onOpen}>BELO 등록</Button>
               </div>
             </CardBody>
           </Card>
@@ -288,6 +347,115 @@ const UserTab = ({ user, teams }: UserTabProps) => {
           </Card>
         </Tab>
       </Tabs>
+      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+        <ModalContent>
+          {(onClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                BELO 등록
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex gap-2 mx-4">
+                  <Autocomplete
+                    label="승자 닉네임"
+                    className="w-3/5"
+                    value={winnerNickname}
+                    onInputChange={(value) => {
+                      if (value !== winnerNickname) {
+                        setWinnerNickname(value);
+                      }
+                    }}
+                  >
+                    {users.map((user) => (
+                      <AutocompleteItem
+                        key={String(user.name)}
+                        value={user.nickname}
+                      >
+                        {user.nickname}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  <Select
+                    className="w-2/5"
+                    aria-label="Select winner race"
+                    value={winnerRace}
+                    defaultSelectedKeys={["z"]}
+                    onChange={(e) => setWinnerRace(e.target.value)}
+                  >
+                    <SelectItem key="z">Zerg</SelectItem>
+                    <SelectItem key="t">Terran</SelectItem>
+                    <SelectItem key="p">Protoss</SelectItem>
+                  </Select>
+                </div>
+                <div className="flex gap-2 mx-4">
+                  <Autocomplete
+                    label="패자 닉네임"
+                    className="w-3/5"
+                    value={loserNickname}
+                    onInputChange={(value) => {
+                      if (value !== loserNickname) {
+                        setLoserNickname(value);
+                      }
+                    }}
+                  >
+                    {users.map((user) => (
+                      <AutocompleteItem
+                        key={String(user.name)}
+                        value={user.nickname}
+                      >
+                        {user.nickname}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  <Select
+                    className="w-2/5"
+                    aria-label="Select loser race"
+                    value={loserRace}
+                    defaultSelectedKeys={["z"]}
+                    onChange={(e) => setLoserRace(e.target.value)}
+                  >
+                    <SelectItem key="z">Zerg</SelectItem>
+                    <SelectItem key="t">Terran</SelectItem>
+                    <SelectItem key="p">Protoss</SelectItem>
+                  </Select>
+                </div>
+                <div className="flex gap-2 mx-4">
+                  <Autocomplete
+                    label="맵 선택"
+                    className="w-3/5"
+                    value={selectedMap}
+                    onInputChange={(value) => {
+                      if (value !== selectedMap) {
+                        setSelectedMap(value);
+                      }
+                    }}
+                  >
+                    {maps.map((map) => (
+                      <AutocompleteItem key={map.id} value={map.name}>
+                        {map.name}
+                      </AutocompleteItem>
+                    ))}
+                  </Autocomplete>
+                  <DatePicker
+                    label="Match date"
+                    value={matchDateValue}
+                    onChange={handleDateChange}
+                    className="w-2/5"
+                  />
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onClose}>
+                  닫기
+                </Button>
+                <Button color="primary" onPress={onClose}>
+                  등록
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
     </>
   );
 };

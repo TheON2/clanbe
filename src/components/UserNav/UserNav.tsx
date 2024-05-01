@@ -30,16 +30,17 @@ import MobileUserTab from "./MobileUserTab";
 type UserNavProps = {
   user: MyUser;
   teams: Team[];
+  users: MyUser[];
 };
 
-const UserNav = ({ user, teams }: UserNavProps) => {
+const UserNav = ({ user, teams,users }: UserNavProps) => {
   return (
     <>
       <div className="hidden md:block">
-        <UserTab user={user} teams={teams} />
+        <UserTab user={user} teams={teams} users={users} />
       </div>
       <div className="block md:hidden">
-        <MobileUserTab user={user} teams={teams} />
+        <MobileUserTab user={user} teams={teams} users={users} />
       </div>
     </>
   );

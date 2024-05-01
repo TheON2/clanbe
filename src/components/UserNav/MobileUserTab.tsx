@@ -27,9 +27,10 @@ import { signOut } from "next-auth/react";
 type UserTabProps = {
   user: MyUser;
   teams: Team[];
+  users: MyUser[];
 };
 
-const MobileUserTab = ({ user, teams }: UserTabProps) => {
+const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
   const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
   const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
 

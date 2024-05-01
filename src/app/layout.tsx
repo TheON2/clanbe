@@ -3,7 +3,7 @@ import { Open_Sans } from "next/font/google";
 import Header from "@/components/Header/Header";
 import Footer from "@/components/Footer";
 import { Providers } from "./provider";
-import TapNav from "@/components/TabNav";
+import TapNav from "@/components/TapNav/TabNav";
 import Head from "next/head";
 import { getTeamData } from "@/service/user";
 
