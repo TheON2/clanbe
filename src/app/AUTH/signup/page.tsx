@@ -1,7 +1,5 @@
 "use client";
 
-import BoardLayout from "@/components/BoardLayout";
-import { announce, board, posts } from "../../../../public/data";
 import {
   Avatar,
   Button,
@@ -11,8 +9,7 @@ import {
   Divider,
   Input,
 } from "@nextui-org/react";
-import { NextRouter, useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { CheckBoxInterface, Signup } from "../../../../types/types";
 import Link from "next/link";
 

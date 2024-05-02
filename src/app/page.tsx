@@ -1,5 +1,3 @@
-"use client";
-
 import { Divider } from "@nextui-org/react";
 import Banner from "@/components/Banner";
 import Notice from "@/components/Notice/Notice";

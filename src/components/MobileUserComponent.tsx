@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Button,
   Card,
@@ -15,6 +17,8 @@ import { getTeamData } from "@/service/user";
 import { Team } from "../../types/types";
 import { getTeam } from "@/app/actions";
 import UserNav from "./UserNav/UserNav";
+import { getUsers } from "./TapNav/actions";
+import { User as MyUser } from "next-auth";
 
 export default function MobileUserComponent() {
   const router = useRouter();
@@ -23,12 +27,15 @@ export default function MobileUserComponent() {
   const user = session?.user;
 
   const [teams, setTeams] = useState<Team[]>([]);
+  const [userData, setUserData] = useState<MyUser[]>([]);
 
   useEffect(() => {
     // 내부에서 비동기 함수 선언
     const fetchData = async () => {
       const { teams } = await getTeam();
+      const users = await getUsers();
       setTeams(teams); // 팀 데이터 설정
+      setUserData(users.users);
     };
 
     if (isLoggedIn) {
@@ -50,7 +57,7 @@ export default function MobileUserComponent() {
   }
 
   return user ? (
-    <UserNav user={user} teams={teams} />
+    <UserNav user={user} teams={teams} users={userData} />
   ) : (
     // 유효하지 않은 user 객체의 경우 대체 UI 표시
     <Card className="p-4 flex flex-col items-center justify-center w-full h-32">

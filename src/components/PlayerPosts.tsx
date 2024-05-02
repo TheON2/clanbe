@@ -1,3 +1,5 @@
+"use client";
+
 import MultiCarousel from "@/components/MultiCarousel";
 import {
   Button,

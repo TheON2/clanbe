@@ -66,6 +66,7 @@ export const config = {
       // 세션 정보에 토큰에서 사용자 정보를 추가
       if (token) {
         session.user = {
+          _id: token.id as string,
           avatar: token.avatar as string,
           name: token.name as string,
           nickname: token.nickname as string,
