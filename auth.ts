@@ -59,6 +59,10 @@ export const config = {
         token.tear = user.tear;
         token.BELO = user.BELO;
         token.team = user.team;
+        token.kakao = user.kakao;
+        token.birth = user.birth;
+        token.id = user._id;
+        token.email = user.email;
       }
       return token;
     },
@@ -71,6 +75,8 @@ export const config = {
           name: token.name as string,
           nickname: token.nickname as string,
           point: token.point as number,
+          kakao: token.kakao as string,
+          birth: token.birth as Date,
           BELO: token.BELO as any,
           email: token.email as string,
           role: token.role as string,

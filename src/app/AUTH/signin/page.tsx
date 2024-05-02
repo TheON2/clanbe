@@ -1,24 +1,17 @@
 "use client";
 
-import BoardLayout from "@/components/BoardLayout";
-import { announce, board, posts } from "../../../../public/data";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
+import { signIn, useSession } from "next-auth/react";
 import {
-  Avatar,
   Button,
-  ButtonGroup,
   Card,
   CardHeader,
   Divider,
   Input,
   Link,
 } from "@nextui-org/react";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { LOGIN_USER } from "../../../../redux/reducers/userSlice";
-import { useRouter } from "next/navigation";
-import { LOGIN_TEAM } from "../../../../redux/reducers/teamSlice";
-import { signIn, useSession } from "next-auth/react";
-import { ok } from "assert";
 
 export default function SignInPage() {
   const dispatch = useDispatch();

@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
       tl: Number, // 팀전 패배
       zw: Number, // 종족전 승리
       zl: Number, // 종족전 패배
+      belo: Number, //belo 점수
     },
     team: String, // 소속 팀 이름
   },

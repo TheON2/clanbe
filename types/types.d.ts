@@ -40,6 +40,8 @@ export type User = {
   grade: number;
   point: number;
   tear: string;
+  kakao: string;
+  birth: date;
   BELO: {
     race: string;
     pw: number;
@@ -48,6 +50,7 @@ export type User = {
     tl: number;
     zw: number;
     zl: number;
+    belo: number;
   };
   team: string;
 };

@@ -12,6 +12,8 @@ declare module 'next-auth' {
     grade: number;
     point: number;
     tear: string;
+    kakao: string;
+    birth: Date;
     BELO: {
       race: string;
       pw: number;
@@ -20,6 +22,7 @@ declare module 'next-auth' {
       tl: number;
       zw: number;
       zl: number;
+      belo: number;
     };
     team: string;
   }

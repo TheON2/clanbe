@@ -50,6 +50,8 @@ export async function POST(req: Request, res: Response) {
         pw = pl = tw = tl = zw = zl = 0;
       }
 
+let belo = playerData && !isNaN(Number(playerData.belo)) ? Number(playerData.belo) : 0; // NaN 검사 추가
+
       return {
         email: user.email.replace("title: ", ""), // "title:" 제거
         password:
@@ -72,6 +74,7 @@ export async function POST(req: Request, res: Response) {
           tl: tl,
           zw: zw,
           zl: zl,
+          belo: belo,
         },
         team: "", // 이 항목은 필요한 정보가 제공되지 않아 비워둡니다.
       };

@@ -26,15 +26,20 @@ export default function BELOMatchComponent() {
   const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
   const races = ["ALL", "Zerg", "Terran", "Protoss"];
 
-  const raceMapping: { [key: string]: string } = {
-    z: "Zerg",
-    t: "Terran",
-    p: "Protoss",
-  };
+  const raceMapping: { [key: string]: string } = useMemo(
+    () => ({
+      z: "Zerg",
+      t: "Terran",
+      p: "Protoss",
+    }),
+    []
+  ); // Dependencies array is empty, it only initializes once
 
-  const reverseRaceMapping = Object.fromEntries(
-    Object.entries(raceMapping).map(([key, value]) => [value, key])
-  );
+  const reverseRaceMapping = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(raceMapping).map(([key, value]) => [value, key])
+    );
+  }, [raceMapping]); // Depend on raceMapping
 
   const getTier = (belo: number) => {
     if (belo >= 1500) return "S+";

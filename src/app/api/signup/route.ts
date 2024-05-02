@@ -5,7 +5,7 @@ import bcrypt from 'bcrypt';
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let { email, password, nickname, name, kakao, birth,race } = body.signUpState;
+  let { email, password, nickname, name, kakao, birth, race } = body.signUpState;
 
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
@@ -35,7 +35,7 @@ export async function POST(req: Request, res: Response) {
       grade: 1,
       point: 0,
       tear: "미배정",
-      BELO: { race: race, pw: 0, pl: 0, tw: 0, tl: 0, zw: 0, zl: 0 },
+      BELO: { race: race, pw: 0, pl: 0, tw: 0, tl: 0, zw: 0, zl: 0,belo:0 },
       team: "미배정",
     }
 

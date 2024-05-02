@@ -8,6 +8,7 @@ export async function getUsers() {
     headers: {
       "Content-Type": "application/json",
     },
+    cache: "no-store",
   });
   revalidateTag("user");
   return await response.json();

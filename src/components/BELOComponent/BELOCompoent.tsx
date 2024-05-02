@@ -15,8 +15,9 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import { User } from "next-auth";
 
-export default function BELOComponent() {
+export default function BELOComponent({ users }: { users: User[] }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedTier, setSelectedTier] = useState("");
@@ -35,12 +36,6 @@ export default function BELOComponent() {
     []
   ); // Dependencies array is empty, it only initializes once
 
-  const reverseRaceMapping = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(raceMapping).map(([key, value]) => [value, key])
-    );
-  }, [raceMapping]); // Depend on raceMapping
-
   const getTier = (belo: number) => {
     if (belo >= 1500) return "S+";
     if (belo >= 1300) return "S";
@@ -51,6 +46,20 @@ export default function BELOComponent() {
     if (belo >= 700) return "C";
     return "D"; // For all BELO less than 700
   };
+
+  const calculateWins = (beloDetails: any) =>
+    beloDetails.zw + beloDetails.pw + beloDetails.tw;
+  const calculateLosses = (beloDetails: any) =>
+    beloDetails.zl + beloDetails.pl + beloDetails.tl;
+
+  const reverseRaceMapping = useMemo(() => {
+    return Object.fromEntries(
+      Object.entries(raceMapping).map(([key, value]) => [
+        value.toLowerCase(),
+        key,
+      ])
+    );
+  }, [raceMapping]); // 종족 이름을 소문자로 매핑하여 보다 일관된 비교를 가능하게 함
 
   const filteredData = useMemo(() => {
     return playersData
@@ -65,13 +74,14 @@ export default function BELOComponent() {
         const matchesRace =
           selectedRace === "ALL" || selectedRace === ""
             ? true
-            : player.race === reverseRaceMapping[selectedRace];
+            : player.race.toLowerCase() ===
+              reverseRaceMapping[selectedRace.toLowerCase()]; // 소문자 비교
         return matchesSearch && matchesTier && matchesRace;
       })
       .map((player) => ({
         ...player,
         tier: getTier(Number(player.belo)),
-        race: raceMapping[player.race] || player.race,
+        race: raceMapping[player.race.toLowerCase()] || player.race, // 소문자로 키 검색
       }));
   }, [search, selectedTier, selectedRace, raceMapping, reverseRaceMapping]);
 
