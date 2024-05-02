@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { playersData } from "../../../public/data";
+import { User } from "next-auth";
 import {
   Table,
   TableHeader,
@@ -10,12 +10,20 @@ import {
   TableRow,
   TableCell,
   Pagination,
-  getKeyValue,
   Input,
   Select,
   SelectItem,
 } from "@nextui-org/react";
-import { User } from "next-auth";
+
+interface UserItem {
+  nickname: string;
+  tier: string;
+  race: string;
+  wins: number;
+  losses: number;
+  belo: number;
+  [key: string]: string | number; // 인덱스 시그니처 추가
+}
 
 export default function BELOComponent({ users }: { users: User[] }) {
   const [page, setPage] = useState(1);
@@ -27,6 +35,7 @@ export default function BELOComponent({ users }: { users: User[] }) {
   const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
   const races = ["ALL", "Zerg", "Terran", "Protoss"];
 
+  // Adding index signature
   const raceMapping: { [key: string]: string } = useMemo(
     () => ({
       z: "Zerg",
@@ -34,7 +43,7 @@ export default function BELOComponent({ users }: { users: User[] }) {
       p: "Protoss",
     }),
     []
-  ); // Dependencies array is empty, it only initializes once
+  );
 
   const getTier = (belo: number) => {
     if (belo >= 1500) return "S+";
@@ -44,55 +53,47 @@ export default function BELOComponent({ users }: { users: User[] }) {
     if (belo >= 900) return "B+";
     if (belo >= 800) return "B";
     if (belo >= 700) return "C";
-    return "D"; // For all BELO less than 700
+    return "D";
   };
 
-  const calculateWins = (beloDetails: any) =>
-    beloDetails.zw + beloDetails.pw + beloDetails.tw;
-  const calculateLosses = (beloDetails: any) =>
-    beloDetails.zl + beloDetails.pl + beloDetails.tl;
-
-  const reverseRaceMapping = useMemo(() => {
-    return Object.fromEntries(
-      Object.entries(raceMapping).map(([key, value]) => [
-        value.toLowerCase(),
-        key,
-      ])
-    );
-  }, [raceMapping]); // 종족 이름을 소문자로 매핑하여 보다 일관된 비교를 가능하게 함
-
-  const filteredData = useMemo(() => {
-    return playersData
-      .filter((player) => {
-        const matchesSearch = player.nickname
+  const filteredData: UserItem[] = useMemo(() => {
+    const data = users
+      .filter((user) => {
+        const matchesSearch = user.nickname
           .toLowerCase()
           .includes(search.toLowerCase());
+        const belo = user.BELO.belo;
         const matchesTier =
-          selectedTier === "ALL" || selectedTier === ""
-            ? true
-            : getTier(Number(player.belo)) === selectedTier;
+          selectedTier === "ALL" ||
+          selectedTier === "" ||
+          getTier(belo) === selectedTier;
+        const userRace =
+          raceMapping[user.BELO.race.toLowerCase()] || user.BELO.race;
         const matchesRace =
-          selectedRace === "ALL" || selectedRace === ""
-            ? true
-            : player.race.toLowerCase() ===
-              reverseRaceMapping[selectedRace.toLowerCase()]; // 소문자 비교
+          selectedRace === "ALL" ||
+          selectedRace === "" ||
+          userRace === selectedRace;
+
         return matchesSearch && matchesTier && matchesRace;
       })
-      .map((player) => ({
-        ...player,
-        tier: getTier(Number(player.belo)),
-        race: raceMapping[player.race.toLowerCase()] || player.race, // 소문자로 키 검색
+      .map((user) => ({
+        nickname: user.nickname,
+        tier: getTier(user.BELO.belo),
+        race: raceMapping[user.BELO.race.toLowerCase()] || user.BELO.race,
+        wins: user.BELO.tw + user.BELO.pw + user.BELO.zw,
+        losses: user.BELO.tl + user.BELO.pl + user.BELO.zl,
+        belo: user.BELO.belo,
       }));
-  }, [search, selectedTier, selectedRace, raceMapping, reverseRaceMapping]);
+    return data.sort((a, b) => b.belo - a.belo);
+  }, [search, selectedTier, selectedRace, users, raceMapping]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
-
   const items = useMemo(() => {
     return filteredData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   }, [page, filteredData]);
 
   return (
-    <div className=" flex flex-col w-full gap-4">
+    <div className="flex flex-col w-full gap-4">
       <p className="font-bold text-3xl">BELO 유저 데이터</p>
       <div className="flex gap-2 md:w-1/2">
         <Input
@@ -127,7 +128,7 @@ export default function BELOComponent({ users }: { users: User[] }) {
         >
           {races.map((race) => (
             <SelectItem key={race} value={race}>
-              {raceMapping[race] || race}
+              {race}
             </SelectItem>
           ))}
         </Select>
@@ -162,9 +163,7 @@ export default function BELOComponent({ users }: { users: User[] }) {
         <TableBody items={items}>
           {(item) => (
             <TableRow key={item.nickname}>
-              {(columnKey) => (
-                <TableCell>{getKeyValue(item, columnKey)}</TableCell>
-              )}
+              {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
             </TableRow>
           )}
         </TableBody>
