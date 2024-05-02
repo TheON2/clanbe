@@ -1,4 +1,4 @@
-import React, { Key, useEffect, useState } from "react";
+import React, { Key, useCallback, useEffect, useMemo, useState } from "react";
 import {
   Avatar,
   Button,
@@ -92,11 +92,24 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
 
   const totalGames = totalWins + totalLosses;
-  const winRateTotal = (totalWins / totalGames) * 100;
 
-  const winRateP = (user.BELO.pw / (user.BELO.pw + user.BELO.pl)) * 100;
-  const winRateT = (user.BELO.tw / (user.BELO.tw + user.BELO.tl)) * 100;
-  const winRateZ = (user.BELO.zw / (user.BELO.zw + user.BELO.zl)) * 100;
+  const winRateTotal = useMemo(() => {
+    const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
+    const totalGames = totalWins + (user.BELO.pl + user.BELO.tl + user.BELO.zl);
+    return (totalWins / totalGames) * 100;
+  }, [user.BELO]);
+
+  const winRateP = useMemo(() => {
+    return (user.BELO.pw / (user.BELO.pw + user.BELO.pl)) * 100;
+  }, [user.BELO.pw, user.BELO.pl]);
+
+  const winRateT = useMemo(() => {
+    return (user.BELO.tw / (user.BELO.tw + user.BELO.tl)) * 100;
+  }, [user.BELO.tw, user.BELO.tl]);
+
+  const winRateZ = useMemo(() => {
+    return (user.BELO.zw / (user.BELO.zw + user.BELO.zl)) * 100;
+  }, [user.BELO.zw, user.BELO.zl]);
 
   // 레벨과 경험치 백분율 계산
   const level = Math.floor(user.point / 1000);
@@ -135,23 +148,51 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     setMatchDateValue(newDateValue);
   };
 
-  const handleWinnerSelection = (nickname: string) => {
-    const selectedUser = users.find((user) => user.nickname === nickname);
-    if (selectedUser) {
-      setWinnerNickname(nickname);
-      setWinnerRace(selectedUser.BELO.race); // 자동으로 race 설정
-      setWinnerRaceKey(selectedUser.BELO.race);
-    }
-  };
+  const handleWinnerSelection = useCallback(
+    (nickname: string) => {
+      const selectedUser = users.find((u) => u.nickname === nickname);
+      if (selectedUser) {
+        setWinnerNickname(nickname);
+        setWinnerRace(selectedUser.BELO.race);
+        setWinnerRaceKey(selectedUser.BELO.race);
+      }
+    },
+    [users]
+  );
 
-  const handleLoserSelection = (nickname: string) => {
-    const selectedUser = users.find((user) => user.nickname === nickname);
-    if (selectedUser) {
-      setLoserNickname(nickname);
-      setLoserRace(selectedUser.BELO.race); // 자동으로 race 설정
-      setLoserRaceKey(selectedUser.BELO.race);
-    }
-  };
+  const handleLoserSelection = useCallback(
+    (nickname: string) => {
+      const selectedUser = users.find((u) => u.nickname === nickname);
+      if (selectedUser) {
+        setLoserNickname(nickname);
+        setLoserRace(selectedUser.BELO.race);
+        setLoserRaceKey(selectedUser.BELO.race);
+      }
+    },
+    [users]
+  );
+
+  const swapUsers = useCallback(() => {
+    // 닉네임과 종족 정보를 교환
+    const tempNickname = winnerNickname;
+    const tempRace = winnerRace;
+    const tempRaceKey = winnerRaceKey;
+
+    setWinnerNickname(loserNickname);
+    setWinnerRace(loserRace);
+    setWinnerRaceKey(loserRaceKey);
+
+    setLoserNickname(tempNickname);
+    setLoserRace(tempRace);
+    setLoserRaceKey(tempRaceKey);
+  }, [
+    winnerNickname,
+    winnerRace,
+    winnerRaceKey,
+    loserNickname,
+    loserRace,
+    loserRaceKey,
+  ]);
 
   const addMatch = async () => {
     // 입력 값 검사
@@ -204,24 +245,6 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const closeModal = () => {
     resetData();
     onOpenChange();
-  };
-
-  const swapUsers = () => {
-    // 닉네임과 종족 정보를 교환
-    const tempNickname = winnerNickname;
-    const tempRace = winnerRace;
-    const tempRaceKey = winnerRaceKey;
-
-    setWinnerNickname(loserNickname);
-    setWinnerRace(loserRace);
-    setWinnerRaceKey(loserRaceKey);
-
-    setLoserNickname(tempNickname);
-    setLoserRace(tempRace);
-    setLoserRaceKey(tempRaceKey);
-
-    setWinnerNicknameKey(loserNickname);
-    setLoserNicknameKey(tempNickname);
   };
 
   console.log(
