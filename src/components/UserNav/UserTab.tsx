@@ -82,8 +82,8 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const [matchDateValue, setMatchDateValue] = useState(parseDate("2024-04-04"));
   const [matchDate, setMatchDate] = useState(new Date());
 
-  const [winnerNicknameKey, setWinnerNicknameKey] = useState<Key>("1");
-  const [loserNicknameKey, setLoserNicknameKey] = useState<Key>("2");
+  const [winnerNicknameKey, setWinnerNicknameKey] = useState<any>("winner");
+  const [loserNicknameKey, setLoserNicknameKey] = useState<any>("loser");
   const [winnerRaceKey, setWinnerRaceKey] = useState("z");
   const [loserRaceKey, setLoserRaceKey] = useState("z");
   const [mapKey, setMapKey] = useState(0);
