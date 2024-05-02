@@ -10,7 +10,7 @@ export type Team = {
 };
 
 export type Match = {
-  _id: string;
+  _id?: string;
   name: string;
   winner: string;
   wrace: string;

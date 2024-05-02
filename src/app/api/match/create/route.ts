@@ -4,7 +4,10 @@ import MatchModel from "@/models/match";
 export async function POST(req: Request) {
   const body = await req.json();
 
-  let { name, date, winner, wrace, loser, lrace, map } = body;
+  let { name, date, winner, wrace, loser, lrace, map } = body.matchData;
+
+  console.log(name);
+
   try {
     await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     const match = new MatchModel({

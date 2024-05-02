@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Key, useEffect, useState } from "react";
 import {
   Avatar,
   Button,
@@ -28,6 +28,16 @@ import {
   AutocompleteItem,
   DatePicker,
 } from "@nextui-org/react";
+
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+} from "@nextui-org/table";
+
 import {
   DateValue,
   parseDate,
@@ -42,6 +52,7 @@ import { LogoutIcon } from "../../../public/logout";
 import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
 import { useDateFormatter } from "@react-aria/i18n";
+import { createMatch } from "./actions";
 
 type UserTabProps = {
   user: MyUser;
@@ -70,6 +81,12 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const [selectedMap, setSelectedMap] = useState("");
   const [matchDateValue, setMatchDateValue] = useState(parseDate("2024-04-04"));
   const [matchDate, setMatchDate] = useState(new Date());
+
+  const [winnerNicknameKey, setWinnerNicknameKey] = useState<Key>("1");
+  const [loserNicknameKey, setLoserNicknameKey] = useState<Key>("2");
+  const [winnerRaceKey, setWinnerRaceKey] = useState("z");
+  const [loserRaceKey, setLoserRaceKey] = useState("z");
+  const [mapKey, setMapKey] = useState(0);
 
   const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
   const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
@@ -117,6 +134,104 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const handleDateChange = (newDateValue: CalendarDate) => {
     setMatchDateValue(newDateValue);
   };
+
+  const handleWinnerSelection = (nickname: string) => {
+    const selectedUser = users.find((user) => user.nickname === nickname);
+    if (selectedUser) {
+      setWinnerNickname(nickname);
+      setWinnerRace(selectedUser.BELO.race); // 자동으로 race 설정
+      setWinnerRaceKey(selectedUser.BELO.race);
+    }
+  };
+
+  const handleLoserSelection = (nickname: string) => {
+    const selectedUser = users.find((user) => user.nickname === nickname);
+    if (selectedUser) {
+      setLoserNickname(nickname);
+      setLoserRace(selectedUser.BELO.race); // 자동으로 race 설정
+      setLoserRaceKey(selectedUser.BELO.race);
+    }
+  };
+
+  const addMatch = async () => {
+    // 입력 값 검사
+    if (
+      !winnerNickname ||
+      !loserNickname ||
+      !winnerRace ||
+      !loserRace ||
+      !selectedMap ||
+      !matchDate
+    ) {
+      alert("모든 필드를 채워주세요.");
+      return;
+    }
+
+    const newMatch = {
+      name: "BELO",
+      winner: winnerNickname,
+      wrace: winnerRace,
+      loser: loserNickname,
+      lrace: loserRace,
+      map: selectedMap,
+      date: matchDate,
+    };
+
+    try {
+      await createMatch(newMatch);
+      //onOpenChange();
+    } catch (error) {
+      alert("등록실패");
+    }
+  };
+
+  const resetData = () => {
+    setWinnerNickname("");
+    setLoserNickname("");
+    setWinnerRace("");
+    setLoserRace("");
+    setSelectedMap("");
+    setMatchDateValue(parseDate("2024-04-04"));
+    setMatchDate(new Date());
+
+    setWinnerNicknameKey("1");
+    setLoserNicknameKey("2");
+    setWinnerRaceKey("z");
+    setLoserRaceKey("z");
+    setMapKey((prevKey) => prevKey + 1);
+  };
+
+  const closeModal = () => {
+    resetData();
+    onOpenChange();
+  };
+
+  const swapUsers = () => {
+    // 닉네임과 종족 정보를 교환
+    const tempNickname = winnerNickname;
+    const tempRace = winnerRace;
+    const tempRaceKey = winnerRaceKey;
+
+    setWinnerNickname(loserNickname);
+    setWinnerRace(loserRace);
+    setWinnerRaceKey(loserRaceKey);
+
+    setLoserNickname(tempNickname);
+    setLoserRace(tempRace);
+    setLoserRaceKey(tempRaceKey);
+
+    setWinnerNicknameKey(loserNickname);
+    setLoserNicknameKey(tempNickname);
+  };
+
+  console.log(
+    winnerNickname,
+    winnerRace,
+    loserNickname,
+    loserRace,
+    selectedMap,
+    matchDate
+  );
 
   return (
     <>
@@ -347,7 +462,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
           </Card>
         </Tab>
       </Tabs>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <Modal isOpen={isOpen} onOpenChange={closeModal} placement="top-center">
         <ModalContent>
           {(onClose) => (
             <>
@@ -362,9 +477,11 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     value={winnerNickname}
                     onInputChange={(value) => {
                       if (value !== winnerNickname) {
-                        setWinnerNickname(value);
+                        handleWinnerSelection(value);
                       }
                     }}
+                    selectedKey={winnerNicknameKey}
+                    onSelectionChange={setWinnerNicknameKey}
                   >
                     {users.map((user) => (
                       <AutocompleteItem
@@ -380,7 +497,12 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     aria-label="Select winner race"
                     value={winnerRace}
                     defaultSelectedKeys={["z"]}
-                    onChange={(e) => setWinnerRace(e.target.value)}
+                    key={winnerRaceKey}
+                    onChange={(e) => {
+                      setWinnerRaceKey(e.target.value);
+                      setWinnerRace(e.target.value);
+                    }}
+                    selectedKeys={winnerRaceKey}
                   >
                     <SelectItem key="z">Zerg</SelectItem>
                     <SelectItem key="t">Terran</SelectItem>
@@ -394,9 +516,11 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     value={loserNickname}
                     onInputChange={(value) => {
                       if (value !== loserNickname) {
-                        setLoserNickname(value);
+                        handleLoserSelection(value);
                       }
                     }}
+                    selectedKey={loserNicknameKey}
+                    onSelectionChange={setLoserNicknameKey}
                   >
                     {users.map((user) => (
                       <AutocompleteItem
@@ -410,9 +534,14 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   <Select
                     className="w-2/5"
                     aria-label="Select loser race"
+                    key={loserRaceKey}
                     value={loserRace}
                     defaultSelectedKeys={["z"]}
-                    onChange={(e) => setLoserRace(e.target.value)}
+                    onChange={(e) => {
+                      setLoserRace(e.target.value);
+                      setLoserRaceKey(e.target.value);
+                    }}
+                    selectedKeys={loserRaceKey}
                   >
                     <SelectItem key="z">Zerg</SelectItem>
                     <SelectItem key="t">Terran</SelectItem>
@@ -423,6 +552,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   <Autocomplete
                     label="맵 선택"
                     className="w-3/5"
+                    key={mapKey}
                     value={selectedMap}
                     onInputChange={(value) => {
                       if (value !== selectedMap) {
@@ -443,12 +573,39 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     className="w-2/5"
                   />
                 </div>
+                <p className="font-bold text-lg">경기결과</p>
+                <Card className="w-full mx-2">
+                  <Table aria-label="Example static collection table">
+                    <TableHeader>
+                      <TableColumn>승자</TableColumn>
+                      <TableColumn>종족</TableColumn>
+                      <TableColumn>패배자</TableColumn>
+                      <TableColumn>종족</TableColumn>
+                      <TableColumn>맵</TableColumn>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow key="1">
+                        <TableCell>{winnerNickname}</TableCell>
+                        <TableCell>{winnerRace}</TableCell>
+                        <TableCell>{loserNickname}</TableCell>
+                        <TableCell>{loserRace}</TableCell>
+                        <TableCell>{selectedMap}</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </Card>
               </ModalBody>
               <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
+                <Button color="secondary" variant="flat" onPress={swapUsers}>
+                  유저전환
+                </Button>
+                <Button color="primary" variant="flat" onPress={resetData}>
+                  초기화
+                </Button>
+                <Button color="danger" variant="flat" onPress={closeModal}>
                   닫기
                 </Button>
-                <Button color="primary" onPress={onClose}>
+                <Button color="success" onPress={addMatch}>
                   등록
                 </Button>
               </ModalFooter>
