@@ -10,6 +10,6 @@ export async function getUsers() {
     },
     cache: "no-store",
   });
-  revalidateTag("user");
+  //revalidateTag("user");
   return await response.json();
 }

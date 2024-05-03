@@ -1,4 +1,4 @@
-import React, { Key, useCallback, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Avatar,
   Button,
@@ -148,31 +148,25 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     setMatchDateValue(newDateValue);
   };
 
-  const handleWinnerSelection = useCallback(
-    (nickname: string) => {
-      const selectedUser = users.find((u) => u.nickname === nickname);
-      if (selectedUser) {
-        setWinnerNickname(nickname);
-        setWinnerRace(selectedUser.BELO.race);
-        setWinnerRaceKey(selectedUser.BELO.race);
-      }
-    },
-    [users]
-  );
+  const handleWinnerSelection = (nickname: string) => {
+    const selectedUser = users.find((u) => u.nickname === nickname);
+    if (selectedUser) {
+      setWinnerNickname(nickname);
+      setWinnerRace(selectedUser.BELO.race);
+      setWinnerRaceKey(selectedUser.BELO.race);
+    }
+  };
 
-  const handleLoserSelection = useCallback(
-    (nickname: string) => {
-      const selectedUser = users.find((u) => u.nickname === nickname);
-      if (selectedUser) {
-        setLoserNickname(nickname);
-        setLoserRace(selectedUser.BELO.race);
-        setLoserRaceKey(selectedUser.BELO.race);
-      }
-    },
-    [users]
-  );
+  const handleLoserSelection = (nickname: string) => {
+    const selectedUser = users.find((u) => u.nickname === nickname);
+    if (selectedUser) {
+      setLoserNickname(nickname);
+      setLoserRace(selectedUser.BELO.race);
+      setLoserRaceKey(selectedUser.BELO.race);
+    }
+  };
 
-  const swapUsers = useCallback(() => {
+  const swapUsers = () => {
     // 닉네임과 종족 정보를 교환
     const tempNickname = winnerNickname;
     const tempRace = winnerRace;
@@ -185,14 +179,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     setLoserNickname(tempNickname);
     setLoserRace(tempRace);
     setLoserRaceKey(tempRaceKey);
-  }, [
-    winnerNickname,
-    winnerRace,
-    winnerRaceKey,
-    loserNickname,
-    loserRace,
-    loserRaceKey,
-  ]);
+  };
 
   const addMatch = async () => {
     // 입력 값 검사
@@ -246,15 +233,6 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     resetData();
     onOpenChange();
   };
-
-  console.log(
-    winnerNickname,
-    winnerRace,
-    loserNickname,
-    loserRace,
-    selectedMap,
-    matchDate
-  );
 
   return (
     <>

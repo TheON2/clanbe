@@ -34,14 +34,14 @@ type TapNavProps = {
   users: MyUser[];
 };
 
-const TapNavComponent = ({ teams,users }: TapNavProps) => {
+const TapNavComponent = ({ teams, users }: TapNavProps) => {
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
   const router = useRouter(); // useRouter 훅을 사용하여 라우터 인스턴스를 가져옵니다.
 
   return (
-    <div className="hidden sm:block mx-4 sticky top-20 w-[280px] ">
+    <div className="hidden md:block mx-4 sticky top-20 w-[280px] ">
       {isLoggedIn && user ? (
         <UserNav user={user} teams={teams} users={users} />
       ) : (

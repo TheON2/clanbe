@@ -40,7 +40,6 @@ const NextCarousel: React.FC<NextCarouselProps> = ({ images }) => {
               <Image
                 src={image.src}
                 alt={image.alt}
-                layout="responsive"
                 width={1000}
                 height={475}
               />

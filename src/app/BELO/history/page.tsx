@@ -10,5 +10,5 @@ export default async function HistoryPage() {
   });
   const matchs = await response.json();
 
-  return <BELOMatchComponent />;
+  return <BELOMatchComponent matchs={matchs.matchs} />;
 }

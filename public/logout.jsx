@@ -13,6 +13,7 @@ export const LogoutIcon = ({
        width={width || 24}
       height={height || 24}
       viewBox="0 0 16 16"
+      aria-label="logout"
     >
       <path
         fillRule="evenodd"

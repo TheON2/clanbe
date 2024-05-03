@@ -15,12 +15,16 @@ import {
   Select,
   SelectItem,
 } from "@nextui-org/react";
+import { Match } from "../../../types/types";
 
-export default function BELOMatchComponent() {
+export default function BELOMatchComponent({ matchs }: { matchs: Match[] }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedTier, setSelectedTier] = useState("");
   const [selectedRace, setSelectedRace] = useState("");
+  const [winnerSearch, setWinnerSearch] = useState("");
+  const [loserSearch, setLoserSearch] = useState("");
+  const [mapSearch, setMapSearch] = useState("");
   const rowsPerPage = 15;
 
   const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
@@ -41,39 +45,39 @@ export default function BELOMatchComponent() {
     );
   }, [raceMapping]); // Depend on raceMapping
 
-  const getTier = (belo: number) => {
-    if (belo >= 1500) return "S+";
-    if (belo >= 1300) return "S";
-    if (belo >= 1100) return "A+";
-    if (belo >= 1000) return "A";
-    if (belo >= 900) return "B+";
-    if (belo >= 800) return "B";
-    if (belo >= 700) return "C";
-    return "D"; // For all BELO less than 700
-  };
-
   const filteredData = useMemo(() => {
-    return playersData
-      .filter((player) => {
-        const matchesSearch = player.nickname
-          .toLowerCase()
-          .includes(search.toLowerCase());
-        const matchesTier =
-          selectedTier === "ALL" || selectedTier === ""
-            ? true
-            : getTier(Number(player.belo)) === selectedTier;
+    return matchs
+      .filter((match) => {
+        const matchesWinner =
+          winnerSearch === "" ||
+          match.winner.toLowerCase().includes(winnerSearch.toLowerCase());
+        const matchesLoser =
+          loserSearch === "" ||
+          match.loser.toLowerCase().includes(loserSearch.toLowerCase());
+        const matchesMap =
+          mapSearch === "" ||
+          match.map.toLowerCase().includes(mapSearch.toLowerCase());
         const matchesRace =
           selectedRace === "ALL" || selectedRace === ""
             ? true
-            : player.race === reverseRaceMapping[selectedRace];
-        return matchesSearch && matchesTier && matchesRace;
+            : match.wrace === reverseRaceMapping[selectedRace] ||
+              match.lrace === reverseRaceMapping[selectedRace];
+        return matchesWinner && matchesLoser && matchesRace && matchesMap;
       })
-      .map((player) => ({
-        ...player,
-        tier: getTier(Number(player.belo)),
-        race: raceMapping[player.race] || player.race,
+      .map((match) => ({
+        ...match,
+        wrace: raceMapping[match.wrace] || match.wrace,
+        lrace: raceMapping[match.lrace] || match.lrace,
       }));
-  }, [search, selectedTier, selectedRace, raceMapping, reverseRaceMapping]);
+  }, [
+    loserSearch,
+    mapSearch,
+    winnerSearch,
+    selectedRace,
+    raceMapping,
+    reverseRaceMapping,
+    matchs,
+  ]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
 
@@ -84,29 +88,31 @@ export default function BELOMatchComponent() {
   return (
     <div className=" flex flex-col w-full gap-4">
       <p className="font-bold text-3xl">BELO 기록조회 / 등록</p>
-      <div className="flex gap-2 md:w-1/2">
+      <div className="flex gap-4 md:w-1/2">
         <Input
-          placeholder="닉네임"
-          value={search}
+          placeholder="승자"
+          value={winnerSearch}
           onChange={(e) => {
-            setSearch(e.target.value);
+            setWinnerSearch(e.target.value);
             setPage(1);
           }}
         />
-        <Select
-          placeholder="티어"
-          value={selectedTier}
+        <Input
+          placeholder="패배자"
+          value={loserSearch}
           onChange={(e) => {
-            setSelectedTier(e.target.value);
+            setLoserSearch(e.target.value);
             setPage(1);
           }}
-        >
-          {tiers.map((tier) => (
-            <SelectItem key={tier} value={tier}>
-              {tier}
-            </SelectItem>
-          ))}
-        </Select>
+        />
+        <Input
+          placeholder="Map"
+          value={mapSearch}
+          onChange={(e) => {
+            setMapSearch(e.target.value);
+            setPage(1);
+          }}
+        />
         <Select
           placeholder="종족"
           value={selectedRace}
@@ -142,16 +148,16 @@ export default function BELOMatchComponent() {
         }}
       >
         <TableHeader>
-          <TableColumn key="nickname">Name</TableColumn>
-          <TableColumn key="tier">Tier</TableColumn>
-          <TableColumn key="race">Race</TableColumn>
-          <TableColumn key="wins">Wins</TableColumn>
-          <TableColumn key="losses">Losses</TableColumn>
-          <TableColumn key="belo">BELO</TableColumn>
+          <TableColumn key="name">분류</TableColumn>
+          <TableColumn key="winner">Winner</TableColumn>
+          <TableColumn key="wrace">Race</TableColumn>
+          <TableColumn key="loser">Loser</TableColumn>
+          <TableColumn key="lrace">Race</TableColumn>
+          <TableColumn key="map">MAP</TableColumn>
         </TableHeader>
         <TableBody items={items}>
           {(item) => (
-            <TableRow key={item.nickname}>
+            <TableRow key={item._id}>
               {(columnKey) => (
                 <TableCell>{getKeyValue(item, columnKey)}</TableCell>
               )}
