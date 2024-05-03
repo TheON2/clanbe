@@ -347,8 +347,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                 </div>
               </div>
               <div className="flex flex-col gap-4 my-4">
-                <Button>BELO 순위</Button>
-                <Button onPress={onOpen}>BELO 등록</Button>
+                <Button color="primary" onPress={onOpen}>
+                  BELO 등록
+                </Button>
               </div>
             </CardBody>
           </Card>

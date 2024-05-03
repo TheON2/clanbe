@@ -11,6 +11,16 @@ export function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("ko-KR", options).format(new Date(date));
 }
 
+export function formatDateOnly(date: Date): string {
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    timeZone: "Asia/Seoul",
+  };
+  return new Intl.DateTimeFormat("ko-KR", options).format(new Date(date));
+}
+
 export function formatRelativeDate(date: Date): string {
   const now = new Date();
   const postDate = new Date(date);
