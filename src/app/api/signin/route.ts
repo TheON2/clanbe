@@ -24,6 +24,7 @@ export async function POST(req: Request, res: Response) {
       const isMatch = await bcrypt.compare(password, user.password);
       if (isMatch) {
         const userData = {
+          _id:user._id,
           email: user.email,
           nickname: user.nickname,
           name: user.name,

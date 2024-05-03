@@ -3,6 +3,7 @@ import PostForm from "@/components/PostForm/PostForm";
 import { Post } from "@/service/posts";
 import { revalidateTag } from "next/cache";
 import React from "react";
+import { ViewDate } from "../../../../../../types/types";
 
 async function getAllPost() {
   "use server";
@@ -48,6 +49,8 @@ export default async function PostPage({
   const post = posts.data.find((post: Post) => post._id === slug);
 
   const user = await getUser(post.author);
+
+  //await updateView({ postid: slug, userid: user.user._id });
 
   // PostForm 컴포넌트에 post 데이터 전달
   return (

@@ -21,6 +21,8 @@ import {
   Tooltip,
   User,
   Pagination,
+  Tabs,
+  Tab,
 } from "@nextui-org/react";
 import { User as MyUser } from "next-auth";
 import Image from "next/image";
@@ -60,7 +62,7 @@ export const columns = [
 export default function MemberComponent({ users }: MemberComponentProps) {
   // 운영진 페이지네이션
   const [adminPage, setAdminPage] = useState(1);
-  const adminRowsPerPage = 5;
+  const adminRowsPerPage = 10;
 
   // 클랜원 페이지네이션
   const [memberPage, setMemberPage] = useState(1);
@@ -156,94 +158,94 @@ export default function MemberComponent({ users }: MemberComponentProps) {
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20 ">멤버 명단</a>
       <Card className="w-full m-4">
         <CardBody>
-          <div className="p-4">
-            <a className="block font-bold text-xl sm:text-3xl text-center mb-4">
-              운영진
-            </a>
-            <Table
-              aria-label="Example table with client side pagination"
-              bottomContent={
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="secondary"
-                    page={adminPage}
-                    total={adminPages}
-                    onChange={(page) => setAdminPage(page)}
-                  />
-                </div>
-              }
-              classNames={{
-                wrapper: "min-h-[222px]",
-              }}
-            >
-              <TableHeader columns={columns}>
-                {(column) => (
-                  <TableColumn
-                    key={column.uid}
-                    align={column.uid === "actions" ? "center" : "start"}
-                  >
-                    {column.name}
-                  </TableColumn>
-                )}
-              </TableHeader>
-              <TableBody items={adminsToShow}>
-                {(item) => (
-                  <TableRow key={item._id}>
-                    {(columnKey) => (
-                      <TableCell>{renderCell(item, columnKey)}</TableCell>
+          <Tabs aria-label="Options">
+            <Tab key="admins" title="운영진">
+              <div className="p-4">
+                <Table
+                  aria-label="Example table with client side pagination"
+                  bottomContent={
+                    <div className="flex w-full justify-center">
+                      <Pagination
+                        isCompact
+                        showControls
+                        showShadow
+                        color="secondary"
+                        page={adminPage}
+                        total={adminPages}
+                        onChange={(page) => setAdminPage(page)}
+                      />
+                    </div>
+                  }
+                  classNames={{
+                    wrapper: "min-h-[222px]",
+                  }}
+                >
+                  <TableHeader columns={columns}>
+                    {(column) => (
+                      <TableColumn
+                        key={column.uid}
+                        align={column.uid === "actions" ? "center" : "start"}
+                      >
+                        {column.name}
+                      </TableColumn>
                     )}
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-          <div className="p-4">
-            <a className="block font-bold text-xl sm:text-3xl text-center mb-4">
-              클랜원
-            </a>
-            <Table
-              aria-label="Example table with client side pagination"
-              bottomContent={
-                <div className="flex w-full justify-center">
-                  <Pagination
-                    isCompact
-                    showControls
-                    showShadow
-                    color="secondary"
-                    page={memberPage}
-                    total={memberPages}
-                    onChange={(page) => setMemberPage(page)}
-                  />
-                </div>
-              }
-              classNames={{
-                wrapper: "min-h-[222px]",
-              }}
-            >
-              <TableHeader columns={columns}>
-                {(column) => (
-                  <TableColumn
-                    key={column.uid}
-                    align={column.uid === "actions" ? "center" : "start"}
-                  >
-                    {column.name}
-                  </TableColumn>
-                )}
-              </TableHeader>
-              <TableBody items={membersToShow}>
-                {(item) => (
-                  <TableRow key={item._id}>
-                    {(columnKey) => (
-                      <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  </TableHeader>
+                  <TableBody items={adminsToShow}>
+                    {(item) => (
+                      <TableRow key={item._id}>
+                        {(columnKey) => (
+                          <TableCell>{renderCell(item, columnKey)}</TableCell>
+                        )}
+                      </TableRow>
                     )}
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
+                  </TableBody>
+                </Table>
+              </div>
+            </Tab>
+            <Tab key="members" title="클랜원">
+              <div className="p-4">
+                <Table
+                  aria-label="Example table with client side pagination"
+                  bottomContent={
+                    <div className="flex w-full justify-center">
+                      <Pagination
+                        isCompact
+                        showControls
+                        showShadow
+                        color="secondary"
+                        page={memberPage}
+                        total={memberPages}
+                        onChange={(page) => setMemberPage(page)}
+                      />
+                    </div>
+                  }
+                  classNames={{
+                    wrapper: "min-h-[222px]",
+                  }}
+                >
+                  <TableHeader columns={columns}>
+                    {(column) => (
+                      <TableColumn
+                        key={column.uid}
+                        align={column.uid === "actions" ? "center" : "start"}
+                      >
+                        {column.name}
+                      </TableColumn>
+                    )}
+                  </TableHeader>
+                  <TableBody items={membersToShow}>
+                    {(item) => (
+                      <TableRow key={item._id}>
+                        {(columnKey) => (
+                          <TableCell>{renderCell(item, columnKey)}</TableCell>
+                        )}
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </Tab>
+          </Tabs>
         </CardBody>
         <Divider />
       </Card>

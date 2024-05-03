@@ -29,7 +29,7 @@ const config: Config = {
         default: '#c0ccda',
         light: '#e0e6ed',
         lightest: '#f9fafc',
-      }
+      },
     },
     extend: {
       backgroundImage: {

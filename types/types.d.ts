@@ -20,6 +20,12 @@ export type Match = {
   date: Date;
 }
 
+export type ViewDate = {
+  _id?: string;
+  userid: string;
+  postid: string;
+}
+
 export type EventType = {
   id?: string;
   title: string;

@@ -83,7 +83,7 @@ export const config = {
           grade: token.grade as number,
           tear: token.tear as string,
           team: token.team as string,
-          id: "default-id", // 필요한 경우 token에서 id를 가져오거나 기본 id 제공
+          id: token.id as string, // 필요한 경우 token에서 id를 가져오거나 기본 id 제공
           emailVerified: null, // emailVerified는 null이 가능
         };
       }
@@ -92,10 +92,10 @@ export const config = {
   },
    session: {
     strategy: "jwt",
-    maxAge: 3600, // 1시간 동안 세션 유지
+    maxAge: 3600*24, 
   },
   jwt: {
-    maxAge: 3600, // JWT 토큰의 최대 유효 시간은 1시간
+    maxAge: 3600*24,
   },
   secret: `${process.env.NEXT_AUTH_SECRET}`,
 } satisfies NextAuthConfig;

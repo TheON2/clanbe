@@ -149,6 +149,28 @@ export default function PostForm({ post, userData }: PostFormProps) {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    // 세션 상태가 'authenticated'이고 user 객체가 존재할 때만 함수를 실행
+    if (status === "authenticated" && user) {
+      const viewCount = async () => {
+        await fetch(`/api/view`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            viewData: {
+              postid: post._id,
+              userid: user._id,
+            },
+          }),
+        });
+      };
+      viewCount();
+    }
+  }, []); // status와 user를 종속성 배열에 추가
+
   if (!post) {
     // Optionally, return a loading spinner here
     return <div>Loading...</div>;
