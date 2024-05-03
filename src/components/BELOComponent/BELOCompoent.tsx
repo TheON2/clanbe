@@ -33,17 +33,16 @@ export default function BELOComponent({ users }: { users: User[] }) {
   const rowsPerPage = 15;
 
   const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
-  const races = ["ALL", "Zerg", "Terran", "Protoss"];
+  const races = ["ALL", "Z", "T", "P"];
 
-  // Adding index signature
   const raceMapping: { [key: string]: string } = useMemo(
     () => ({
-      z: "Zerg",
-      t: "Terran",
-      p: "Protoss",
+      z: "Z",
+      t: "T",
+      p: "P",
     }),
     []
-  );
+  ); // Dependencies array is empty, it only initializes once
 
   const getTier = (belo: number) => {
     if (belo >= 1500) return "S+";
@@ -93,7 +92,7 @@ export default function BELOComponent({ users }: { users: User[] }) {
   }, [page, filteredData]);
 
   return (
-    <div className="flex flex-col w-full gap-4">
+    <div className="flex flex-col w-full gap-2 px-2">
       <p className="font-bold text-3xl">BELO 유저 데이터</p>
       <div className="flex gap-2 md:w-1/2">
         <Input

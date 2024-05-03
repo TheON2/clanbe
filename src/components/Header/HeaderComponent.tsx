@@ -41,7 +41,11 @@ export default function HeaderComponent(categoryData: any) {
   };
 
   return (
-    <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" className="w-full">
+    <Navbar
+      onMenuOpenChange={setIsMenuOpen}
+      maxWidth="full"
+      className="w-full "
+    >
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}

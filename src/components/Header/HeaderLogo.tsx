@@ -17,6 +17,7 @@ export const HeaderLogo = () => {
         width={100}
         height={100}
         sizes="sm"
+        style={{ minWidth: "100px", minHeight: "60px" }}
       />
       <p className="font-bold text-inherit text-3xl">CLANBE</p>
       <div className="block sm:hidden">

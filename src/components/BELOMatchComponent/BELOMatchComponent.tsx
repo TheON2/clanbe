@@ -25,16 +25,16 @@ export default function BELOMatchComponent({ matchs }: { matchs: Match[] }) {
   const [winnerSearch, setWinnerSearch] = useState("");
   const [loserSearch, setLoserSearch] = useState("");
   const [mapSearch, setMapSearch] = useState("");
-  const rowsPerPage = 15;
+  const rowsPerPage = 10;
 
   const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
-  const races = ["ALL", "Zerg", "Terran", "Protoss"];
+  const races = ["ALL", "Z", "T", "P"];
 
   const raceMapping: { [key: string]: string } = useMemo(
     () => ({
-      z: "Zerg",
-      t: "Terran",
-      p: "Protoss",
+      z: "Z",
+      t: "T",
+      p: "P",
     }),
     []
   ); // Dependencies array is empty, it only initializes once
@@ -86,9 +86,9 @@ export default function BELOMatchComponent({ matchs }: { matchs: Match[] }) {
   }, [page, filteredData]);
 
   return (
-    <div className=" flex flex-col w-full gap-4">
+    <div className=" flex flex-col w-full gap-4 px-4">
       <p className="font-bold text-3xl">BELO 기록조회 / 등록</p>
-      <div className="flex gap-4 md:w-1/2">
+      <div className="flex gap-2 md:w-1/2">
         <Input
           placeholder="승자"
           value={winnerSearch}
@@ -148,7 +148,7 @@ export default function BELOMatchComponent({ matchs }: { matchs: Match[] }) {
         }}
       >
         <TableHeader>
-          <TableColumn key="name">분류</TableColumn>
+          {/* <TableColumn key="name">분류</TableColumn> */}
           <TableColumn key="winner">Winner</TableColumn>
           <TableColumn key="wrace">Race</TableColumn>
           <TableColumn key="loser">Loser</TableColumn>
