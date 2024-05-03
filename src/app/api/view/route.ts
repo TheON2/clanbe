@@ -29,34 +29,23 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    // 오늘 날짜 생성
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    const dateId = getFormattedDate(); // 오늘 날짜를 yyyyMMdd 형식으로 가져옴
+    const uniqueId = `${userid}-${postid}-${dateId}`; // 유니크한 ID 생성
 
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
-
-    // 동일 사용자가 같은 게시물을 오늘 이미 조회했는지 확인
     const viewExists = await viewDateModel.findOne({
-      userid: userid,
-      postid: postid,
-      createdAt: {
-        $gte: todayStart,
-        $lte: todayEnd,
-      },
+      _id: uniqueId
     });
 
-    if (!viewExists) {
-      // 조회 기록이 없으면 새로 기록을 추가하고 조회수를 증가
+     if (!viewExists) {
       await viewDateModel.create({
-        _id: userid+postid,
+        _id: uniqueId,
         userid,
-        postid,
+        postid
       });
       const post = await PostModel.findById(postid);
       if (post) {
-        post.view = (post.view || 0) + 1; // 조회수를 안전하게 증가
-        await post.save(); // 변경사항 저장
+        post.view = (post.view || 0) + 1;
+        await post.save();
       } else {
         console.error("No post found with the given ID.");
       }
