@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let { email, password, nickname, name, kakao, birth, race } = body.signUpState;
+  let { email, password, nickname, race , avatar} = body.updateState;
 
 
   try {
@@ -25,14 +25,13 @@ export async function POST(req: Request, res: Response) {
         }
       );
     }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     
-    existingUser.email = email;
-    existingUser.password = password;
+    existingUser.password = hashedPassword;
     existingUser.nickname = nickname;
-    existingUser.name = name;
-    existingUser.kakao = kakao;
-    existingUser.birth = birth;
-    existingUser.password = password;
+    existingUser.avatar = avatar;
+    existingUser.BELO.race = race;
 
     existingUser.save();
 
