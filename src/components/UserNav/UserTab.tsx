@@ -53,6 +53,7 @@ import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
 import { useDateFormatter } from "@react-aria/i18n";
 import { createMatch } from "./actions";
+import { useRouter } from "next/navigation";
 
 type UserTabProps = {
   user: MyUser;
@@ -61,6 +62,7 @@ type UserTabProps = {
 };
 
 const UserTab = ({ user, teams, users }: UserTabProps) => {
+  const router = useRouter();
   const maps = [
     { id: "1", name: "폴리포이드" },
     { id: "2", name: "투혼" },
@@ -254,6 +256,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
+                    onPress={() => router.push(`user/profile/${user.email}`)}
                   ></Button>
                   <Button
                     isIconOnly
