@@ -52,7 +52,7 @@ import { User as MyUser } from "next-auth";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import PostCardComponent from "../PostCardComponent";
-import { formatDateOnly } from "@/utils/dateUtils";
+import { formatDateOnly, formatRelativeDate } from "@/utils/dateUtils";
 import CommentCard from "../CommentCard/CommentCard";
 import PostCommentCard from "../CommentCard/ProfileCommentCard";
 import { Post } from "../../../types/types";
@@ -64,6 +64,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
   const loginUser = session?.user;
   const [selected, setSelected] = useState<string | number>("PROFILE");
   const [isEditable, setIsEditable] = useState(false);
+  const [isEditPassword, setIsEditPassword] = useState(false);
   const [signUpState, setSignUpState] = useState({
     email: "",
     password: "",
@@ -236,6 +237,37 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     }
   };
 
+  const updatePassword = async () => {
+    if (error.password.length > 1 || error.passwordConfirm.length > 1) return;
+    try {
+      const response = await fetch("/api/userprofile/updatepw", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ signUpState }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("비밀번호 변경 성공");
+        setSelected("PROFILE");
+        // 비밀번호 필드 초기화
+        setSignUpState((prev) => ({
+          ...prev,
+          password: "",
+          passwordConfirm: "",
+        }));
+        setIsEditPassword(false); // 비밀번호 변경 후 프로필 수정 모드로 전환
+      } else {
+        throw new Error(data.message);
+      }
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
   useEffect(() => {
     if (user) {
       setSignUpState({
@@ -281,7 +313,6 @@ export default function ProfileComponent({ user, posts, comments }: any) {
 
   return (
     <div className="w-full mx-auto">
-      <p>프로필 페이지</p>
       <div className="flex justify-center">
         <Card className="w-min-[370px] md:w-1/2 px-2 h-[850px]">
           <Tabs
@@ -291,7 +322,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
             onSelectionChange={setSelected}
           >
             <Tab key="PROFILE" title="PROFILE" className="text-left">
-              <div className="mx-auto mt-4 md:w-1/2 flex flex-col items-start">
+              <div className="mx-auto mt-4 md:w-1/2 flex flex-col items-center">
                 <div className="flex items-center m-2 gap-4 mt-8">
                   {/* Avatar 위치를 조정합니다. */}
                   <Avatar
@@ -399,7 +430,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
             </Tab>
             {session && session.user && session.user.email === user.email && (
               <Tab key="UPDATE" title="UPDATE" className="text-left">
-                <div className="mx-auto mt-4 md:w-1/2 flex flex-col items-start">
+                <div className="mx-auto mt-4 md:w-1/2 flex flex-col items-center">
                   <div className="flex items-center m-2 gap-4 mt-8">
                     {/* Avatar 위치를 조정합니다. */}
                     <Avatar
@@ -418,65 +449,134 @@ export default function ProfileComponent({ user, posts, comments }: any) {
                     onChange={handleImageUpload}
                     className="w-[200px]"
                   />
-                  <Input
-                    type="text"
-                    name="nickname"
-                    label="닉네임"
-                    labelPlacement={"outside"}
-                    value={signUpState.nickname}
-                    placeholder="클랜닉네임을 입력해주세요. [2~16자]"
-                    className="py-4 w-[250px] "
-                    size="lg"
-                    onChange={handleInputChange}
-                    isInvalid={error.nickname.length >= 1}
-                    errorMessage={error.nickname}
-                    variant="bordered"
-                  />
-                  <Input
-                    type="text"
-                    name="name"
-                    label="이름"
-                    labelPlacement={"outside"}
-                    placeholder="실제 성명을 입력해주세요."
-                    value={signUpState.name}
-                    className="py-4 w-[250px]"
-                    size="lg"
-                    onChange={handleInputChange}
-                    isInvalid={error.name.length >= 1}
-                    errorMessage={error.name}
-                    variant="bordered"
-                  />
-                  <Input
-                    type="text"
-                    name="kakao"
-                    label="카톡아이디"
-                    labelPlacement={"outside"}
-                    placeholder="카카오톡 아이디를 입력해주세요."
-                    value={signUpState.kakao}
-                    className="py-4 w-[250px]"
-                    size="lg"
-                    onChange={handleInputChange}
-                    isInvalid={error.kakao.length >= 1}
-                    errorMessage={error.kakao}
-                    variant="bordered"
-                  />
-                  <Input
-                    type="date"
-                    name="birth"
-                    label="생일"
-                    labelPlacement={"outside"}
-                    placeholder="Enter your email"
-                    value={signUpState.birth}
-                    className="py-4 w-[250px]"
-                    size="lg"
-                    onChange={handleInputChange}
-                    isInvalid={error.birth.length !== 0}
-                    errorMessage={error.birth}
-                    variant="bordered"
-                  />
-                  <Button className="w-full my-4" onPress={updateProfile}>
-                    수정하기
-                  </Button>
+                  {!isEditPassword ? (
+                    <>
+                      <Input
+                        type="text"
+                        name="nickname"
+                        label="닉네임"
+                        labelPlacement={"outside"}
+                        value={signUpState.nickname}
+                        placeholder="클랜닉네임을 입력해주세요. [2~16자]"
+                        className="py-4 w-[250px] "
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.nickname.length >= 1}
+                        errorMessage={error.nickname}
+                        variant="bordered"
+                      />
+                      <Input
+                        type="text"
+                        name="name"
+                        label="이름"
+                        labelPlacement={"outside"}
+                        placeholder="실제 성명을 입력해주세요."
+                        value={signUpState.name}
+                        className="py-4 w-[250px]"
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.name.length >= 1}
+                        errorMessage={error.name}
+                        variant="bordered"
+                      />
+                      <Input
+                        type="text"
+                        name="kakao"
+                        label="카톡아이디"
+                        labelPlacement={"outside"}
+                        placeholder="카카오톡 아이디를 입력해주세요."
+                        value={signUpState.kakao}
+                        className="py-4 w-[250px]"
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.kakao.length >= 1}
+                        errorMessage={error.kakao}
+                        variant="bordered"
+                      />
+                      <Input
+                        type="date"
+                        name="birth"
+                        label="생일"
+                        labelPlacement={"outside"}
+                        placeholder="Enter your email"
+                        value={signUpState.birth}
+                        className="py-4 w-[250px]"
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.birth.length !== 0}
+                        errorMessage={error.birth}
+                        variant="bordered"
+                      />
+                      <Button
+                        className="w-[200px] my-4"
+                        color="secondary"
+                        onPress={() => {
+                          setIsEditPassword(true);
+                        }}
+                      >
+                        비밀번호 변경
+                      </Button>
+                      <Button
+                        className="w-[200px] my-4"
+                        color="primary"
+                        onPress={updateProfile}
+                      >
+                        프로필 수정
+                      </Button>
+                    </>
+                  ) : (
+                    <>
+                      <Input
+                        type="password"
+                        name="password"
+                        label="비밀번호"
+                        labelPlacement={"outside"}
+                        value={signUpState.password}
+                        placeholder="비밀번호"
+                        className="py-4 w-[250px] "
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.password.length >= 1}
+                        errorMessage={error.password}
+                        variant="bordered"
+                      />
+                      <Input
+                        type="password"
+                        name="passwordConfirm"
+                        label="비밀번호 확인"
+                        labelPlacement={"outside"}
+                        placeholder="비밀번호 확인"
+                        value={signUpState.passwordConfirm}
+                        className="py-4 w-[250px]"
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.passwordConfirm.length >= 1}
+                        errorMessage={error.passwordConfirm}
+                        variant="bordered"
+                      />
+                      <Button
+                        className="w-[200px] my-4"
+                        color="secondary"
+                        onPress={() => {
+                          setIsEditPassword(false);
+                          setSignUpState((prev) => ({
+                            ...prev,
+                            password: "",
+                            passwordConfirm: "",
+                          }));
+                        }}
+                      >
+                        프로필 수정
+                      </Button>
+                      <Button
+                        className="w-[200px] my-4"
+                        color="primary"
+                        onPress={updatePassword}
+                      >
+                        비밀번호 변경
+                      </Button>
+                    </>
+                  )}
                 </div>
               </Tab>
             )}
@@ -489,7 +589,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
                     title={post.title}
                     author={post.author}
                     views={post.view}
-                    date={formatDateOnly(post.createdAt)}
+                    date={formatRelativeDate(post.createdAt)}
                     id={post._id}
                     category={post.category}
                   />

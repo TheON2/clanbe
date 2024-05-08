@@ -47,6 +47,7 @@ import { signOut } from "next-auth/react";
 import { createMatch } from "./actions";
 import { CalendarDate, parseDate } from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
+import { useRouter } from "next/navigation";
 
 type UserTabProps = {
   user: MyUser;
@@ -55,6 +56,7 @@ type UserTabProps = {
 };
 
 const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
+  const router = useRouter();
   const maps = [
     { id: "1", name: "폴리포이드" },
     { id: "2", name: "투혼" },
@@ -248,6 +250,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
+                    onPress={() => router.push(`user/profile/${user.email}`)}
                   ></Button>
                   <Button
                     isIconOnly
@@ -367,6 +370,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
+                    onPress={() => router.push(`user/profile/${user.email}`)}
                   ></Button>
                   <Button
                     isIconOnly
