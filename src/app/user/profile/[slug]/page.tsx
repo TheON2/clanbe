@@ -8,7 +8,6 @@ type Props = {
 };
 
 export default async function ProfilePage({ params: { slug } }: Props) {
-  const { user } = await getUser(slug);
-  console.log(user);
-  return <ProfileComponent user={user} />;
+  const { user, posts, comments } = await getUser(slug);
+  return <ProfileComponent user={user} posts={posts} comments={comments} />;
 }

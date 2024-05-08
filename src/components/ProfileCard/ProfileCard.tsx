@@ -23,7 +23,7 @@ export default function ProfileCard({ userData }: ProfileCardProps) {
           {/* Avatar 위치를 조정합니다. */}
           <Avatar
             src={userData.avatar}
-            className="w-25 h-25 text-large absolute -top-10 left-12"
+            className="w-28 h-28 text-large absolute top-4 left-16"
           />
           <div className="ml-48">
             <p className="font-bold text-4xl">{userData.nickname}</p>
