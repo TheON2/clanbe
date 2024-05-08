@@ -55,6 +55,7 @@ import PostCardComponent from "../PostCardComponent";
 import { formatDateOnly } from "@/utils/dateUtils";
 import CommentCard from "../CommentCard/CommentCard";
 import PostCommentCard from "../CommentCard/ProfileCommentCard";
+import { Post } from "../../../types/types";
 
 export default function ProfileComponent({ user, posts, comments }: any) {
   const router = useRouter();
@@ -482,7 +483,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
             <Tab key="POSTS" title="POSTS" className="text-left ">
               작성글 : {posts.length} 개
               <div className="overflow-auto h-[700px]">
-                {posts.map((post, index) => (
+                {posts.map((post: Post, index: string) => (
                   <PostCardComponent
                     key={index}
                     title={post.title}
@@ -498,7 +499,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
             <Tab key="COMMENTS" title="COMMENTS" className="text-left">
               작성 댓글 : {comments.length} 개
               <div className="overflow-auto h-[700px]">
-                {comments.map((comment) => (
+                {comments.map((comment: any) => (
                   <PostCommentCard
                     key={comment._id} // key prop 추가
                     commentid={comment._id}
