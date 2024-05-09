@@ -21,7 +21,7 @@ import {
 import { useTheme } from "next-themes";
 import CommentCard from "../CommentCard/CommentCard";
 import ReplyCard from "../ReplyCard/ReplyCard";
-import { Comment, User as MyUser } from "../../../types/types";
+import { Comment, User as MyUser, SupportAmount } from "../../../types/types";
 import CommentComponent from "../CommentComponent/CommentComponent";
 import ProfileCard from "../ProfileCard/ProfileCard";
 import { useSession } from "next-auth/react";
@@ -41,13 +41,18 @@ type PostFormProps = {
     createdAt: Date;
   };
   userData: any;
+  supportData: SupportAmount;
 };
 
 type CategoryLabels = {
   [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
 };
 
-export default function PostForm({ post, userData }: PostFormProps) {
+export default function PostForm({
+  post,
+  userData,
+  supportData,
+}: PostFormProps) {
   const categoryLabels: CategoryLabels = {
     forum: "자유게시판",
     support: "클랜 후원",
@@ -216,6 +221,26 @@ export default function PostForm({ post, userData }: PostFormProps) {
           )}
         </CardHeader>
         <CardBody className="overflow-visible py-2">
+          {category === "support" && supportData.type === 1 && (
+            <Card className="mx-4 h-[100px] flex items-center justify-center">
+              <p className="font-bold text-2xl">
+                {supportData.email}님께서 클랜을 위해
+              </p>
+              <p className="font-bold text-2xl">
+                {supportData.amount}원을 후원하셨습니다.
+              </p>
+            </Card>
+          )}
+          {category === "support" && supportData.type === 2 && (
+            <Card className="mx-4 h-[100px] flex items-center justify-center">
+              <p className="font-bold text-2xl">
+                {supportData.email}님께서 클랜활동을 위해
+              </p>
+              <p className="font-bold text-2xl">
+                {supportData.amount}원을 지출하셨습니다.
+              </p>
+            </Card>
+          )}
           <CKEditorContent contentUrl={fileUrl} />
         </CardBody>
         <CardFooter>

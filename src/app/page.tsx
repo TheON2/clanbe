@@ -3,7 +3,7 @@ import Banner from "@/components/Banner";
 import Notice from "@/components/Notice/Notice";
 import Upcoming from "@/components/Upcoming";
 import PublicPosts from "@/components/PublicPosts/PublicPosts";
-import PlayerPosts from "@/components/PlayerPosts";
+import PlayerPosts from "@/components/PlayerPosts/PlayerPosts";
 import MobileUserComponent from "@/components/MobileUserComponent";
 
 export default function HomePage() {
@@ -18,7 +18,7 @@ export default function HomePage() {
         <Notice />
         <Upcoming />
         <PublicPosts />
-        <PlayerPosts />
+        {/* <PlayerPosts /> */}
       </div>
     </div>
   );

@@ -21,8 +21,6 @@ export async function POST(req: Request, res: Response) {
   const body = await req.json();
   let { postid, userid } = body.viewData;
 
-  console.log(body);
-
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
     if (mongoose.connection.readyState !== 1) {

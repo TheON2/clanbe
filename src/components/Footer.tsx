@@ -1,9 +1,3 @@
 export default function Footer() {
-  return (
-    <p className="py-2 text-base text-center">
-      {
-        
-      }
-    </p>
-  );
+  return <div className="w-full h-[100px]"></div>;
 }

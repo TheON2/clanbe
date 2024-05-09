@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { updatePost } from "@/app/post/update/[slug]/actions";
 import { useSession } from "next-auth/react";
+import { SupportAmount } from "../../types/types";
 
 const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
   ssr: false,
@@ -30,8 +31,10 @@ export default function CKEditorForm({
   postHTML,
   fileName,
   postId,
+  supportData,
 }: {
   post: PostData;
+  supportData: SupportAmount;
   postHTML: string;
   fileName: string;
   postId: string;
@@ -44,6 +47,9 @@ export default function CKEditorForm({
   const [featured, setFeatured] = useState(false);
   const [noticed, setNoticed] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [type, setType] = useState(1);
+  const [supporter, setSupporter] = useState("");
+  const [amount, setAmount] = useState(0);
 
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
@@ -57,6 +63,9 @@ export default function CKEditorForm({
     setFeatured(post.featured);
     setNoticed(post.noticed);
     setThumbnail(post.thumbnail);
+    setType(supportData.type);
+    setSupporter(supportData.email);
+    setAmount(supportData.amount);
   }, [
     postHTML,
     post.title,
@@ -64,6 +73,9 @@ export default function CKEditorForm({
     post.featured,
     post.noticed,
     post.thumbnail,
+    supportData.type,
+    supportData.email,
+    supportData.amount,
   ]);
 
   const handleTitleChange = (event: any) => {
@@ -105,6 +117,9 @@ export default function CKEditorForm({
         featured,
         fileName,
         postId,
+        type,
+        supporter,
+        amount,
       };
 
       const response = await updatePost(postData);
@@ -124,6 +139,14 @@ export default function CKEditorForm({
   const headingClasses =
     "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small";
 
+  // useEffect(() => {
+  //   if (category !== "support") {
+  //     setType(1);
+  //     setAmount(0);
+  //     setSupporter("");
+  //   }
+  // }, [category]);
+
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4">
       <Card className="flex flex-1 flex-col w-full lg:w-auto lg:max-w-[500px]">
@@ -132,7 +155,7 @@ export default function CKEditorForm({
           <div className="flex flex-wrap gap-4 p-4">
             <Input
               size="sm"
-              type="email"
+              type="text"
               label="제목"
               value={title}
               onChange={handleTitleChange}
@@ -198,6 +221,35 @@ export default function CKEditorForm({
                 </Checkbox>
               )}
             </div>
+            {category === "support" && (
+              <div className="flex gap-2">
+                <Select
+                  label="후원/지출"
+                  selectedKeys={[type]}
+                  value={type.toString()} // type 상태값 연결
+                  onChange={(e) => setType(Number(e.target.value))} // type 상태 업데이트
+                >
+                  <SelectItem key="1" value="1">
+                    후원
+                  </SelectItem>
+                  <SelectItem key="2" value="2">
+                    지출
+                  </SelectItem>
+                </Select>
+                <Input
+                  type="text"
+                  label="후원자/지출자"
+                  value={supporter} // supporter 상태값 연결
+                  onChange={(e) => setSupporter(e.target.value)} // supporter 상태 업데이트
+                />
+                <Input
+                  type="number"
+                  label="후원/지출액"
+                  value={amount.toString()} // amount 상태값 연결
+                  onChange={(e) => setAmount(Number(e.target.value))} // amount 상태 업데이트
+                />
+              </div>
+            )}
             <ButtonModal
               title={"수정하기"}
               text={"글을 수정하시겠습니까?"}
@@ -235,6 +287,22 @@ export default function CKEditorForm({
               </Chip>
             )}
           </div>
+          {category === "support" && type === 1 && (
+            <Card className="mx-4 h-[100px] flex items-center justify-center">
+              <p className="font-bold text-2xl">
+                {supporter}님께서 클랜을 위해
+              </p>
+              <p className="font-bold text-2xl">{amount}원을 후원하셨습니다.</p>
+            </Card>
+          )}
+          {category === "support" && type === 2 && (
+            <Card className="mx-4 h-[100px] flex items-center justify-center">
+              <p className="font-bold text-2xl">
+                {supporter}님께서 클랜활동을 위해
+              </p>
+              <p className="font-bold text-2xl">{amount}원을 지출하셨습니다.</p>
+            </Card>
+          )}
           <div
             className="ck-content p-8 break-words"
             dangerouslySetInnerHTML={{ __html: htmlContent }}

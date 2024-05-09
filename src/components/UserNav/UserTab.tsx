@@ -271,7 +271,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
               </div>
               <Divider />
               <div className="mt-4 mb-6">
-                <div className="flex items-center m-2 gap-4">
+                <div className="flex items-center m-2 gap-4 ">
                   {/* Avatar 위치를 조정합니다. */}
                   <Avatar src={user.avatar} className="w-20 h-20 text-large" />
                   <div className="flex flex-col">

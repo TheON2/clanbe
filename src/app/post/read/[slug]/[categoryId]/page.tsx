@@ -4,6 +4,7 @@ import { Post } from "@/service/posts";
 import { revalidateTag } from "next/cache";
 import React from "react";
 import { ViewDate } from "../../../../../../types/types";
+import { getSupportData } from "@/app/post/update/[slug]/actions";
 
 async function getAllPost() {
   "use server";
@@ -49,13 +50,11 @@ export default async function PostPage({
   const post = posts.data.find((post: Post) => post._id === slug);
 
   const user = await getUser(post.author);
+  const { supportData } = await getSupportData(slug);
 
-  //await updateView({ postid: slug, userid: user.user._id });
-
-  // PostForm 컴포넌트에 post 데이터 전달
   return (
     <div className="w-full mt-8">
-      <PostForm post={post} userData={user.user} />
+      <PostForm post={post} userData={user.user} supportData={supportData}/>
       <BoardLayout
         boardTitle={"전체 게시글"}
         announce={posts.data}

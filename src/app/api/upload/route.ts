@@ -4,13 +4,25 @@ import { MongoClient } from "mongodb";
 import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
+import SupportModel from "@/models/support";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let { htmlContent,noticed, title, description, category, thumbnail, featured,author,view } =
-    body.postData;
-
+  let {
+    htmlContent,
+    noticed,
+    title,
+    description,
+    category,
+    thumbnail,
+    featured,
+    author,
+    view,
+    supporter,
+    type,
+    amount,
+  } = body.postData;
 
   try {
     const fileUrl = await uploadPostData(htmlContent);
@@ -30,28 +42,36 @@ export async function POST(req: Request, res: Response) {
       fileUrl,
       author,
       noticed,
-      view
+      view,
     });
 
-    try {
-      const savedPost = await post.save();
-      console.log("게시글 저장 성공");
-      return new Response(
-        JSON.stringify({
-          message: savedPost._id.toString(),
-        }),
-        {
-          status: 200,
-          statusText: savedPost._id.toString(),
-        }
-      );
-    } catch (error) {
-      console.error("게시글 저장 실패:", error);
-      // 오류의 자세한 내용을 확인하기 위해 error 객체 전체를 출력
-      console.error(error);
+    
+    const savedPost = await post.save();
+    
+    if (category === "support") {
+      try {
+        const supportData = new SupportModel({
+          type,
+          email:supporter,
+          amount,
+          postid:savedPost._id,
+        });
+        supportData.save();
+      } catch (error: unknown) {
+        console.error("후원내역 저장 실패:", error);
+      }
     }
 
-    console.log("업로드 성공");
+    console.log("게시글 저장 성공");
+    return new Response(
+      JSON.stringify({
+        message: savedPost._id.toString(),
+      }),
+      {
+        status: 200,
+        statusText: savedPost._id.toString(),
+      }
+    );
   } catch (error: unknown) {
     if (error instanceof Error) {
       new Response(JSON.stringify({ error: error.message }), {

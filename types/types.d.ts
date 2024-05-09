@@ -9,6 +9,27 @@ export type Team = {
   winpoint: number;
 };
 
+export type SupportAmount = {
+  _id?: string;
+  type: number;
+  amount: number;
+  email: string;
+  postid: string;
+}
+
+export type Support = {
+  amount: number;
+  _id?: string;
+  createdAt: Date;
+  nickname: string;
+  title?: string;
+  user: {
+    avatar: string;
+    email: string;
+    name: string;
+  }
+}
+
 export type Match = {
   _id?: string;
   name: string;

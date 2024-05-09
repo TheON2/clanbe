@@ -1,8 +1,9 @@
-'use server'
+"use server";
 
 import { updatePostData, uploadPostData } from "@/service/posts";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
+import SupportModel from "@/models/support";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
@@ -17,8 +18,12 @@ export async function POST(req: Request, res: Response) {
     fileName,
     noticed,
     postId,
+    supporter,
+    type,
+    amount,
   } = body.postData;
 
+  console.log(body);
 
   try {
     const fileUrl = await updatePostData(fileName, htmlContent);
@@ -33,7 +38,7 @@ export async function POST(req: Request, res: Response) {
       throw new Error("게시글을 찾을 수 없음");
     }
 
-     // 필요한 필드를 업데이트합니다.
+    // 필요한 필드를 업데이트합니다.
     post.title = title;
     post.description = description;
     post.category = category;
@@ -43,10 +48,21 @@ export async function POST(req: Request, res: Response) {
     post.fileUrl = fileUrl;
 
     // markModified를 호출하여 Mongoose에게 featured와 noticed 필드가 변경되었음을 알립니다.
-    post.markModified('featured');
-    post.markModified('noticed');
+    post.markModified("featured");
+    post.markModified("noticed");
 
-    // 문서를 저장합니다.
+    if (category === "support") {
+      const supportData = await SupportModel.findOne({ postid: postId });
+      console.log(supportData)
+      if (!supportData) {
+        throw new Error("후원기록을 찾을 수 없음");
+      }
+      supportData.type = type;
+      supportData.email = supporter;
+      supportData.amount = amount;
+
+      await supportData?.save();
+    }
     await post.save();
 
     console.log("게시글 수정 성공");

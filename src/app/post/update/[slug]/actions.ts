@@ -22,6 +22,18 @@ export async function getPost(slug: any) {
   return { post, postHTML, fileName };
 }
 
+export async function getSupportData(slug: any) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/support`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ slug }),
+    next: { tags: ["post"] },
+  });
+  return await response.json();
+}
+
 export async function updatePost(postData: any) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/update`, {
     method: "POST",
