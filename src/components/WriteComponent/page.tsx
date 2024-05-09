@@ -12,6 +12,8 @@ import {
   Select,
   SelectItem,
   SelectSection,
+  Autocomplete,
+  AutocompleteItem,
   Skeleton,
 } from "@nextui-org/react";
 import { marked } from "marked";
@@ -24,7 +26,7 @@ const MyEditorWithNoSSR = dynamic(() => import("../../app/MyEditor/MyEditor"), {
   ssr: false,
 });
 
-export default function WriteComponent() {
+export default function WriteComponent({ nicknames }: any) {
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
@@ -39,6 +41,7 @@ export default function WriteComponent() {
   const [noticed, setNoticed] = useState(false);
   const [type, setType] = useState(1);
   const [supporter, setSupporter] = useState("");
+  const [supporterKey, setSupporterKey] = useState<any>("");
   const [amount, setAmount] = useState(0);
 
   const handleTitleChange = (event: any) => {
@@ -65,6 +68,13 @@ export default function WriteComponent() {
     }
     if (doc && doc.body.textContent) {
       setDescription(doc.body.textContent.trim().substring(0, 40));
+    }
+  };
+
+  const handleSelectUser = (nickname: string) => {
+    const selectedUser = nicknames.find((n: string) => n === nickname);
+    if (selectedUser) {
+      setSupporter(selectedUser);
     }
   };
 
@@ -189,6 +199,7 @@ export default function WriteComponent() {
             {category === "support" && (
               <div className="flex gap-2">
                 <Select
+                  className="w-1/3"
                   label="후원/지출"
                   value={type.toString()} // type 상태값 연결
                   onChange={(e) => setType(Number(e.target.value))} // type 상태 업데이트
@@ -200,13 +211,29 @@ export default function WriteComponent() {
                     지출
                   </SelectItem>
                 </Select>
+                <Autocomplete
+                  label="후원/지출자"
+                  className="w-3/5"
+                  value={supporter}
+                  onInputChange={(value) => {
+                    if (supporter !== value) {
+                      handleSelectUser(value);
+                    }
+                  }}
+                  selectedKey={supporterKey}
+                  onSelectionChange={setSupporterKey}
+                >
+                  {nicknames.map((nickname: string) => (
+                    <AutocompleteItem
+                      key={String(nickname).toUpperCase()}
+                      value={nickname}
+                    >
+                      {nickname}
+                    </AutocompleteItem>
+                  ))}
+                </Autocomplete>
                 <Input
-                  type="text"
-                  label="후원자/지출자"
-                  value={supporter} // supporter 상태값 연결
-                  onChange={(e) => setSupporter(e.target.value)} // supporter 상태 업데이트
-                />
-                <Input
+                  className="w-1/2"
                   type="number"
                   label="후원/지출액"
                   value={amount.toString()} // amount 상태값 연결

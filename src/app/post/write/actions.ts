@@ -30,6 +30,18 @@ export async function updatePost(postData:any) {
         },
         body: JSON.stringify({ postData }),
      });
-    revalidateTag("post");
-    
+    revalidateTag("post");   
+}
+
+export async function getUserSelect() {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/users/select`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    next: { tags: ["post"] },
+    cache:"no-store"
+  });
+
+  return await response.json();
 }

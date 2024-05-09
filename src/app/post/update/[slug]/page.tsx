@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getPostData, getPostHTML } from "@/service/posts";
 import CKEditorForm from "@/components/CKEditorForm";
 import { getPost, getSupportData } from "./actions";
+import { getUserSelect } from "../../write/actions";
 
 type Props = {
   params: {
@@ -12,7 +13,7 @@ type Props = {
 export default async function UpdatePage({ params: { slug } }: Props) {
   const { post, postHTML, fileName } = await getPost(slug);
   const { supportData } = await getSupportData(slug);
-  console.log(supportData);
+  const { nicknames } = await getUserSelect();
   return (
     <CKEditorForm
       post={post}
@@ -20,6 +21,7 @@ export default async function UpdatePage({ params: { slug } }: Props) {
       fileName={fileName as string}
       postId={slug}
       supportData={supportData}
+      nicknames={nicknames}
     />
   );
 }
