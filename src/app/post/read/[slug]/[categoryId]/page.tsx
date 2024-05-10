@@ -1,36 +1,10 @@
 import BoardLayout from "@/components/BoardLayout";
 import PostForm from "@/components/PostForm";
-import { Post } from "@/service/posts";
+import { getAllPosts, getPosts, Post } from "@/service/posts";
 import { revalidateTag } from "next/cache";
 import React from "react";
 import { getSupport } from "@/service/supports";
-
-async function getAllPost() {
-  "use server";
-  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ category: "allposts" }),
-    next: { tags: ["post"] },
-  });
-  const posts = await response.json();
-  return posts;
-}
-
-async function getUser(author: string) {
-  "use server";
-  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/user`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ email: author }),
-    next: { tags: ["post"] },
-  });
-  return await response.json();
-}
+import { getProfile } from "@/service/user";
 
 type Props = {
   params: {
@@ -43,12 +17,9 @@ type Props = {
 export default async function PostPage({
   params: { slug, categoryId },
 }: Props) {
-  const posts = await getAllPost();
-  revalidateTag("post");
-
+  const posts = await getPosts("allposts");
   const post = posts.data.find((post: Post) => post._id === slug);
-
-  const user = await getUser(post.author);
+  const user = await getProfile(post.author);
   const { supportData } = await getSupport(slug);
 
   return (

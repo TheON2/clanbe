@@ -26,5 +26,6 @@ declare module 'next-auth' {
       belo: number;
     };
     team: string;
+    message: string;
   }
 }

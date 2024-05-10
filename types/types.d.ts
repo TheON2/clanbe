@@ -82,6 +82,7 @@ export type User = {
     belo: number;
   };
   team: string;
+  message: string;
 };
 
 export type Category = {

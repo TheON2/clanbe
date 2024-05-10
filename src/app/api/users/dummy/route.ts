@@ -65,7 +65,7 @@ export async function POST(req: Request, res: Response) {
         phone: "010-0000-0000",
         point: playerPoint ? playerPoint.points : 0,
         role: user.group.includes("관리그룹") ? "Staff" : "Member",
-        grade: user.group.includes("관리그룹") ? 4 : 1,
+        grade: user.group.includes("관리그룹") ? 5 : 1,
         avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
         createdAt: new Date(user.registrationDate),
         tear: getTier(playerData ? Number(playerData.belo) : 0),
@@ -80,6 +80,7 @@ export async function POST(req: Request, res: Response) {
           belo: belo,
         },
         team: "", // 이 항목은 필요한 정보가 제공되지 않아 비워둡니다.
+        message:"만나서 반갑습니다."
       };
     });
 

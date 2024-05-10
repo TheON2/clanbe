@@ -64,6 +64,7 @@ export const config = {
         token.id = user._id;
         token.email = user.email;
         token.phone = user.phone;
+        token.message = user.message;
       }
       return token;
     },
@@ -72,6 +73,7 @@ export const config = {
       if (token) {
         session.user = {
           _id: token.id as string,
+          message:token.message as string,
           avatar: token.avatar as string,
           name: token.name as string,
           nickname: token.nickname as string,

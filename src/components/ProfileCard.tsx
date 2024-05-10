@@ -34,7 +34,7 @@ export default function ProfileCard({ userData }: ProfileCardProps) {
           className="flex-1 p-4 m-4 ml-8 overflow-hidden"
           style={{ maxWidth: "400px", overflowWrap: "break-word" }}
         >
-          옴게메게페고십다
+          {userData.message}
         </Card>
         <p className="ml-6 mb-4 font-bold text-sm">
           가입일 : {formatDate(userData.createdAt)}
