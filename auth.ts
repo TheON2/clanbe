@@ -63,6 +63,7 @@ export const config = {
         token.birth = user.birth;
         token.id = user._id;
         token.email = user.email;
+        token.phone = user.phone;
       }
       return token;
     },
@@ -83,6 +84,7 @@ export const config = {
           grade: token.grade as number,
           tear: token.tear as string,
           team: token.team as string,
+          phone: token.phone as string,
           id: token.id as string, // 필요한 경우 token에서 id를 가져오거나 기본 id 제공
           emailVerified: null, // emailVerified는 null이 가능
         };

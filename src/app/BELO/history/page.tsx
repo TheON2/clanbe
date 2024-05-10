@@ -1,4 +1,4 @@
-import BELOMatchComponent from "@/components/BELOMatchComponent/BELOMatchComponent";
+import BELOMatchComponent from "@/components/BELOMatchComponent";
 
 export default async function HistoryPage() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/match`, {

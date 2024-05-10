@@ -6,7 +6,7 @@ export const HeaderEnd = () => {
     event.preventDefault(); // Link 컴포넌트의 기본 행동을 중단합니다.
 
     try {
-      const response = await fetch("/api/dummy", {
+      const response = await fetch("/api/users/dummy", {
         method: "POST",
         // body와 headers를 생략할 수 있습니다, 서버에서 더미 데이터를 처리하기 때문입니다.
       });
@@ -28,11 +28,11 @@ export const HeaderEnd = () => {
           Sign Up
         </Button>
       </NavbarItem> */}
-      {/* <NavbarItem>
+      <NavbarItem>
         <Button color="primary" href="#" variant="flat" onClick={handleSubmit}>
           Dummy
         </Button>
-      </NavbarItem> */}
+      </NavbarItem>
     </NavbarContent>
   );
 };

@@ -15,6 +15,7 @@ export type SupportAmount = {
   amount: number;
   email: string;
   postid: string;
+  createdAt: Date;
 }
 
 export type Support = {
@@ -63,6 +64,7 @@ export type User = {
   email: string;
   name: string;
   password: string;
+  phone: string;
   role: string;
   grade: number;
   point: number;
@@ -144,6 +146,7 @@ export type Signup = {
   passwordConfirm: string;
   nickname: string;
   race: string;
+  phone: string;
 };
 
 //회원가입 에러메세지
@@ -156,6 +159,7 @@ export type Error = {
   passwordConfirm: string;
   nickname: string;
   race: string;
+  phone: string;
 };
 
 //회원가입 정보 체크박스 타입정의

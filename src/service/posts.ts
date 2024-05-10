@@ -1,3 +1,5 @@
+"use server";
+
 import {
   DeleteObjectCommand,
   GetObjectCommand,
@@ -9,6 +11,17 @@ import {
 import mongoose from "mongoose";
 import Post from "@/models/post";
 import PostModel from "@/models/post";
+import { revalidateTag } from "next/cache";
+
+const awsConfig = {
+  region: process.env.NEXT_PUBLIC_AWS_REGION || "us-east-1",
+  credentials: {
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID as string,
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY as string,
+  },
+};
+
+const s3Client = new S3Client(awsConfig);
 
 export type Post = {
   _id: string;
@@ -36,89 +49,84 @@ export type PostData = {
   prev: Post | null;
 };
 
-const awsConfig = {
-  region: process.env.NEXT_PUBLIC_AWS_REGION || "us-east-1",
-  credentials: {
-    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID as string,
-    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY as string,
-  },
-};
+export async function getPosts(category:string) {
+  // 응답을 JSON으로 변환
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ category }),
+    next: { tags: ["post"] },
+    cache: "no-store",
+  });
 
-const s3Client = new S3Client(awsConfig);
-
-export async function getFeaturedPosts(): Promise<Post[]> {
-  return getAllPosts() //
-    .then((posts) => posts.filter((post) => post.featured));
-}
-
-export async function getNonFeaturedPosts(): Promise<Post[]> {
-  return getAllPosts() //
-    .then((posts) => posts.filter((post) => !post.featured));
+  const posts = await response.json();
+  return posts;
 }
 
 export const getAllPosts = async () => {
   try {
-    // MongoDB 데이터베이스에 연결
-    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
-
-    // 데이터베이스에서 모든 게시글을 검색
-    const posts = await PostModel.find({}); // 모든 게시글을 검색
-
-    const transformedPosts = posts.map((post) => {
-      return {
-        ...post.toObject(),
-        _id: post._id.toString(), // ObjectId를 문자열로 변환
-      };
+    const category = "allposts";
+    // 응답을 JSON으로 변환
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ category }),
+      next: { tags: ["post"] },
+      cache: "no-store",
     });
-    return transformedPosts;
+
+    const posts = await response.json();
+    return posts.data;
   } catch (error) {
     console.error("Error fetching posts from MongoDB", error);
     throw new Error("Error fetching posts from MongoDB");
   }
 };
 
-export const getAllPostSlugs = async () => {
-  try {
-    // MongoDB 데이터베이스에 연결
-    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
+export async function getPost(slug: any) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/post`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ slug }),
+    next: { tags: ["post"] },
+  });
 
-    // 데이터베이스에서 모든 게시글의 _id만 검색
-    const posts = await PostModel.find({}, "_id"); // '_id' 필드만 선택하여 검색
+  // 응답을 JSON으로 변환
+  const post = await response.json();
+  const postHTML = await getPostHTML(post.fileUrl);
+  const fileNameWithExtension = post.fileUrl.split("/").pop() as string;
+  const fileName = fileNameWithExtension.replace(".html", "");
 
-    // 검색된 게시글들에서 _id만 추출하고 문자열로 변환
-    const slugs = posts.map((post) => post._id.toString());
-    return slugs;
-  } catch (error) {
-    console.error("Error fetching slugs from MongoDB", error);
-    throw new Error("Error fetching slugs from MongoDB");
-  }
-};
+  return { post, postHTML, fileName };
+}
 
-export const getUserData = async () => {
-  try {
-    // MongoDB 데이터베이스에 연결
-    await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
+export async function getUserSelect() {
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/users/select`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      next: { tags: ["post"] },
+      cache: "no-store",
+    }
+  );
 
-    // 데이터베이스에서 모든 게시글을 검색
-    const posts = await PostModel.find({}); // 모든 게시글을 검색
+  return await response.json();
+}
 
-    const transformedPosts = posts.map((post) => {
-      return {
-        ...post.toObject(),
-        _id: post._id.toString(), // ObjectId를 문자열로 변환
-      };
-    });
-    return transformedPosts;
-  } catch (error) {
-    console.error("Error fetching posts from MongoDB", error);
-    throw new Error("Error fetching posts from MongoDB");
-  }
-};
 
 export async function getPostData(slug: string): Promise<PostData> {
   const posts = await getAllPosts();
 
-  const post = posts.find((post) => post._id.toString() === slug);
+  const post = posts.find((post: any) => post._id.toString() === slug);
 
   if (!post) throw new Error(`${slug}에 해당하는 포스트를 찾을 수 없음`);
 
@@ -166,6 +174,7 @@ export async function getPostHTML(contentUrl: string): Promise<string> {
   return htmlContent as string;
 }
 
+
 export async function uploadImage(file: File): Promise<string> {
   const fileName = `images/${Date.now()}.png`;
   const buffer = Buffer.from(await file.arrayBuffer());
@@ -177,8 +186,35 @@ export async function uploadImage(file: File): Promise<string> {
       Body: buffer,
     })
   );
-
+  
   return `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/${fileName}`;
+}
+
+export async function submitPost(postData: any) {
+  //console.log(postData)
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/post/upload`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ postData }),
+    }
+  );
+  revalidateTag("post");
+  return await response.json();
+}
+
+export async function updatePost(postData: any) {
+  await fetch(`${process.env.NEXT_PUBLIC_URL}/api/post/update`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ postData }),
+  });
+  revalidateTag("post");
 }
 
 export async function uploadPostData(

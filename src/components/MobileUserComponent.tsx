@@ -13,11 +13,9 @@ import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { getTeamData } from "@/service/user";
+import { getNavData, getUsers } from "@/service/user";
 import { Team } from "../../types/types";
-import { getTeam } from "@/app/actions";
 import UserNav from "./UserNav/UserNav";
-import { getUsers } from "./TapNav/actions";
 import { User as MyUser } from "next-auth";
 
 export default function MobileUserComponent() {
@@ -32,8 +30,8 @@ export default function MobileUserComponent() {
   useEffect(() => {
     // 내부에서 비동기 함수 선언
     const fetchData = async () => {
-      const { teams } = await getTeam();
-      const users = await getUsers();
+      const { teams, users } = await getNavData();
+      //const users = await getUsers();
       setTeams(teams); // 팀 데이터 설정
       setUserData(users.users);
     };

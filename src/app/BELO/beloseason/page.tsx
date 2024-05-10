@@ -1,7 +1,8 @@
 "use server";
 
-import BELOComponent from "@/components/BELOComponent/BELOCompoent";
-import { getUsers } from "@/components/TapNav/actions";
+import BELOComponent from "@/components/BELOCompoent";
+import { getUsers } from "@/service/user";
+
 
 export default async function BeloSeasonPage() {
   const users = await getUsers();

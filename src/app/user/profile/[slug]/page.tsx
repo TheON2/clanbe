@@ -1,5 +1,5 @@
-import ProfileComponent from "@/components/ProfileComponent/ProfileComponent";
-import { getUser } from "./actions";
+import ProfileComponent from "@/components/ProfileComponent";
+import { getUserProfile } from "@/service/user";
 
 type Props = {
   params: {
@@ -8,6 +8,6 @@ type Props = {
 };
 
 export default async function ProfilePage({ params: { slug } }: Props) {
-  const { user, posts, comments } = await getUser(slug);
+  const { user, posts, comments } = await getUserProfile(slug);
   return <ProfileComponent user={user} posts={posts} comments={comments} />;
 }

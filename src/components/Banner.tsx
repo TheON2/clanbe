@@ -1,5 +1,3 @@
-import CarouselItem from "./CarouselItem";
-import MultiCarousel from "./MultiCarousel";
 import NextCarousel from "./NextCarousel";
 
 export interface CarouselItemProps {

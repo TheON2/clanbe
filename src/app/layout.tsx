@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import { Providers } from "./provider";
 import TapNav from "@/components/TapNav/TabNav";
 import Head from "next/head";
-import { getTeamData } from "@/service/user";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 

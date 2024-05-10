@@ -14,6 +14,7 @@ declare module 'next-auth' {
     tear: string;
     kakao: string;
     birth: Date;
+    phone: string;
     BELO: {
       race: string;
       pw: number;

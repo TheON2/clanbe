@@ -1,5 +1,6 @@
 import MemberComponent from "@/components/MemberComponent";
-import { getUsers } from "@/components/TapNav/actions";
+import { getUsers } from "@/service/user";
+
 
 export default async function MembersPage() {
   const users = await getUsers();

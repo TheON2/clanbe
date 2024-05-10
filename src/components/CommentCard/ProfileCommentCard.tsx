@@ -7,16 +7,8 @@ import {
   Textarea,
   User,
 } from "@nextui-org/react";
-import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import UserProfile from "../UserProfile";
-import { useSession } from "next-auth/react";
-import CommentComponent from "../CommentComponent/CommentComponent";
-import ReplyComponent from "../ReplyComponent/ReplyComponent";
-import SubmitModal from "../SubmitModal";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { deleteComment, updateComment } from "./actions";
 import { formatDate } from "@/utils/dateUtils";
 import { categoryLabels } from "../../../public/data";
 

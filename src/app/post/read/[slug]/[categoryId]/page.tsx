@@ -1,10 +1,9 @@
 import BoardLayout from "@/components/BoardLayout";
-import PostForm from "@/components/PostForm/PostForm";
+import PostForm from "@/components/PostForm";
 import { Post } from "@/service/posts";
 import { revalidateTag } from "next/cache";
 import React from "react";
-import { ViewDate } from "../../../../../../types/types";
-import { getSupportData } from "@/app/post/update/[slug]/actions";
+import { getSupport } from "@/service/supports";
 
 async function getAllPost() {
   "use server";
@@ -50,11 +49,11 @@ export default async function PostPage({
   const post = posts.data.find((post: Post) => post._id === slug);
 
   const user = await getUser(post.author);
-  const { supportData } = await getSupportData(slug);
+  const { supportData } = await getSupport(slug);
 
   return (
     <div className="w-full mt-8">
-      <PostForm post={post} userData={user.user} supportData={supportData}/>
+      <PostForm post={post} userData={user.user} supportData={supportData} />
       <BoardLayout
         boardTitle={"전체 게시글"}
         announce={posts.data}

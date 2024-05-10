@@ -28,6 +28,7 @@ export default function SignUpPage() {
     kakao: "",
     birth: "",
     race: "",
+    phone: "",
   });
   const [error, setError] = useState<Signup>({
     email: "",
@@ -38,6 +39,7 @@ export default function SignUpPage() {
     kakao: "",
     birth: "",
     race: "",
+    phone: "",
   });
   const [checkboxes, setCheckboxes] = useState<CheckBoxInterface>({
     checkAll: false,
@@ -48,6 +50,11 @@ export default function SignUpPage() {
   const [checkboxErrorMessage, setCheckboxErrorMessage] = useState("");
   const [serverError, setServerError] = useState<string>("");
   const [serverNicknameError, setServerNicknameError] = useState<string>("");
+
+  const validatePhoneNumber = (phone: string) => {
+    const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
+    return phoneRegex.test(phone);
+  };
 
   const handleRaceClick = (race: string) => {
     setSignUpState((prev) => ({
@@ -133,6 +140,17 @@ export default function SignUpPage() {
         setError((prev) => ({ ...prev, race: "" }));
       }
     }
+
+    if (name === "phone") {
+      if (value.length > 0 && !validatePhoneNumber(value)) {
+        setError((prev) => ({
+          ...prev,
+          phone: "휴대폰 번호 형식이 유효하지 않습니다.",
+        }));
+      } else {
+        setError((prev) => ({ ...prev, phone: "" }));
+      }
+    }
   };
 
   const canSubmit = () => {
@@ -145,14 +163,15 @@ export default function SignUpPage() {
       !signUpState.name ||
       !signUpState.kakao ||
       !signUpState.birth ||
-      !signUpState.race;
+      !signUpState.race ||
+      !signUpState.phone;
 
     return !hasErrors && !hasEmptyFields;
   };
 
   const handleSubmit = async () => {
     try {
-      const response = await fetch("/api/signup", {
+      const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -259,6 +278,19 @@ export default function SignUpPage() {
               onChange={handleInputChange}
               isInvalid={error.kakao.length >= 1}
               errorMessage={error.kakao}
+            />
+            <Input
+              type="text"
+              name="phone"
+              label="연락처"
+              labelPlacement={"outside"}
+              placeholder="휴대폰 번호를 입력해주세요."
+              value={signUpState.phone}
+              className="py-4"
+              size="lg"
+              onChange={handleInputChange}
+              isInvalid={error.phone.length >= 1}
+              errorMessage={error.phone}
             />
             <Input
               type="date"

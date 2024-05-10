@@ -1,77 +1,77 @@
-import { Button, Card, CardHeader, Textarea, User } from "@nextui-org/react";
+import {
+  Button,
+  ButtonGroup,
+  Card,
+  CardHeader,
+  Textarea,
+  User,
+} from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
-import UserProfile from "../UserProfile";
-import { useSession } from "next-auth/react";
-import CommentComponent from "../CommentComponent";
-import ReplyComponent from "../ReplyComponent";
-import SubmitModal from "../SubmitModal";
+import { Server } from "../../public/Icons";
+import { Image } from "@nextui-org/react";
+import UserProfile from "./UserProfile";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
-import { deleteComment, updateComment } from "../../service/comment";
+import { useSession } from "next-auth/react";
 import { formatDate } from "@/utils/dateUtils";
+import { deleteReply, updateReply } from "@/service/reply";
 
 type CommentCardProps = {
   commentid: string;
+  replyid: string;
   author: string;
   text: string;
   postid: string;
   date: Date;
-  category: string;
 };
 
-export default function CommentCard({
+export default function ReplyCard({
   author,
   text,
   date,
   postid,
   commentid,
-  category,
+  replyid,
 }: CommentCardProps) {
-  const router = useRouter();
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
 
-  const [isDelete, setIsDelete] = useState(false);
   const [editMode, setEditMode] = useState(false);
   const [editedText, setEditedText] = useState(text);
 
   const handleDelete = async () => {
     try {
-      const response = await deleteComment({ postid, commentid });
+      const response = await deleteReply({ postid, commentid, replyid });
       if (!response.ok) {
         throw new Error(`Error: ${response.statusText}`);
       }
-      router.push(`/post/read/${postid}/${category}`);
     } catch (error) {
-      console.error("Failed to delete the comment:", error);
+      console.error("Failed to delete the reply:", error);
     }
   };
 
   const handleUpdate = async () => {
     try {
-      await updateComment({
+      await updateReply({
         postid,
         commentid,
+        replyid,
         author,
         editedText,
       });
       setEditMode(false);
     } catch (error) {
-      console.error("Failed to update the comment:", error);
+      console.error("Failed to update the reply:", error);
     }
   };
 
   const isAuthor = user?.email === author;
-
-  // Determine the card's border style based on authorship
   const cardStyle = isAuthor
     ? { border: "1px solid #0070f3", boxShadow: "0 2px 6px #0070f350" }
     : {};
 
   return (
-    <div className="m-4 max-w-[700px]">
+    <div className="m-4 ml-24 max-w-[700px]">
       <Card style={cardStyle}>
         <CardHeader className="justify-between">
           <UserProfile email={author} />

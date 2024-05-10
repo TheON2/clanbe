@@ -44,10 +44,10 @@ import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
 import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
-import { createMatch } from "./actions";
 import { CalendarDate, parseDate } from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
 import { useRouter } from "next/navigation";
+import { createMatch } from "@/service/match";
 
 type UserTabProps = {
   user: MyUser;
@@ -203,7 +203,6 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
 
     try {
       await createMatch(newMatch);
-      //onOpenChange();
     } catch (error) {
       alert("등록실패");
     }

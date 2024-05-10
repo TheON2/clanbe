@@ -14,6 +14,7 @@ const userSchema = new mongoose.Schema(
     grade: Number, // 사용자 등급
     point: Number, // 사용자 포인트
     tear: String, // 사용자 티어
+    phone: String, //사용자 전화번호
     BELO: {
       race: String, // 사용자 경주 종류
       pw: Number, // 개인전 승리

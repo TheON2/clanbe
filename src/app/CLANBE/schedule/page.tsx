@@ -1,4 +1,4 @@
-import ScheduleComponent from "@/components/ScheduleComponent/ScheduleComponent";
+import ScheduleComponent from "@/components/ScheduleComponent";
 import { getEvent } from "./action";
 
 export default async function SchedulePage() {

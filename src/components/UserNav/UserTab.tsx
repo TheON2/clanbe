@@ -52,8 +52,8 @@ import { LogoutIcon } from "../../../public/logout";
 import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
 import { useDateFormatter } from "@react-aria/i18n";
-import { createMatch } from "./actions";
 import { useRouter } from "next/navigation";
+import { createMatch } from "@/service/match";
 
 type UserTabProps = {
   user: MyUser;
@@ -117,7 +117,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const level = Math.floor(user.point / 1000);
   const expPercentage = (user.point % 1000) / 10;
 
-  const myTeam = teams.find((team: Team) => team.name === user.team);
+  const myTeam = teams?.find((team: Team) => team.name === user.team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정

@@ -1,6 +1,3 @@
-import Notice2 from "@/components/Notice2";
-import BoardLayout from "@/components/BoardLayout";
-import { announce, board } from "../../../../public/data";
 import { getAllPosts } from "@/service/posts";
 import NoticeBoardLayout from "@/components/NoticeBoardLayout";
 

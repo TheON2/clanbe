@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/button";
 import { Checkbox } from "@nextui-org/checkbox";
 import { Input } from "@nextui-org/input";
 import { marked } from "marked";
-import { PostData } from "@/service/posts";
+import { PostData, updatePost } from "@/service/posts";
 import {
   Card,
   CardHeader,
@@ -20,11 +20,10 @@ import ButtonModal from "./ButtonModal";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
 import { revalidatePath, revalidateTag } from "next/cache";
-import { updatePost } from "@/app/post/update/[slug]/actions";
 import { useSession } from "next-auth/react";
 import { SupportAmount } from "../../types/types";
 
-const MyEditorWithNoSSR = dynamic(() => import("../app/MyEditor/MyEditor"), {
+const MyEditorWithNoSSR = dynamic(() => import("./MyEditor/MyEditor"), {
   ssr: false,
 });
 
@@ -53,7 +52,7 @@ export default function CKEditorForm({
   const [isSubmit, setIsSubmit] = useState(false);
   const [type, setType] = useState(1);
   const [supporter, setSupporter] = useState("");
-  const [supporterKey, setSupporterKey] = useState<any>("");
+  const [supporterKey, setSupporterKey] = useState<any>("supporter");
   const [amount, setAmount] = useState(0);
 
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
@@ -68,10 +67,12 @@ export default function CKEditorForm({
     setFeatured(post.featured);
     setNoticed(post.noticed);
     setThumbnail(post.thumbnail);
-    setType(supportData.type);
-    setSupporter(supportData.email);
-    setAmount(supportData.amount);
-    setSupporterKey(supportData.email);
+    if (supportData) {
+      setType(supportData?.type);
+      setSupporter(supportData?.email);
+      setAmount(supportData?.amount);
+      setSupporterKey(supportData?.email);
+    }
   }, [
     postHTML,
     post.title,
@@ -79,9 +80,7 @@ export default function CKEditorForm({
     post.featured,
     post.noticed,
     post.thumbnail,
-    supportData.type,
-    supportData.email,
-    supportData.amount,
+    supportData,
   ]);
 
   const handleTitleChange = (event: any) => {
@@ -137,11 +136,6 @@ export default function CKEditorForm({
 
       const response = await updatePost(postData);
       setIsSubmit(true);
-      //window.location.href = `/posts/${response.statusText}`;
-
-      if (!response.message) {
-        throw new Error(`Error: 게시글 수정 실패`);
-      }
     } catch (error) {
       console.error("Failed to submit the article:", error);
     }
