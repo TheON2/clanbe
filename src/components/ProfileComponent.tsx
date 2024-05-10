@@ -75,6 +75,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     birth: "",
     race: "",
     avatar: "",
+    message: "",
   });
   const [userState, setUserState] = useState({
     email: "",
@@ -86,6 +87,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     birth: "",
     race: "",
     avatar: "",
+    message: "",
   });
   const [editState, setEditState] = useState({
     email: false,
@@ -96,6 +98,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     kakao: false,
     birth: false,
     race: false,
+    message: false,
   });
   const [error, setError] = useState({
     email: "",
@@ -106,6 +109,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     kakao: "",
     birth: "",
     race: "",
+    message: "",
   });
 
   const handleRaceClick = (race: string) => {
@@ -181,6 +185,17 @@ export default function ProfileComponent({ user, posts, comments }: any) {
         setError((prev) => ({ ...prev, race: "" }));
       }
     }
+
+    if (name === "message") {
+      if (value.length > 20) {
+        setError((prev) => ({
+          ...prev,
+          message: "상태 메세지가 너무 깁니다.",
+        }));
+      } else {
+        setError((prev) => ({ ...prev, message: "" }));
+      }
+    }
   };
 
   function handleImageUpload(e: any) {
@@ -214,7 +229,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
 
   const updateProfile = async () => {
     try {
-      const response = await fetch("/api/user/update", {
+      const response = await fetch("/api/userprofile/update", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -282,6 +297,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
           : "", // Converting the date into YYYY-MM-DD format for input[type=date]
         race: user.BELO ? user.BELO.race || "" : "",
         avatar: user.avatar || "",
+        message: user.message || "",
       });
       setUserState({
         email: user.email || "",
@@ -295,11 +311,10 @@ export default function ProfileComponent({ user, posts, comments }: any) {
           : "", // Converting the date into YYYY-MM-DD format for input[type=date]
         race: user.BELO ? user.BELO.race || "" : "",
         avatar: user.avatar || "",
+        message: user.message || "",
       });
     }
   }, [user]); // Depend on the user prop
-
-  console.log(user);
 
   useEffect(() => {
     if (status === "loading") return; // 세션 로딩 중인 경우 대기
@@ -311,10 +326,14 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     }
   }, [router, status]);
 
+  useEffect(() => {
+    setSignUpState(userState);
+  }, [selected]);
+
   return (
     <div className="w-full mx-auto">
       <div className="flex justify-center">
-        <Card className="w-min-[370px] md:w-1/2 px-2 h-[850px]">
+        <Card className="w-min-[370px] md:w-1/2 px-2 h-[950px]">
           <Tabs
             aria-label="Profile Sections"
             className="w-full mt-2 ml-2"
@@ -334,6 +353,20 @@ export default function ProfileComponent({ user, posts, comments }: any) {
                     <p className="font-bold text-md text-blue">@{user.name}</p>
                   </div>
                 </div>
+                <Input
+                  type="text"
+                  name="message"
+                  label="상태메세지"
+                  labelPlacement={"outside"}
+                  placeholder="Email을 입력해주세요."
+                  value={userState.message}
+                  className="py-4 w-[250px]"
+                  size="lg"
+                  onChange={handleInputChange}
+                  isInvalid={error.message.length >= 1}
+                  errorMessage={error.message}
+                  isReadOnly={true}
+                />
                 <Input
                   type="email"
                   name="email"
@@ -451,6 +484,20 @@ export default function ProfileComponent({ user, posts, comments }: any) {
                   />
                   {!isEditPassword ? (
                     <>
+                      <Input
+                        type="text"
+                        name="message"
+                        label="상태메세지"
+                        labelPlacement={"outside"}
+                        placeholder="상태메세지를 입력해주세요."
+                        value={signUpState.message}
+                        className="py-4 w-[250px]"
+                        size="lg"
+                        onChange={handleInputChange}
+                        isInvalid={error.message.length >= 1}
+                        errorMessage={error.message}
+                        variant="bordered"
+                      />
                       <Input
                         type="text"
                         name="nickname"
@@ -582,7 +629,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
             )}
             <Tab key="POSTS" title="POSTS" className="text-left ">
               작성글 : {posts.length} 개
-              <div className="overflow-auto h-[700px]">
+              <div className="overflow-auto h-[800px]">
                 {posts.map((post: Post, index: string) => (
                   <PostCardComponent
                     key={index}
@@ -598,7 +645,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
             </Tab>
             <Tab key="COMMENTS" title="COMMENTS" className="text-left">
               작성 댓글 : {comments.length} 개
-              <div className="overflow-auto h-[700px]">
+              <div className="overflow-auto h-[800px]">
                 {comments.map((comment: any) => (
                   <PostCommentCard
                     key={comment._id} // key prop 추가

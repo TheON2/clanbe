@@ -11,7 +11,7 @@ import { getPosts } from "../service/posts";
 import Link from "next/link";
 import { formatDate } from "@/utils/dateUtils";
 
-const PublicPosts = () => {
+const PublicPosts = ({ posts }: any) => {
   const labels = categoryLabels;
   const router = useRouter();
 
@@ -51,19 +51,8 @@ const PublicPosts = () => {
   };
 
   useEffect(() => {
-    // 내부에서 비동기 함수 선언
-    const fetchData = async () => {
-      const { data } = await getPosts("allposts");
-      const sortedData = data
-        .sort(
-          (a: Post, b: Post) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        .slice(0, 11);
-      setBoard(sortedData);
-    };
-
-    fetchData();
+    const sortedData = posts.slice(0, 11);
+    setBoard(sortedData);
   }, []);
 
   return (

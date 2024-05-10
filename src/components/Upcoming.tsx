@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import Image from "next/image";
@@ -13,18 +13,7 @@ import listPlugin from "@fullcalendar/list";
 import koLocale from "@fullcalendar/core/locales/ko";
 import Link from "next/link";
 
-const Upcoming = () => {
-  const [events, setEvents] = useState([]);
-  useEffect(() => {
-    // 내부에서 비동기 함수 선언
-    const fetchData = async () => {
-      const { events } = await getEvent();
-      setEvents(events);
-    };
-
-    fetchData();
-  }, []);
-
+const Upcoming = ({ events }: any) => {
   return (
     <Card className={`w-full lg:w-1/2 ${styles.customCard} h-[400px]`}>
       <CardHeader className="flex gap-3">

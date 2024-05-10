@@ -12,7 +12,7 @@ import { categoryLabels } from "../../public/data";
 import { PostData } from "@/service/posts";
 import Link from "next/link";
 
-const Notice = () => {
+const Notice = ({ notices }: any) => {
   const labels = categoryLabels;
   const router = useRouter();
 
@@ -44,28 +44,11 @@ const Notice = () => {
         return "/"; // 기본 경로
     }
   };
-  const [notice, setNotice] = useState([]);
 
   // 제목이 14글자를 넘으면 '...'으로 처리하는 함수
   const formatTitle = (title: string) => {
     return title.length > 12 ? `${title.substring(0, 10)} ...` : title;
   };
-
-  useEffect(() => {
-    // 내부에서 비동기 함수 선언
-    const fetchData = async () => {
-      const { data } = await getPosts("notice");
-      const sortedData = data
-        .sort(
-          (a: Post, b: Post) =>
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-        )
-        .slice(0, 6);
-      setNotice(sortedData);
-    };
-
-    fetchData();
-  }, []);
 
   return (
     <Card className={`w-full lg:w-1/2 ${styles.customCard}`}>
@@ -82,7 +65,7 @@ const Notice = () => {
       </CardHeader>
       <Divider />
       <CardBody className="mt-3">
-        {notice.map((notice: Post) => (
+        {notices.map((notice: Post) => (
           <div key={notice._id} className="flex gap-4 my-2">
             <Button
               className="h-[30px] w-[100px]"

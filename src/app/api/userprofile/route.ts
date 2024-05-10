@@ -65,8 +65,6 @@ export async function POST(req: Request, res: Response) {
       });
     });
 
-    console.log(combinedResults);
-
     return new Response(JSON.stringify({ user:existingUser,posts:userPosts,comments:combinedResults }), {
       status: 200,
     });

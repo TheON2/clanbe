@@ -25,7 +25,7 @@ export async function POST(req: Request, res: Response) {
       if (belo >= 700) return "C";
       return "D"; // For all BELO less than 700
     };
-    const transformedUsers = beUsers.map((user) => {
+    const transformedUsers = beUsers.map((user, index) => {
       const playerData = playersData.find(
         (p) => p.nickname.toLowerCase() === user.nickname.toLowerCase()
       );

@@ -36,23 +36,8 @@ import { Support } from "../../types/types";
 import { formatRelativeDate } from "@/utils/dateUtils";
 import { getSupports } from "@/service/supports";
 
-const SupportPost = () => {
+const SupportPost = ({ supports, allSupports }: any) => {
   const router = useRouter();
-  const [supports, setSupports] = useState([]);
-  const [allSupports, setAllSupports] = useState([]);
-  useEffect(() => {
-    // 내부에서 비동기 함수 선언
-    const fetchData = async () => {
-      const { supports, allSupports } = await getSupports();
-      setSupports(supports);
-      setAllSupports(allSupports);
-    };
-
-    fetchData();
-  }, []);
-
-  console.log(supports);
-  console.log(allSupports);
 
   if (supports.length === 0 || allSupports.length === 0) return;
 
@@ -81,7 +66,7 @@ const SupportPost = () => {
       <CardBody>
         <Tabs aria-label="Options">
           <Tab key="option1" title="누적금액">
-            {supports.map((support: Support, index) => (
+            {supports.map((support: Support, index: string) => (
               <Card key={support._id} className="my-2 pl-2 pt-2">
                 <div className="flex items-center mb-4">
                   <div className="font-bold text-2xl pl-4 w-1/5">
@@ -107,7 +92,7 @@ const SupportPost = () => {
             ))}
           </Tab>
           <Tab key="option2" title="최신">
-            {allSupports.map((support: Support, index) => (
+            {allSupports.map((support: Support, index: string) => (
               <Card key={support._id} className="my-2 pl-2 pt-2">
                 <div className="flex items-center mb-4">
                   <div className="flex items-center gap-4 w-2/5 mr-4">
