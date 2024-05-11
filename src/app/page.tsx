@@ -14,29 +14,29 @@ import { getEvent } from "@/service/schedule";
 import { Post } from "../../types/types";
 
 export default async function HomePage() {
-  const { teams, users } = await getNavData();
-  const posts = await getAllPosts();
-  const { events } = await getEvent();
-  const { supports, allSupports } = await getSupports();
+  // const { teams, users } = await getNavData();
+  // const posts = await getAllPosts();
+  // const { events } = await getEvent();
+  // const { supports, allSupports } = await getSupports();
 
-  const allPosts = posts.sort(
-    (a: Post, b: Post) =>
-      new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-  );
+  // const allPosts = posts.sort(
+  //   (a: Post, b: Post) =>
+  //     new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  // );
 
-  const filteredNotices = posts
-    .filter((post: Post) => post.noticed)
-    .slice(0, 6);
+  // const filteredNotices = posts
+  //   .filter((post: Post) => post.noticed)
+  //   .slice(0, 6);
 
-  if (!teams || !users || !posts || !events || !supports || !allSupports) {
-    return <p>Loading...</p>;
-  }
+  // if (!teams || !users || !posts || !events || !supports || !allSupports) {
+  //   return <p>Loading...</p>;
+  // }
 
   return (
     <div className="mx-auto">
       <Banner />
       <Divider className="my-4" />
-      <div className="flex flex-wrap gap-2 justify-center">
+      {/* <div className="flex flex-wrap gap-2 justify-center">
         <div className="block md:hidden w-full mx-4">
           <MobileUserComponent teams={teams} users={users} />
         </div>
@@ -44,7 +44,7 @@ export default async function HomePage() {
         <Upcoming events={events} />
         <PublicPosts posts={allPosts} />
         <SupportPost supports={supports} allSupports={allSupports} />
-      </div>
+      </div> */}
     </div>
   );
 }
