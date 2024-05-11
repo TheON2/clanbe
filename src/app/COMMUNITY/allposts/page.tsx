@@ -1,7 +1,4 @@
 import BoardLayout from "@/components/BoardLayout";
-import { announce, board } from "../../../../public/data";
-import { getAllPosts } from "@/service/posts";
-import { revalidateTag } from "next/cache";
 
 export default async function AllPostPage() {
   const category = "allposts"

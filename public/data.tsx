@@ -17,6 +17,7 @@ export const categoryLabels: CategoryLabels = {
   opponent: "외부리그",
   versus: "끝장전",
   notice: "공지사항",
+  proleaguenotice: "프로리그",
 };
 
 export const column = [
@@ -1748,6 +1749,37 @@ export const headerPOINT = {
       description: "더미임",
       icon: "server",
       href: "/POINT/betting",
+    },
+  ],
+};
+
+export const headerPROLEAGUE = {
+  buttonTitle: "프로리그",
+  menuItems: [
+    {
+      title: "프로리그 공지",
+      description: "프로리그 관련 소식을 다루는 게시판 입니다.",
+      icon: "scale",
+      href: "/PROLEAGUE/notice",
+    },
+    {
+      title: "순위표 / 일정",
+      description: "팀 전체의 순위기록과 일정을 다루는 페이지 입니다.",
+      icon: "server",
+      href: "/PROLEAGUE/schedule",
+    },
+    {
+      title: "팀 로스터",
+      description: "팀 로스터를 확인 및 관리 하는 페이지 입니다.",
+      icon: "server",
+      href: "/PROLEAGUE/team",
+    },
+    {
+      title: "프로리그 드래프트",
+      description:
+        "프로리그 진행을 위한 드래프트 기능을 담당하는 페이지 입니다.",
+      icon: "flash",
+      href: "/PROLEAGUE/draft",
     },
   ],
 };

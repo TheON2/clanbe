@@ -63,6 +63,7 @@ export default function PostForm({
     opponent: "외부리그",
     versus: "끝장전",
     notice: "공지사항",
+    proleaguenotice: "프로리그",
   };
 
   const getCategoryPath = (category: string) => {
@@ -89,6 +90,8 @@ export default function PostForm({
         return "/LEAGUE/opponent";
       case "끝장전":
         return "/LEAGUE/versus";
+      case "프로리그":
+        return "/PROLEAGUE/notice";
       default:
         return "/"; // 기본 경로
     }

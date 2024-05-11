@@ -2,11 +2,15 @@
 export type Team = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)
   name: string;
+  avatar: string;
   ranking: number;
   w: number;
   l: number;
   point: number;
   winpoint: number;
+  leader: string;
+  subleader: string;
+  member:string[];
 };
 
 export type SupportAmount = {
@@ -81,6 +85,15 @@ export type User = {
     zl: number;
     belo: number;
   };
+  league: {
+    race: string;
+    pw: number;
+    pl: number;
+    tw: number;
+    tl: number;
+    zw: number;
+    zl: number;
+  }
   team: string;
   message: string;
 };

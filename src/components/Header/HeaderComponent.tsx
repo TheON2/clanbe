@@ -26,6 +26,7 @@ import {
   headerBELO,
   headerLEAGUE,
   headerPOINT,
+  headerPROLEAGUE,
 } from "../../../public/data";
 import { HeaderEnd } from "./HeaderEnd";
 import { useRouter } from "next/navigation";
@@ -68,6 +69,10 @@ export default function HeaderComponent(categoryData: any) {
           menuItems={headerBELO.menuItems}
         />
         <HeaderDropdown
+          buttonTitle={headerPROLEAGUE.buttonTitle}
+          menuItems={headerPROLEAGUE.menuItems}
+        />
+        <HeaderDropdown
           buttonTitle={headerLEAGUE.buttonTitle}
           menuItems={headerLEAGUE.menuItems}
         />
@@ -85,6 +90,7 @@ export default function HeaderComponent(categoryData: any) {
             headerCLANBE,
             headerCOMMUNITY,
             headerBELO,
+            headerPROLEAGUE,
             headerLEAGUE,
             headerPOINT,
           ].map((category, index) => (

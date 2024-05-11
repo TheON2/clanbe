@@ -33,34 +33,36 @@ export default function PostCommentCard({
 }: CommentCardProps) {
   const labels = categoryLabels;
 
-  const getCategoryPath = (category: string) => {
-    switch (category) {
-      case "공지사항":
-        return "/CLANBE/notices";
-      case "클랜 후원":
-        return "/CLANBE/support";
-      case "자유게시판":
-        return "/COMMUNITY/forum";
-      case "가입인사":
-        return "/COMMUNITY/introduce";
-      case "건의사항":
-        return "/COMMUNITY/feedback";
-      case "전략전술":
-        return "/COMMUNITY/tactics";
-      case "출석체크":
-        return "/COMMUNITY/dailycheckin";
-      case "랭킹전":
-        return "/LEAGUE/ranking";
-      case "이벤트":
-        return "/LEAGUE/event";
-      case "외부리그":
-        return "/LEAGUE/opponent";
-      case "끝장전":
-        return "/LEAGUE/versus";
-      default:
-        return "/"; // 기본 경로
-    }
-  };
+    const getCategoryPath = (category: string) => {
+      switch (category) {
+        case "공지사항":
+          return "/CLANBE/notices";
+        case "클랜 후원":
+          return "/CLANBE/support";
+        case "자유게시판":
+          return "/COMMUNITY/forum";
+        case "가입인사":
+          return "/COMMUNITY/introduce";
+        case "건의사항":
+          return "/COMMUNITY/feedback";
+        case "전략전술":
+          return "/COMMUNITY/tactics";
+        case "출석체크":
+          return "/COMMUNITY/dailycheckin";
+        case "랭킹전":
+          return "/LEAGUE/ranking";
+        case "이벤트":
+          return "/LEAGUE/event";
+        case "외부리그":
+          return "/LEAGUE/opponent";
+        case "끝장전":
+          return "/LEAGUE/versus";
+        case "프로리그":
+          return "/PROLEAGUE/notice";
+        default:
+          return "/"; // 기본 경로
+      }
+    };
 
   const router = useRouter();
 

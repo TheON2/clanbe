@@ -199,6 +199,14 @@ export default function CKEditorForm({
                 <SelectItem key="dailycheckin">출석체크</SelectItem>
               </SelectSection>
               <SelectSection
+                title="프로리그"
+                classNames={{
+                  heading: headingClasses,
+                }}
+              >
+                <SelectItem key="proleaguenotice">프로리그 공지</SelectItem>
+              </SelectSection>
+              <SelectSection
                 title="리그"
                 classNames={{
                   heading: headingClasses,

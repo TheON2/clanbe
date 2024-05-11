@@ -16,14 +16,24 @@ const userSchema = new mongoose.Schema(
     tear: String, // 사용자 티어
     phone: String, //사용자 전화번호
     BELO: {
-      race: String, // 사용자 경주 종류
-      pw: Number, // 개인전 승리
-      pl: Number, // 개인전 패배
-      tw: Number, // 팀전 승리
-      tl: Number, // 팀전 패배
-      zw: Number, // 종족전 승리
-      zl: Number, // 종족전 패배
-      belo: Number, //belo 점수
+      race: String,
+      pw: Number,
+      pl: Number,
+      tw: Number,
+      tl: Number,
+      zw: Number,
+      zl: Number,
+      belo: Number,
+    },
+    league: {
+      race: String,
+      pw: Number,
+      pl: Number,
+      tw: Number,
+      tl: Number,
+      zw: Number,
+      zl: Number,
+      belo: Number,
     },
     team: String, // 소속 팀 이름
     message: String, // 상태 메세지

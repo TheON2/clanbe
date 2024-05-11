@@ -26,10 +26,14 @@ export async function POST(req: Request, res: Response) {
       
     const teams = await TeamModel.find({});
 
+    // console.log(teams)
+
     const transformedTeam: Team[] = teams.map((team) => ({
       ...team.toObject(),
       _id: team._id.toString(), // MongoDB ObjectId를 문자열로 변환
     }));
+
+    //console.log(transformedTeam)
 
     return new Response(JSON.stringify({ users: transformedUsers,teams:transformedTeam }), {
       status: 200,

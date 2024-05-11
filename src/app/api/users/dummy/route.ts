@@ -58,11 +58,11 @@ export async function POST(req: Request, res: Response) {
         email: user.email.replace("title: ", ""), // "title:" 제거
         password:
           "$2b$10$cn.9ZkBlc8bqOqK0NFLXkeVXDWZBZXwLJePtmx0g/EMCFNKB8wqRW",
-        kakao: "theon2",
+        kakao: `theon${index + 2}`,
         birth: new Date("1993-12-25T00:00:00.000Z"),
         nickname: user.nickname,
         name: user.name,
-        phone: "010-0000-0000",
+        phone: `010-${index.toString().padStart(4, '0')}-${(1000 + index).toString().slice(1)}`, // 인덱스를 사용하여 전화번호를 고유하게 설정
         point: playerPoint ? playerPoint.points : 0,
         role: user.group.includes("관리그룹") ? "Staff" : "Member",
         grade: user.group.includes("관리그룹") ? 5 : 1,
@@ -78,6 +78,15 @@ export async function POST(req: Request, res: Response) {
           zw: zw,
           zl: zl,
           belo: belo,
+        },
+        league: {
+          race: playerData ? playerData.race : "unknown",
+          pw: 0,
+          pl: 0,
+          tw: 0,
+          tl: 0,
+          zw: 0,
+          zl: 0,
         },
         team: "", // 이 항목은 필요한 정보가 제공되지 않아 비워둡니다.
         message:"만나서 반갑습니다."

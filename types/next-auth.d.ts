@@ -1,7 +1,7 @@
 // types/next-auth.d.ts
-import 'next-auth';
+import "next-auth";
 
-declare module 'next-auth' {
+declare module "next-auth" {
   export interface User {
     _id: string;
     avatar: string;
@@ -24,6 +24,15 @@ declare module 'next-auth' {
       zw: number;
       zl: number;
       belo: number;
+    };
+    league: {
+      race: string;
+      pw: number;
+      pl: number;
+      tw: number;
+      tl: number;
+      zw: number;
+      zl: number;
     };
     team: string;
     message: string;
