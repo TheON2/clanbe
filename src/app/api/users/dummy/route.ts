@@ -15,6 +15,9 @@ import CategoryModel from "@/models/category";
 
 export async function POST(req: Request, res: Response) {
   try {
+    const teams = ["갈락티코", "버킹엄", "원"];
+    let teamIndex = 0;
+
     const getTier = (belo: number) => {
       if (belo >= 1500) return "S+";
       if (belo >= 1300) return "S";
@@ -23,8 +26,21 @@ export async function POST(req: Request, res: Response) {
       if (belo >= 900) return "B+";
       if (belo >= 800) return "B";
       if (belo >= 700) return "C";
-      return "D"; // For all BELO less than 700
+      return "D";
     };
+
+    const tierMapping: {[key: string]: any} = {
+      "S+": [],
+      "S": [],
+      "A+": [],
+      "A": [],
+      "B+": [],
+      "B": [],
+      "C": [],
+      "D": []
+    };
+
+    // 사용자 데이터를 변환하고 티어 분류
     const transformedUsers = beUsers.map((user, index) => {
       const playerData = playersData.find(
         (p) => p.nickname.toLowerCase() === user.nickname.toLowerCase()
@@ -32,52 +48,48 @@ export async function POST(req: Request, res: Response) {
       const playerPoint = pointMember.find(
         (p) => p.nickname.toLowerCase() === user.nickname.toLowerCase()
       );
-      let pw, pl, tw, tl, zw, zl;
 
+      let pw, pl, tw, tl, zw, zl;
       if (playerData) {
-        // 총 승패수를 토스, 테란, 저그 비율에 맞추어 분배
         const totalWins = playerData.wins;
         const totalLosses = playerData.losses;
-        pw = Math.round(totalWins * 0.4); // 토스전 승리
-        pl = Math.round(totalLosses * 0.4); // 토스전 패배
-        tw = Math.round(totalWins * 0.35); // 테란전 승리
-        tl = Math.round(totalLosses * 0.35); // 테란전 패배
-        zw = Math.round(totalWins * 0.25); // 저그전 승리
-        zl = Math.round(totalLosses * 0.25); // 저그전 패배
+        pw = Math.round(totalWins * 0.4);
+        pl = Math.round(totalLosses * 0.4);
+        tw = Math.round(totalWins * 0.35);
+        tl = Math.round(totalLosses * 0.35);
+        zw = Math.round(totalWins * 0.25);
+        zl = Math.round(totalLosses * 0.25);
       } else {
-        // 데이터가 없는 경우 모든 값은 0으로 설정
         pw = pl = tw = tl = zw = zl = 0;
       }
 
-      let belo =
-        playerData && !isNaN(Number(playerData.belo))
-          ? Number(playerData.belo)
-          : 0; // NaN 검사 추가
+      const belo = playerData && !isNaN(Number(playerData.belo)) ? Number(playerData.belo) : 0;
+      const tier = getTier(Number(belo));
+      tierMapping[tier].push(user);
 
       return {
-        email: user.email.replace("title: ", ""), // "title:" 제거
-        password:
-          "$2b$10$cn.9ZkBlc8bqOqK0NFLXkeVXDWZBZXwLJePtmx0g/EMCFNKB8wqRW",
+        email: user.email.replace("title: ", ""),
+        password: "$2b$10$cn.9ZkBlc8bqOqK0NFLXkeVXDWZBZXwLJePtmx0g/EMCFNKB8wqRW",
         kakao: `theon${index + 2}`,
         birth: new Date("1993-12-25T00:00:00.000Z"),
         nickname: user.nickname,
         name: user.name,
-        phone: `010-${index.toString().padStart(4, '0')}-${(1000 + index).toString().slice(1)}`, // 인덱스를 사용하여 전화번호를 고유하게 설정
+        phone: `010-${index.toString().padStart(4, '0')}-${(1000 + index).toString().slice(1)}`,
         point: playerPoint ? playerPoint.points : 0,
         role: user.group.includes("관리그룹") ? "Staff" : "Member",
         grade: user.group.includes("관리그룹") ? 5 : 1,
         avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
         createdAt: new Date(user.registrationDate),
-        tear: getTier(playerData ? Number(playerData.belo) : 0),
+        tear: tier,
         BELO: {
           race: playerData ? playerData.race : "unknown",
-          pw: pw,
-          pl: pl,
-          tw: tw,
-          tl: tl,
-          zw: zw,
-          zl: zl,
-          belo: belo,
+          pw,
+          pl,
+          tw,
+          tl,
+          zw,
+          zl,
+          belo,
         },
         league: {
           race: playerData ? playerData.race : "unknown",
@@ -88,9 +100,17 @@ export async function POST(req: Request, res: Response) {
           zw: 0,
           zl: 0,
         },
-        team: "", // 이 항목은 필요한 정보가 제공되지 않아 비워둡니다.
-        message:"만나서 반갑습니다."
+        team: teams[index % teams.length],
+        message: "만나서 반갑습니다."
       };
+    });
+
+    // 순환적으로 팀 할당
+    Object.values(tierMapping).forEach(usersInTier => {
+      usersInTier.forEach((user:any) => {
+        user.team = teams[teamIndex];
+        teamIndex = (teamIndex + 1) % teams.length;
+      });
     });
 
     if (mongoose.connection.readyState !== 1) {
