@@ -28,6 +28,10 @@ export default async function HomePage() {
     .filter((post: Post) => post.noticed)
     .slice(0, 6);
 
+  if (!teams || !users || !posts || !events || !supports || !allSupports) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div className="mx-auto">
       <Banner />
