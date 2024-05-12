@@ -256,7 +256,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
-                    onPress={() => router.push(`user/profile/${user.email}`)}
+                    onPress={() => router.push(`/user/profile/${user.email}`)}
                   ></Button>
                   <Button
                     isIconOnly
@@ -374,7 +374,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
-                    onPress={() => router.push(`user/profile/${user.email}`)}
+                    onPress={() => router.push(`/user/profile/${user.email}`)}
                   ></Button>
                   <Button
                     isIconOnly
