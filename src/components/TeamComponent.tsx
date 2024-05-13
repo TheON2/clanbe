@@ -19,6 +19,7 @@ import {
   CardFooter,
   CircularProgress,
   Divider,
+  Switch,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../types/types";
@@ -42,6 +43,7 @@ const TeamComponent = ({ teams, users }: any) => {
   const [selectedTier, setSelectedTier] = useState("");
   const [selectedRace, setSelectedRace] = useState("");
   const [selectedTeamName, setSelectedTeamName] = useState("");
+  const [isSelected, setIsSelected] = useState(true);
 
   // 선택한 팀 객체를 찾습니다.
   const selectedTeam = useMemo(
@@ -164,6 +166,11 @@ const TeamComponent = ({ teams, users }: any) => {
 
   return (
     <div className="w-full">
+      <div>
+        <Switch size="sm" isSelected={isSelected} onValueChange={setIsSelected}>
+          Airplane mode
+        </Switch>
+      </div>
       {/* 팀 리스트 */}
       <Card className="m-2">
         <CardHeader>
@@ -277,7 +284,7 @@ const TeamComponent = ({ teams, users }: any) => {
         <Card className="m-2">
           <p className="font-bold text-3xl ml-2 p-2">팀 정보</p>
           <CardHeader>
-            <div className="flex flex-wrap my-2 justify-center items-center">
+            <div className="flex flex-wrap my-2 justify-center items-center mx-auto gap-4">
               <Card key={selectedTeam?._id} className="w-[220px] h-full">
                 <CardBody>
                   <Image
@@ -295,8 +302,12 @@ const TeamComponent = ({ teams, users }: any) => {
               </Card>
               <div>
                 <div className="flex flex-col gap-2 mt-4 justify-center items-center">
-                  <p className="mx-4 font-bold text-2xl">팀장 : LAUFE</p>
-                  <p className="mx-4 font-bold text-2xl">팀장 : LAUFE</p>
+                  <p className="mx-4 font-bold text-2xl">
+                    팀장 : {selectedTeam?.leader}
+                  </p>
+                  <p className="mx-4 font-bold text-2xl">
+                    팀장 : {selectedTeam?.subleader}
+                  </p>
                 </div>
                 <div className="flex m-4 justify-center items-center">
                   <CircularProgress
