@@ -1,4 +1,4 @@
-import TeamComponent from "@/components/TeamComponent";
+import TeamComponent from "@/components/TeamComponent/TeamComponent";
 import { getNavData } from "@/service/user";
 
 export default async function Page() {

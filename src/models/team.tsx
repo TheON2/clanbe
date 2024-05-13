@@ -12,6 +12,7 @@ const teamSchema = new mongoose.Schema(
     leader: String, //팀장닉네임
     subleader: String, //부팀장닉네임
     members: [String], //멤버들 닉네임
+    avatar: String,
   },
   {
     timestamps: true, // createdAt 및 updatedAt 타임스탬프 자동 생성

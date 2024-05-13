@@ -206,7 +206,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     formData.append("upload", file);
     formData.append("email", signUpState.email);
 
-    fetch("/api/user/uploadProfile", {
+    fetch("/api/userprofile/uploadProfile", {
       // 이미지를 업로드하는 API 경로를 지정하세요.
       method: "POST",
       body: formData,

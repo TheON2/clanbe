@@ -20,12 +20,13 @@ import {
   CircularProgress,
   Divider,
   Switch,
+  Button,
 } from "@nextui-org/react";
 import Image from "next/image";
-import { Team } from "../../types/types";
-import ProfileCard from "./ProfileCard";
-import ProleagueProfileCard from "./ProleagueProfileCard";
-import ProleagueAvatarCard from "./ProleagueAvatarCard";
+import { Team } from "../../../types/types";
+import ProfileCard from "../ProfileCard";
+import ProleagueProfileCard from "../ProleagueProfileCard";
+import ProleagueAvatarCard from "../ProleagueAvatarCard";
 
 interface UserItem {
   nickname: string;
@@ -37,13 +38,13 @@ interface UserItem {
   [key: string]: string | number; // 인덱스 시그니처 추가
 }
 
-const TeamComponent = ({ teams, users }: any) => {
+const TeamPage = ({ teams, users }: any) => {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedTier, setSelectedTier] = useState("");
   const [selectedRace, setSelectedRace] = useState("");
   const [selectedTeamName, setSelectedTeamName] = useState("");
-  const [isSelected, setIsSelected] = useState(true);
+  const [isSelected, setIsSelected] = useState(false);
 
   // 선택한 팀 객체를 찾습니다.
   const selectedTeam = useMemo(
@@ -166,11 +167,6 @@ const TeamComponent = ({ teams, users }: any) => {
 
   return (
     <div className="w-full">
-      <div>
-        <Switch size="sm" isSelected={isSelected} onValueChange={setIsSelected}>
-          Airplane mode
-        </Switch>
-      </div>
       {/* 팀 리스트 */}
       <Card className="m-2">
         <CardHeader>
@@ -417,4 +413,4 @@ const TeamComponent = ({ teams, users }: any) => {
   );
 };
 
-export default TeamComponent;
+export default TeamPage;

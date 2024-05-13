@@ -12,6 +12,9 @@ export async function POST(req: Request, res: Response) {
     }
     const fileUrl = await uploadImage(file);
 
+    console.log(formData)
+    console.log(fileUrl)
+
     // 이미지 업로드 성공 후 유저 정보 업데이트
     if (fileUrl) {
       // 데이터베이스 연결 확인
@@ -39,6 +42,7 @@ export async function POST(req: Request, res: Response) {
         l: 0,
         point: 0,
         winpoint: 0,
+        avatar:fileUrl,
         leader: teamLeader,
         subleader: teamSubLeader,
         member:[]
