@@ -15,7 +15,7 @@ import CategoryModel from "@/models/category";
 
 export async function POST(req: Request, res: Response) {
   try {
-    const teams = ["갈락티코", "버킹엄", "원"];
+    const teams = ["660cc0e452afd8daf291b3b9", "660cc0e452afd8daf291b3ba", "6641b6bd288b8fdc5f10c4ad"];
     let teamIndex = 0;
 
     const getTier = (belo: number) => {

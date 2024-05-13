@@ -117,7 +117,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const level = Math.floor(user.point / 1000);
   const expPercentage = (user.point % 1000) / 10;
 
-  const myTeam = teams?.find((team: Team) => team.name === user.team);
+  const myTeam = teams?.find((team: Team) => team._id === user.team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정
@@ -414,13 +414,13 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
               </div>
               <Image
                 alt="Card background"
-                src={imagePath}
+                src={myTeam?.avatar}
                 width={200}
                 height={200}
                 className="my-4"
               />
               <p className="font-bold font-mono text-3xl text-blue text-center">
-                {user.team}
+                {myTeam?.name}
               </p>
               <div className="flex my-2">
                 <CircularProgress

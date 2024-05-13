@@ -7,29 +7,25 @@ type ProfileCardProps = {
   userData: any;
   type: number;
   index: number;
+  teamData: any;
 };
 
 export default function ProleagueAvatarCard({
   userData,
   index,
   type,
+  teamData,
 }: ProfileCardProps) {
   if (!userData) {
     return <Spinner size="lg" />;
   }
-
-  // const totalWins =
-  //   userData.league.pw + userData.league.zw + userData.league.tw;
-  // const totalGames =
-  //   totalWins + userData.league.pl + userData.league.zl + userData.league.tl;
-  // const winRate =
-  //   totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(2) : 0;
 
   const totalWins = userData.BELO.pw + userData.BELO.zw + userData.BELO.tw;
   const totalGames =
     totalWins + userData.BELO.pl + userData.BELO.zl + userData.BELO.tl;
   const winRate =
     totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(2) : 0;
+  const myTeam = teamData.filter((team: any) => team._id === userData.team);
 
   const getContent = () => {
     switch (type) {
@@ -53,7 +49,7 @@ export default function ProleagueAvatarCard({
             <Avatar src={userData.avatar} size="md" />
             <div>
               <p className="font-bold text-xl">{userData.nickname}</p>
-              <p className="font-bold text-md">{userData.team}</p>
+              <p className="font-bold text-md">{myTeam[0].name}</p>
             </div>
           </div>
           {/* 오른쪽 부분: 내용을 표시 */}

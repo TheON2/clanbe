@@ -111,7 +111,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
   const level = Math.floor(user.point / 1000);
   const expPercentage = (user.point % 1000) / 10;
 
-  const myTeam = teams.find((team: Team) => team.name === user.team);
+  const myTeam = teams.find((team: Team) => team._id === user.team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정
@@ -411,7 +411,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
                 <div className="flex justify-center w-full">
                   <Image
                     alt="Card background"
-                    src={imagePath}
+                    src={myTeam?.avatar}
                     width={300}
                     height={300}
                     className="my-4"

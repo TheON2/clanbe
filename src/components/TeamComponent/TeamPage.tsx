@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { User } from "next-auth";
 import {
   Table,
@@ -21,12 +21,20 @@ import {
   Divider,
   Switch,
   Button,
+  User as UiUser,
+  Chip,
+  Tooltip,
+  ChipProps,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../../types/types";
 import ProfileCard from "../ProfileCard";
 import ProleagueProfileCard from "../ProleagueProfileCard";
 import ProleagueAvatarCard from "../ProleagueAvatarCard";
+
+import { EditIcon } from "../../../public/EditIcon";
+import { EyeIcon } from "../../../public/EyeIcon";
+import { DeleteIcon } from "../../../public/DeleteIcon";
 
 interface UserItem {
   nickname: string;
@@ -38,7 +46,109 @@ interface UserItem {
   [key: string]: string | number; // 인덱스 시그니처 추가
 }
 
+interface Column {
+  name: string;
+  uid: string;
+  sortable: boolean;
+  align?: "center" | "start" | "end";
+  width?: number;
+  color?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger";
+}
+
+const tierColorMap: Record<string, string> = {
+  "S+": "bg-green-100",
+  S: "bg-green-200",
+  "A+": "bg-blue-100",
+  A: "bg-blue-200",
+  "B+": "bg-yellow-100",
+  B: "bg-yellow-200",
+  C: "bg-red-100",
+  D: "bg-red-200",
+};
+
 const TeamPage = ({ teams, users }: any) => {
+  type User = (typeof users)[0];
+  const statusColorMap: Record<string, ChipProps["color"]> = {
+    active: "success",
+    paused: "danger",
+    vacation: "warning",
+  };
+
+  const renderCell = useCallback((user: User, columnKey: React.Key) => {
+    const cellValue = user[columnKey as keyof User];
+
+    switch (columnKey) {
+      case "nickname":
+        return <div>{cellValue}</div>;
+      case "tier":
+        return <p className="text-black">{cellValue}</p>;
+      case "role":
+        return (
+          <div className="flex flex-col">
+            <p className="text-bold text-sm capitalize">{cellValue}</p>
+            <p className="text-bold text-sm capitalize text-default-400">
+              {user.team}
+            </p>
+          </div>
+        );
+      case "status":
+        return (
+          <Chip
+            className="capitalize"
+            color={statusColorMap[user.status]}
+            size="sm"
+            variant="flat"
+          >
+            {cellValue}
+          </Chip>
+        );
+      case "actions":
+        return (
+          <div className="relative flex items-center gap-2">
+            <Tooltip content="Details">
+              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                <EyeIcon />
+              </span>
+            </Tooltip>
+            <Tooltip color="danger" content="Delete user">
+              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+                <DeleteIcon />
+              </span>
+            </Tooltip>
+          </div>
+        );
+      default:
+        return cellValue;
+    }
+  }, []);
+
+  const columns: Column[] = [
+    { name: "티어", uid: "tier", sortable: true, align: "start", width: 30 },
+    {
+      name: "닉네임",
+      uid: "nickname",
+      sortable: true,
+      align: "center",
+      width: 30,
+    },
+    { name: "종족", uid: "race", sortable: true, align: "start", width: 30 },
+    { name: "승", uid: "wins", sortable: true, align: "center", width: 30 },
+    { name: "패", uid: "losses", sortable: true, align: "center", width: 30 },
+    {
+      name: "Actions",
+      uid: "actions",
+      sortable: true,
+      align: "center",
+      width: 30,
+    },
+  ];
+
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedTier, setSelectedTier] = useState("");
@@ -60,15 +170,6 @@ const TeamPage = ({ teams, users }: any) => {
     return 0; // 선택된 팀이 없다면 0을 반환합니다.
   }, [selectedTeam]);
   const rowsPerPage = 10;
-
-  const column = [
-    { name: "닉네임", uid: "nickname", sortable: true },
-    { name: "종족", uid: "race", sortable: true },
-    { name: "승", uid: "wins", sortable: true },
-    { name: "패", uid: "losses", sortable: true },
-    { name: "TEAR", uid: "tear", sortable: true },
-    { name: "참여율", uid: "play", sortable: true },
-  ];
 
   const races = ["ALL", "Z", "T", "P"];
   const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
@@ -129,10 +230,11 @@ const TeamPage = ({ teams, users }: any) => {
           selectedTier === "ALL" ||
           selectedTier === "" ||
           user.tear === selectedTier;
+        const userTeam = teams.filter((team: any) => team._id === user.team);
         const matchesTeam =
           selectedTeamName === "ALL" ||
           selectedTeamName === "" ||
-          user.team === selectedTeamName;
+          userTeam[0].name === selectedTeamName;
         const userRace =
           raceMapping[user.BELO.race.toLowerCase()] || user.BELO.race;
         const matchesRace =
@@ -144,6 +246,7 @@ const TeamPage = ({ teams, users }: any) => {
       })
       .map((user: User) => ({
         nickname: user.nickname,
+        avatar: user.avatar,
         tier: user.tear,
         race: raceMapping[user.league.race.toLowerCase()] || user.league.race,
         wins: user.league.tw + user.league.pw + user.league.zw,
@@ -158,6 +261,7 @@ const TeamPage = ({ teams, users }: any) => {
     selectedTeamName,
     users,
     raceMapping,
+    teams,
   ]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
@@ -230,6 +334,7 @@ const TeamPage = ({ teams, users }: any) => {
                             : topTotalGames[0]
                         }
                         index={index}
+                        teamData={teams}
                       />
                     </div>
                     <div className="w-full flex flex-col gap-2 mt-2">
@@ -243,6 +348,7 @@ const TeamPage = ({ teams, users }: any) => {
                               type={0}
                               index={idx + 1}
                               key={user.nickname}
+                              teamData={teams}
                             />
                           ))}
                       {index === 1 &&
@@ -254,6 +360,7 @@ const TeamPage = ({ teams, users }: any) => {
                               type={1}
                               index={idx + 1}
                               key={user.nickname}
+                              teamData={teams}
                             />
                           ))}
                       {index === 2 &&
@@ -265,6 +372,7 @@ const TeamPage = ({ teams, users }: any) => {
                               type={2}
                               index={idx + 1}
                               key={user.nickname}
+                              teamData={teams}
                             />
                           ))}
                     </div>
@@ -277,8 +385,7 @@ const TeamPage = ({ teams, users }: any) => {
       </Card>
       {/* 팀 정보 */}
       {selectedTeamName !== "" && (
-        <Card className="m-2">
-          <p className="font-bold text-3xl ml-2 p-2">팀 정보</p>
+        <Card className="">
           <CardHeader>
             <div className="flex flex-wrap my-2 justify-center items-center mx-auto gap-4">
               <Card key={selectedTeam?._id} className="w-[220px] h-full">
@@ -330,8 +437,7 @@ const TeamPage = ({ teams, users }: any) => {
             </div>
           </CardHeader>
           <CardBody>
-            <div className="flex flex-col w-full gap-2 px-2">
-              <p className="font-bold text-3xl">멤버 데이터</p>
+            <div className="flex flex-col md:w-2/3 gap-2 mx-auto">
               <div className="flex gap-2 md:w-1/2">
                 <Input
                   placeholder="닉네임"
@@ -342,6 +448,7 @@ const TeamPage = ({ teams, users }: any) => {
                   }}
                 />
                 <Select
+                  aria-label="Example table with client side pagination"
                   placeholder="티어"
                   value={selectedTier}
                   onChange={(e) => {
@@ -356,6 +463,7 @@ const TeamPage = ({ teams, users }: any) => {
                   ))}
                 </Select>
                 <Select
+                  aria-label="Example table with client side pagination"
                   placeholder="종족"
                   value={selectedRace}
                   onChange={(e) => {
@@ -389,18 +497,34 @@ const TeamPage = ({ teams, users }: any) => {
                   wrapper: "min-h-[222px]",
                 }}
               >
-                <TableHeader>
-                  <TableColumn key="nickname">Name</TableColumn>
-                  <TableColumn key="tier">Tier</TableColumn>
-                  <TableColumn key="race">Race</TableColumn>
-                  <TableColumn key="wins">Wins</TableColumn>
-                  <TableColumn key="losses">Losses</TableColumn>
-                  {/* <TableColumn key="belo">BELO</TableColumn> */}
+                <TableHeader columns={columns}>
+                  {(column) => (
+                    <TableColumn
+                      key={column.uid}
+                      align={column.align}
+                      width={column.width}
+                      className="text-center"
+                    >
+                      {column.name}
+                    </TableColumn>
+                  )}
                 </TableHeader>
                 <TableBody items={items}>
                   {(item) => (
-                    <TableRow key={item.nickname}>
-                      {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+                    <TableRow key={item.nickname} className="text-center">
+                      {(columnKey) => (
+                        <TableCell
+                          className={
+                            columnKey === "tier"
+                              ? `${
+                                  tierColorMap[item.tier] || "bg-gray-100"
+                                } text-center`
+                              : "text-center"
+                          }
+                        >
+                          {renderCell(item, columnKey)}
+                        </TableCell>
+                      )}
                     </TableRow>
                   )}
                 </TableBody>

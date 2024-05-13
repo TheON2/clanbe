@@ -6,28 +6,24 @@ import { formatDate } from "@/utils/dateUtils";
 type ProfileCardProps = {
   userData: any;
   index: number;
+  teamData: any;
 };
 
 export default function ProleagueProfileCard({
   userData,
   index,
+  teamData,
 }: ProfileCardProps) {
   if (!userData) {
     return <Spinner size="lg" />;
   }
-
-  // const totalWins =
-  //   userData.league.pw + userData.league.zw + userData.league.tw;
-  // const totalGames =
-  //   totalWins + userData.league.pl + userData.league.zl + userData.league.tl;
-  // const winRate =
-  //   totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(2) : 0;
 
   const totalWins = userData.BELO.pw + userData.BELO.zw + userData.BELO.tw;
   const totalGames =
     totalWins + userData.BELO.pl + userData.BELO.zl + userData.BELO.tl;
   const winRate =
     totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(2) : 0;
+  const myTeam = teamData.filter((team: any) => team._id === userData.team);
 
   const getContent = () => {
     switch (index) {
@@ -48,7 +44,7 @@ export default function ProleagueProfileCard({
           {/* Avatar 위치를 조정합니다. */}
           <Avatar src={userData.avatar} className="w-24 h-24 text-large" />
           <div className="flex flex-col items-center justify-center ml-4">
-            <p className="font-bold text-xl ">{userData.team}</p>
+            <p className="font-bold text-xl ">{myTeam[0].name}</p>
             <p className="font-bold text-4xl">{userData.nickname}</p>
             <p className="font-bold text-2xl dark:text-blue-dark">
               {getContent()}
