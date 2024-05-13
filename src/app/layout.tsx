@@ -5,6 +5,7 @@ import Footer from "@/components/Footer";
 import { Providers } from "./provider";
 import TapNav from "@/components/TapNav/TabNav";
 import Head from "next/head";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
@@ -35,6 +36,7 @@ export default function RootLayout({
       </Head>
       <body className="flex flex-col w-full">
         <Providers>
+          <SpeedInsights />
           <div className="mx-auto max-w-7xl">
             <Header />
             <div className="flex flex-col-reverse md:flex-row items-start">

@@ -5,10 +5,8 @@ import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { Provider } from "react-redux";
 import store from "../../redux/config/configStore";
 import AuthContext from "./context/AuthContext";
-import { injectSpeedInsights } from "@vercel/speed-insights/sveltekit";
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  injectSpeedInsights();
   return (
     <Provider store={store}>
       <AuthContext>
