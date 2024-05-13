@@ -1,7 +1,7 @@
 import TeamComponent from "@/components/TeamComponent/TeamComponent";
-import { getNavData } from "@/service/user";
+import { getTeamData } from "@/service/team";
 
 export default async function Page() {
-  const { teams, users } = await getNavData();
+  const { teams, users } = await getTeamData();
   return <TeamComponent teams={teams} users={users} />;
 }

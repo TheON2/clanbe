@@ -29,6 +29,7 @@ import { Team } from "../../../types/types";
 import ProfileCard from "../ProfileCard";
 import ProleagueProfileCard from "../ProleagueProfileCard";
 import ProleagueAvatarCard from "../ProleagueAvatarCard";
+import { createTeamData, deleteTeamData, updateTeamData } from "@/service/team";
 
 interface UserItem {
   nickname: string;
@@ -131,27 +132,6 @@ const AdminPage = ({ teams, users }: any) => {
     }
   };
 
-  const deleteTeamDetails = async () => {
-    // API 호출을 통해 서버에 데이터 저장
-    try {
-      const response = await fetch(`/api/team/delete`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ name: selectedTeamName }),
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert("팀 삭제 성공");
-      } else {
-        throw new Error(data.message);
-      }
-    } catch (error: any) {
-      alert(`삭제 실패: ${error.message}`);
-    }
-  };
-
   const updateTeamDetails = async () => {
     // 필수 필드 검증
     if (
@@ -181,18 +161,21 @@ const AdminPage = ({ teams, users }: any) => {
       formData.append("upload", blob, "team-avatar.jpg"); // 파일 이름 "team-avatar.jpg"는 예시입니다.
     }
     try {
-      const response = await fetch(`/api/team/update`, {
-        method: "POST",
-        body: formData,
-      });
-      const data = await response.json();
-      if (response.ok) {
-        alert("팀 정보가 업데이트 되었습니다.");
-      } else {
-        throw new Error(data.message);
-      }
+      const result = await updateTeamData(formData);
+      alert("팀 정보가 업데이트 되었습니다.");
     } catch (error: any) {
       alert(`업데이트 실패: ${error.message}`);
+    }
+  };
+
+  const deleteTeamDetails = async () => {
+    // API 호출을 통해 서버에 데이터 저장
+    try {
+      const result = await deleteTeamData(selectedTeamName);
+      alert("팀 정보가 삭제되었습니다.");
+      setSelectedTeamName("");
+    } catch (error: any) {
+      alert(`삭제 실패: ${error.message}`);
     }
   };
 
@@ -224,26 +207,18 @@ const AdminPage = ({ teams, users }: any) => {
     }
 
     try {
-      const response = await fetch(`/api/team/create`, {
-        method: "POST",
-        body: formData,
+      const result = await createTeamData(formData);
+      alert("팀 정보가 생성되었습니다.");
+      // 성공 후 입력 필드 초기화
+      setNewTeamDetails({
+        name: "",
+        leader: "",
+        subleader: "",
+        avatar: "",
       });
-      const data = await response.json();
-      if (response.ok) {
-        alert("팀 정보가 생성되었습니다.");
-        // 성공 후 입력 필드 초기화
-        setNewTeamDetails({
-          name: "",
-          leader: "",
-          subleader: "",
-          avatar: "",
-        });
-        setNewPreviewImage("");
-        setNewLeaderNicknameKey("");
-        setNewSubLeaderNicknameKey("");
-      } else {
-        throw new Error(data.message);
-      }
+      setNewPreviewImage("");
+      setNewLeaderNicknameKey("");
+      setNewSubLeaderNicknameKey("");
     } catch (error: any) {
       alert(`생성 실패: ${error.message}`);
     }

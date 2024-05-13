@@ -81,7 +81,7 @@ export async function getUsers() {
 
 export async function updateProfile(updateState: updateProfile) {
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/user/update`,
+    `${process.env.NEXT_PUBLIC_URL}/api/userprofile/update`,
     {
       method: "POST",
       headers: {
