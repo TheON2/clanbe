@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { User } from "next-auth";
 import {
   Table,
@@ -19,17 +19,30 @@ import {
   CardFooter,
   CircularProgress,
   Divider,
-  Switch,
   Button,
   Autocomplete,
   AutocompleteItem,
+  Chip,
+  Tooltip,
+  Popover,
+  PopoverTrigger,
+  PopoverContent,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../../types/types";
-import ProfileCard from "../ProfileCard";
-import ProleagueProfileCard from "../ProleagueProfileCard";
 import ProleagueAvatarCard from "../ProleagueAvatarCard";
-import { createTeamData, deleteTeamData, updateTeamData } from "@/service/team";
+import {
+  createTeamData,
+  deleteTeamData,
+  updateTeamData,
+  updateUserTeam,
+} from "@/service/team";
+import SubmitModal from "../SubmitModal";
+import { useSession } from "next-auth/react";
+import { EyeIcon } from "../../../public/EyeIcon";
+import { DeleteIcon } from "../../../public/DeleteIcon";
+import { useRouter } from "next/navigation";
+import { EditIcon } from "../../../public/EditIcon";
 
 interface UserItem {
   nickname: string;
@@ -38,11 +51,42 @@ interface UserItem {
   wins: number;
   losses: number;
   belo: number;
-  [key: string]: string | number; // 인덱스 시그니처 추가
+  team?: string;
+  [key: string]: string | number | undefined; // 인덱스 시그니처 추가
 }
 
+interface Column {
+  name: string;
+  uid: string;
+  sortable: boolean;
+  align?: "center" | "start" | "end";
+  width?: number;
+  color?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger";
+}
+
+const tierColorMap: Record<string, string> = {
+  "S+": "bg-green-100",
+  S: "bg-green-200",
+  "A+": "bg-blue-100",
+  A: "bg-blue-200",
+  "B+": "bg-yellow-100",
+  B: "bg-yellow-200",
+  C: "bg-red-100",
+  D: "bg-red-200",
+};
+
 const AdminPage = ({ teams, users }: any) => {
+  type User = (typeof users)[0];
+  // 모달 상태 추가
+  const router = useRouter();
   const [selectedTeamName, setSelectedTeamName] = useState("");
+  const [selectedTeamChange, setSelectedTeamChange] = useState("");
   const [teamDetails, setTeamDetails] = useState({
     name: "",
     leader: "",
@@ -65,11 +109,32 @@ const AdminPage = ({ teams, users }: any) => {
   const [newSubLeaderNicknameKey, setNewSubLeaderNicknameKey] =
     useState<any>("");
 
+  // 모달 상태 추가
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+
+  const [teamPage, setTeamPage] = useState(1);
+  const [noTeamPage, setNoTeamPage] = useState(1);
+  const rowsPerPage = 10;
+
   // 선택한 팀 객체를 찾습니다.
   const selectedTeam = useMemo(
     () => teams.find((team: Team) => team.name === selectedTeamName),
     [selectedTeamName, teams]
   );
+
+  const getTeamNameById = useCallback(
+    (teamId: string) => {
+      const team = teams.find((team: Team) => team._id === teamId);
+      return team ? team.name : "";
+    },
+    [teams]
+  );
+
+  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
+  const userGrade = user?.grade ?? 0;
 
   // 팀 선택 시 팀 상세 정보 업데이트
   useEffect(() => {
@@ -162,9 +227,11 @@ const AdminPage = ({ teams, users }: any) => {
     }
     try {
       const result = await updateTeamData(formData);
-      alert("팀 정보가 업데이트 되었습니다.");
+      setModalMessage("팀 정보가 업데이트 되었습니다.");
+      setIsModalOpen(true);
     } catch (error: any) {
-      alert(`업데이트 실패: ${error.message}`);
+      setModalMessage(`업데이트 실패: ${error.message}`);
+      setIsModalOpen(true);
     }
   };
 
@@ -172,10 +239,12 @@ const AdminPage = ({ teams, users }: any) => {
     // API 호출을 통해 서버에 데이터 저장
     try {
       const result = await deleteTeamData(selectedTeamName);
-      alert("팀 정보가 삭제되었습니다.");
+      setModalMessage("팀 정보가 삭제되었습니다.");
+      setIsModalOpen(true);
       setSelectedTeamName("");
     } catch (error: any) {
-      alert(`삭제 실패: ${error.message}`);
+      setModalMessage(`삭제 실패: ${error.message}`);
+      setIsModalOpen(true);
     }
   };
 
@@ -208,7 +277,8 @@ const AdminPage = ({ teams, users }: any) => {
 
     try {
       const result = await createTeamData(formData);
-      alert("팀 정보가 생성되었습니다.");
+      setModalMessage("팀 정보가 생성되었습니다.");
+      setIsModalOpen(true);
       // 성공 후 입력 필드 초기화
       setNewTeamDetails({
         name: "",
@@ -220,12 +290,180 @@ const AdminPage = ({ teams, users }: any) => {
       setNewLeaderNicknameKey("");
       setNewSubLeaderNicknameKey("");
     } catch (error: any) {
-      alert(`생성 실패: ${error.message}`);
+      setModalMessage(`생성 실패: ${error.message}`);
+      setIsModalOpen(true);
     }
   };
 
+  const handleDelete = async (userId: string) => {
+    try {
+      const response = await updateUserTeam(userId, "");
+      if (response) {
+        setModalMessage("성공적으로 팀에서 제외 했습니다.");
+      } else {
+        setModalMessage("유저 삭제에 실패했습니다.");
+      }
+      setIsModalOpen(true);
+    } catch (error) {
+      setModalMessage("유저 삭제 중 오류가 발생했습니다.");
+      setIsModalOpen(true);
+    }
+  };
+
+  const handleUpdate = async (userId: string, teamId: string) => {
+    try {
+      const response = await updateUserTeam(userId, teamId);
+      if (response) {
+        setModalMessage("성공적으로 팀을 변경했습니다.");
+      } else {
+        setModalMessage("팀정보 변경 실패");
+      }
+      setIsModalOpen(true);
+    } catch (error) {
+      setModalMessage("유저 정보변경 중 오류가 발생했습니다.");
+      setIsModalOpen(true);
+    }
+  };
+
+  const teamUsers = useMemo(() => {
+    return users
+      .filter((user: any) => user.team)
+      .map((user: any) => ({
+        nickname: user.nickname,
+        email: user.email,
+        tier: user.tear,
+        race: user.league.race,
+        wins: user.league.tw + user.league.pw + user.league.zw,
+        losses: user.league.tl + user.league.pl + user.league.zl,
+        belo: user.BELO.belo,
+        teamid: user.team,
+        teamname: getTeamNameById(user.team),
+      }));
+  }, [users, getTeamNameById]);
+
+  const noTeamUsers = useMemo(() => {
+    return users
+      .filter((user: any) => !user.team)
+      .map((user: any) => ({
+        nickname: user.nickname,
+        email: user.email,
+        tier: user.tear,
+        race: user.league.race,
+        wins: user.league.tw + user.league.pw + user.league.zw,
+        losses: user.league.tl + user.league.pl + user.league.zl,
+        belo: user.BELO.belo,
+        teamid: user.team,
+        teamname: getTeamNameById(user.team),
+      }));
+  }, [users, getTeamNameById]);
+
+  const renderCell = useCallback(
+    (user: User, columnKey: React.Key) => {
+      const cellValue = user[columnKey as keyof User];
+
+      switch (columnKey) {
+        case "nickname":
+          return <div>{cellValue}</div>;
+        case "tier":
+          return <p className="text-black">{cellValue}</p>;
+        case "role":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">{cellValue}</p>
+              <p className="text-bold text-sm capitalize text-default-400">
+                {user.team}
+              </p>
+            </div>
+          );
+        case "actions":
+          return (
+            <div className="relative flex items-center gap-2">
+              <Tooltip content="Details">
+                <span
+                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                  onClick={() => router.push(`/user/profile/${user.email}`)}
+                >
+                  <EyeIcon />
+                </span>
+              </Tooltip>
+              <Tooltip color="danger" content="Delete user">
+                <span
+                  className="text-lg text-danger cursor-pointer active:opacity-50"
+                  onClick={() => handleDelete(user.nickname)}
+                >
+                  <DeleteIcon />
+                </span>
+              </Tooltip>
+              <Tooltip content="Edit user">
+                <Popover placement={"right"}>
+                  <PopoverTrigger>
+                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                      <EditIcon />
+                    </span>
+                  </PopoverTrigger>
+                  <PopoverContent className="">
+                    <div className="flex flex-col gap-1">
+                      {teams.map((team: any) => (
+                        <Chip
+                          key={team._id}
+                          className="w-full text-sm text-center cursor-pointer"
+                          size="sm"
+                          color="primary"
+                          onClick={() => handleUpdate(user.nickname, team._id)}
+                        >
+                          <div className="w-[70px]">{team.name}</div>
+                        </Chip>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [teams, router]
+  );
+
+  const columns: Column[] = [
+    { name: "티어", uid: "tier", sortable: true, align: "start", width: 30 },
+    {
+      name: "닉네임",
+      uid: "nickname",
+      sortable: true,
+      align: "center",
+      width: 30,
+    },
+    { name: "종족", uid: "race", sortable: true, align: "start", width: 30 },
+    {
+      name: "소속 팀",
+      uid: "teamname",
+      sortable: true,
+      align: "start",
+      width: 30,
+    },
+  ];
+
+  if (userGrade >= 4) {
+    columns.push({
+      name: "Actions",
+      uid: "actions",
+      sortable: true,
+      align: "center",
+      width: 30,
+    });
+  }
+
   return (
     <div className="w-full">
+      <SubmitModal
+        title={"알림"}
+        text={modalMessage}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
       {/* 팀 리스트 */}
       <Card className="m-2">
         <CardHeader>
@@ -459,6 +697,136 @@ const AdminPage = ({ teams, users }: any) => {
               </div>
             </div>
           </div>
+        </CardBody>
+      </Card>
+      {/* 팀에 소속된 유저 리스트 */}
+      <Card className="m-2">
+        <CardHeader>
+          <p className="font-bold text-3xl ml-2">팀에 소속된 유저 리스트</p>
+        </CardHeader>
+        <CardBody>
+          <Table
+            aria-label="팀에 소속된 유저 리스트"
+            bottomContent={
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="secondary"
+                  page={teamPage}
+                  total={Math.ceil(teamUsers.length / rowsPerPage)}
+                  onChange={(page) => setTeamPage(page)}
+                />
+              </div>
+            }
+            classNames={{
+              wrapper: "min-h-[222px]",
+            }}
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn
+                  key={column.uid}
+                  align={column.align}
+                  width={column.width}
+                  className="text-center"
+                >
+                  {column.name}
+                </TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              items={teamUsers.slice(
+                (teamPage - 1) * rowsPerPage,
+                teamPage * rowsPerPage
+              )}
+            >
+              {(item: any) => (
+                <TableRow key={item.nickname} className="text-center">
+                  {(columnKey) => (
+                    <TableCell
+                      className={
+                        columnKey === "tier"
+                          ? `${
+                              tierColorMap[item.tier] || "bg-gray-100"
+                            } text-center`
+                          : "text-center"
+                      }
+                    >
+                      {renderCell(item, columnKey)}
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </CardBody>
+      </Card>
+      {/* 팀에 소속되지 않은 유저 리스트 */}
+      <Card className="m-2">
+        <CardHeader>
+          <p className="font-bold text-3xl ml-2">
+            팀에 소속되지 않은 유저 리스트
+          </p>
+        </CardHeader>
+        <CardBody>
+          <Table
+            aria-label="팀에 소속되지 않은 유저 리스트"
+            bottomContent={
+              <div className="flex w-full justify-center">
+                <Pagination
+                  isCompact
+                  showControls
+                  showShadow
+                  color="secondary"
+                  page={noTeamPage}
+                  total={Math.ceil(noTeamUsers.length / rowsPerPage)}
+                  onChange={(page) => setNoTeamPage(page)}
+                />
+              </div>
+            }
+            classNames={{
+              wrapper: "min-h-[222px]",
+            }}
+          >
+            <TableHeader columns={columns}>
+              {(column) => (
+                <TableColumn
+                  key={column.uid}
+                  align={column.align}
+                  width={column.width}
+                  className="text-center"
+                >
+                  {column.name}
+                </TableColumn>
+              )}
+            </TableHeader>
+            <TableBody
+              items={noTeamUsers.slice(
+                (noTeamPage - 1) * rowsPerPage,
+                noTeamPage * rowsPerPage
+              )}
+            >
+              {(item: any) => (
+                <TableRow key={item.nickname} className="text-center">
+                  {(columnKey) => (
+                    <TableCell
+                      className={
+                        columnKey === "tier"
+                          ? `${
+                              tierColorMap[item.tier] || "bg-gray-100"
+                            } text-center`
+                          : "text-center"
+                      }
+                    >
+                      {renderCell(item, columnKey)}
+                    </TableCell>
+                  )}
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
         </CardBody>
       </Card>
     </div>

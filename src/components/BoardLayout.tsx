@@ -53,6 +53,7 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
+  
 
   const [selectedSortKey, setSelectedSortKey] = useState("default");
   const [sortedBoard, setSortedBoard] = useState([...posts]);

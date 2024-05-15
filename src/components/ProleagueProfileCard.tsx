@@ -44,7 +44,7 @@ export default function ProleagueProfileCard({
           {/* Avatar 위치를 조정합니다. */}
           <Avatar src={userData.avatar} className="w-24 h-24 text-large" />
           <div className="flex flex-col items-center justify-center ml-4">
-            <p className="font-bold text-xl ">{myTeam[0].name}</p>
+            <p className="font-bold text-xl ">{myTeam[0]?.name}</p>
             <p className="font-bold text-4xl">{userData.nickname}</p>
             <p className="font-bold text-2xl dark:text-blue-dark">
               {getContent()}

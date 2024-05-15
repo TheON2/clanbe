@@ -49,7 +49,7 @@ export default function ProleagueAvatarCard({
             <Avatar src={userData.avatar} size="md" />
             <div>
               <p className="font-bold text-xl">{userData.nickname}</p>
-              <p className="font-bold text-md">{myTeam[0].name}</p>
+              <p className="font-bold text-md">{myTeam[0]?.name}</p>
             </div>
           </div>
           {/* 오른쪽 부분: 내용을 표시 */}

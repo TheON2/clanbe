@@ -25,6 +25,11 @@ import {
   Chip,
   Tooltip,
   ChipProps,
+  Modal,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../../types/types";
@@ -35,6 +40,10 @@ import ProleagueAvatarCard from "../ProleagueAvatarCard";
 import { EditIcon } from "../../../public/EditIcon";
 import { EyeIcon } from "../../../public/EyeIcon";
 import { DeleteIcon } from "../../../public/DeleteIcon";
+import { updateUserTeam } from "@/service/team";
+import SubmitModal from "../SubmitModal";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
 
 interface UserItem {
   nickname: string;
@@ -74,11 +83,20 @@ const tierColorMap: Record<string, string> = {
 
 const TeamPage = ({ teams, users }: any) => {
   type User = (typeof users)[0];
+  // 모달 상태 추가
+  const router = useRouter();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
+  const [isSubmit, setIsSubmit] = useState(false);
   const statusColorMap: Record<string, ChipProps["color"]> = {
     active: "success",
     paused: "danger",
     vacation: "warning",
   };
+  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
+  const userGrade = user?.grade ?? 0;
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
@@ -112,12 +130,18 @@ const TeamPage = ({ teams, users }: any) => {
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <span
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                onClick={() => router.push(`/user/profile/${user.email}`)}
+              >
                 <EyeIcon />
               </span>
             </Tooltip>
             <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
+              <span
+                className="text-lg text-danger cursor-pointer active:opacity-50"
+                onClick={() => handleDelete(user.nickname)}
+              >
                 <DeleteIcon />
               </span>
             </Tooltip>
@@ -140,14 +164,17 @@ const TeamPage = ({ teams, users }: any) => {
     { name: "종족", uid: "race", sortable: true, align: "start", width: 30 },
     { name: "승", uid: "wins", sortable: true, align: "center", width: 30 },
     { name: "패", uid: "losses", sortable: true, align: "center", width: 30 },
-    {
+  ];
+
+  if (userGrade >= 4) {
+    columns.push({
       name: "Actions",
       uid: "actions",
       sortable: true,
       align: "center",
       width: 30,
-    },
-  ];
+    });
+  }
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -234,7 +261,7 @@ const TeamPage = ({ teams, users }: any) => {
         const matchesTeam =
           selectedTeamName === "ALL" ||
           selectedTeamName === "" ||
-          userTeam[0].name === selectedTeamName;
+          userTeam[0]?.name === selectedTeamName;
         const userRace =
           raceMapping[user.BELO.race.toLowerCase()] || user.BELO.race;
         const matchesRace =
@@ -246,6 +273,7 @@ const TeamPage = ({ teams, users }: any) => {
       })
       .map((user: User) => ({
         nickname: user.nickname,
+        email: user.email,
         avatar: user.avatar,
         tier: user.tear,
         race: raceMapping[user.league.race.toLowerCase()] || user.league.race,
@@ -269,8 +297,29 @@ const TeamPage = ({ teams, users }: any) => {
     return filteredData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
   }, [page, filteredData]);
 
+  const handleDelete = async (userId: string) => {
+    try {
+      const response = await updateUserTeam(userId, "");
+      if (response) {
+        setModalMessage("성공적으로 팀에서 제외 했습니다.");
+      } else {
+        setModalMessage("유저 삭제에 실패했습니다.");
+      }
+      setIsSubmit(true);
+    } catch (error) {
+      setModalMessage("유저 삭제 중 오류가 발생했습니다.");
+      setIsSubmit(true);
+    }
+  };
+
   return (
     <div className="w-full">
+      <SubmitModal
+        title={"알림"}
+        text={modalMessage}
+        isOpen={isSubmit}
+        onClose={() => setIsSubmit(false)}
+      />
       {/* 팀 리스트 */}
       <Card className="m-2">
         <CardHeader>

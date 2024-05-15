@@ -6,7 +6,7 @@ export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
   console.log(body)
-  let { email, password, nickname, name, kakao, birth } = body.signUpState;
+  let { usernickname,teamid} = body;
 
 
   try {
@@ -15,7 +15,7 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const existingUser = await UserModel.findOne({ email: email })
+    const existingUser = await UserModel.findOne({ nickname: usernickname })
 
 
     if (!existingUser) {
@@ -27,13 +27,10 @@ export async function POST(req: Request, res: Response) {
       );
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
     
     //existingUser.password = hashedPassword;
-    existingUser.nickname = nickname;
-    existingUser.name = name;
-    existingUser.kakao = kakao;
-    existingUser.birth = birth;
+    existingUser.nickname = usernickname;
+    existingUser.team = teamid;
 
     existingUser.save();
 

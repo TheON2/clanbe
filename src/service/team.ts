@@ -87,7 +87,7 @@ export async function deleteTeamData(selectedTeamName:any) {
   }
 };
 
-export async function updateUserTeam(teamid:string) {
+export async function updateUserTeam(usernickname: string, teamid: string) {
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/user/update`,
     {
@@ -95,7 +95,7 @@ export async function updateUserTeam(teamid:string) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ teamid }),
+      body: JSON.stringify({ usernickname, teamid }),
       next: { tags: ["user"] },
     }
   );
