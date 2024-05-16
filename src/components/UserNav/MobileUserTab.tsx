@@ -239,7 +239,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
       >
         <Tab key={"BELO"} title={"BELO"} className={styles.tab}>
           <Card>
-            <CardBody className="w-full max-w-[330px]">
+            <CardBody className="w-full">
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">

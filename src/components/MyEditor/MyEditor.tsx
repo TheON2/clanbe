@@ -1,7 +1,6 @@
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
-import CustomEditor from "@/ckeditor2";
-import { Markdown } from "@ckeditor/ckeditor5-markdown-gfm";
+import CustomEditor from "@/ckeditor3";
 
 import React, { useEffect, useState } from "react";
 import Alignment from "@ckeditor/ckeditor5-alignment/src/alignment";
@@ -31,100 +30,78 @@ export default function MyEditor(props: MyEditorProps) {
             // ui: {
             //   viewportOffset: { top: 200 },
             // },
-            mediaEmbed: {
-              previewsInData: true,
-            },
             ckfinder: {
               uploadUrl: "/api/post/uploadImage",
             },
-            mention: {
-              feeds: [
-                {
-                  marker: "@",
-                  feed: [
-                    "@apple",
-                    "@bears",
-                    "@brownie",
-                    "@cake",
-                    "@cake",
-                    "@candy",
-                    "@canes",
-                    "@chocolate",
-                    "@cookie",
-                    "@cotton",
-                    "@cream",
-                    "@cupcake",
-                    "@danish",
-                    "@donut",
-                    "@dragée",
-                    "@fruitcake",
-                    "@gingerbread",
-                    "@gummi",
-                    "@ice",
-                    "@jelly-o",
-                    "@liquorice",
-                    "@macaroon",
-                    "@marzipan",
-                    "@oat",
-                    "@pie",
-                    "@plum",
-                    "@pudding",
-                    "@sesame",
-                    "@snaps",
-                    "@soufflé",
-                    "@sugar",
-                    "@sweet",
-                    "@topping",
-                    "@wafer",
-                  ],
-                  minimumCharacters: 1,
+            link: {
+              decorators: {
+                toggleDownloadable: {
+                  mode: "manual",
+                  label: "Downloadable",
+                  attributes: {
+                    download: "file",
+                  },
                 },
-              ],
+                openInNewTab: {
+                  mode: "manual",
+                  label: "Open in a new tab",
+                  defaultValue: true, // This option will be selected by default.
+                  attributes: {
+                    target: "_blank",
+                    rel: "noopener noreferrer",
+                  },
+                },
+              },
             },
             toolbar: {
               items: [
-                "bold",
                 "italic",
+                "bold",
                 "underline",
+                "fontSize",
+                "blockQuote",
+                "horizontalLine",
                 "highlight",
+                "fontBackgroundColor",
+                "|",
+                "-",
+                "fontFamily",
+                "alignment",
+                "outdent",
+                "indent",
+                "|",
+                "-",
+                "link",
+                "imageInsert",
+                "imageUpload",
+                "mediaEmbed",
+                "htmlEmbed",
                 "|",
                 "bulletedList",
                 "numberedList",
                 "|",
-                "outdent",
-                "indent",
-                "|",
-                "blockQuote",
-                "code",
-                "codeBlock",
-                "findAndReplace",
-                "|",
-                "alignment",
-                "fontBackgroundColor",
-                "fontFamily",
-                "fontColor",
-                "fontSize",
-                "|",
-                "horizontalLine",
-                "pageBreak",
-                "removeFormat",
-                "showBlocks",
-                "sourceEditing",
-                "style",
-                "subscript",
-                "textPartLanguage",
-                "todoList",
-                "selectAll",
-                "insertTable",
-                "imageInsert",
-                "link",
-                "imageUpload",
-                "mediaEmbed",
                 "undo",
                 "redo",
-                "IFrame",
+                "|",
               ],
               shouldNotGroupWhenFull: true,
+            },
+            mediaEmbed: {
+              previewsInData: true,
+              // 미디어 임베드 설정을 추가
+              extraProviders: [
+                {
+                  name: "afreecatv",
+                  url: /^https:\/\/vod\.afreecatv\.com\/PLAYER\/STATION\/(\d+)/,
+                  html: (match) => {
+                    const videoId = match[1];
+                    return (
+                      `<iframe width="640" height="360" src="https://vod.afreecatv.com/player/${videoId}" ` +
+                      `frameborder="0" allowfullscreen></iframe>`
+                    );
+                  },
+                },
+              ],
             },
 
             language: "ko",

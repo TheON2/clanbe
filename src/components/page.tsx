@@ -302,7 +302,7 @@ export default function WriteComponent({ nicknames }: any) {
             </Card>
           )}
           <div
-            className="ck-content p-8 break-words"
+            className="ck-content p-8 break-words w-full overflow-auto"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           ></div>
         </Card>

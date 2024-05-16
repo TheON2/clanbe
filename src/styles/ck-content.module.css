@@ -40,6 +40,14 @@
   /* 경계선을 보이게 하여 에디터가 잘 구분되도록 함 */
 }
 
+.ck-content a {
+  color: blue;
+  /* 링크 색상을 파란색으로 설정 */
+  text-decoration: underline;
+  /* 밑줄을 추가 */
+  font-weight: 500;
+}
+
 .ckeditor-container {
   background-color: #fff;
   /* 컨테이너 배경도 하얀색으로 설정 */

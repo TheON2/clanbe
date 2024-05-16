@@ -335,7 +335,7 @@ export default function CKEditorForm({
             </Card>
           )}
           <div
-            className="ck-content p-8 break-words"
+            className="ck-content p-8 break-words w-full"
             dangerouslySetInnerHTML={{ __html: htmlContent }}
           ></div>
         </Card>
