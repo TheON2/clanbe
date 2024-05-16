@@ -82,7 +82,7 @@ const tierColorMap: Record<string, string> = {
   D: "bg-red-200",
 };
 
-const dummy = [
+const matches = [
   {
     homeId: "660cc0e452afd8daf291b3b9",
     awayId: "660cc0e452afd8daf291b3b9",
@@ -229,59 +229,41 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
   const user = session?.user;
   const userGrade = user?.grade ?? 0;
 
-  const renderCell = useCallback((user: User, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const findTeamById = useCallback(
+    (id: string) => teams.find((team: any) => team._id === id),
+    [teams]
+  );
+  const renderCell = useCallback(
+    (user: User, columnKey: React.Key, result?: number, isHome?: boolean) => {
+      const cellValue = user[columnKey as keyof User];
+      let cellClass = "";
 
-    switch (columnKey) {
-      case "nickname":
-        return <div>{cellValue}</div>;
-      case "tier":
-        return <p className="text-black">{cellValue}</p>;
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">{cellValue}</p>
-            <p className="text-bold text-sm capitalize text-default-400">
-              {user.team}
-            </p>
-          </div>
-        );
-      case "status":
-        return (
-          <Chip
-            className="capitalize"
-            color={statusColorMap[user.status]}
-            size="sm"
-            variant="flat"
-          >
-            {cellValue}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
-              <span
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                onClick={() => router.push(`/user/profile/${user.email}`)}
-              >
-                <EyeIcon />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete user">
-              <span
-                className="text-lg text-danger cursor-pointer active:opacity-50"
-                onClick={() => handleDelete(user.nickname)}
-              >
-                <DeleteIcon />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+      if (columnKey === "homePlayer" && result !== undefined) {
+        cellClass =
+          result === 1 ? "bg-blue-100" : result === 2 ? "bg-red-100" : "";
+      } else if (columnKey === "awayPlayer" && result !== undefined) {
+        cellClass =
+          result === 2 ? "bg-blue-100" : result === 1 ? "bg-red-100" : "";
+      }
+
+      switch (columnKey) {
+        case "homePlayer":
+        case "awayPlayer":
+          return (
+            <div className={`text-center ${cellClass} p-2 rounded-md`}>
+              {user ? `${user.nickname} (${user.tear})` : "N/A"}
+            </div>
+          );
+        case "map":
+          return <div>{cellValue}</div>;
+        case "tier":
+          return <div>{cellValue}</div>;
+        default:
+          return cellValue;
+      }
+    },
+    []
+  );
 
   const columns: Column[] = [
     { name: "티어", uid: "tier", sortable: true, align: "start", width: 30 },
@@ -306,6 +288,12 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
       width: 30,
     });
   }
+
+  const findUser = (email: string) =>
+    users.find((user: User) => user.email === email);
+
+  const findTeam = (teamid: string) =>
+    teams.find((team: Team) => team._id === teamid);
 
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
@@ -699,47 +687,88 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
           </div>
         </CardBody>
       </Card>
-      <Card>
-        <CardHeader>프로리그 일정</CardHeader>
-        <CardBody>
-          <div className="flex flex-col gap-4 p-2">
-            <div className="flex gap-2">
-              <div className="w-1/3 bg-blue-800 h-[100px]"></div>
-              <div className="w-1/3 bg-blue-600 h-[100px] flex items-center">
-                <p className="font-bold text-3xl text-white text-center ">
-                  으악
-                </p>
-              </div>
-              <div className="w-1/3 bg-blue-800 h-[100px]"></div>
-            </div>
-            <div className="flex gap-2">
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-600 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-            </div>
-            <div className="flex gap-2">
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-600 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-            </div>
-            <div className="flex gap-2">
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-600 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-            </div>
-            <div className="flex gap-2">
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-600 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-            </div>
-            <div className="flex gap-2">
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-600 h-[50px]"></div>
-              <div className="w-1/3 bg-blue-800 h-[50px]"></div>
-            </div>
-          </div>
+      <Card className="w-full flex justify-center items-center">
+        <CardHeader>
+          <h3>프로리그 일정</h3>
+        </CardHeader>
+        <CardBody className="md:w-2/3 w-full">
+          {matches.length > 0 &&
+            matches.map((match, index) => {
+              const homeTeam = findTeam(match.homeId);
+              const awayTeam = findTeam(match.awayId);
+              return (
+                <div key={index} className="w-full mb-4 p-4 border rounded-lg">
+                  <div className="flex justify-center items-center mb-2 gap-4">
+                    <div className="flex flex-col items-center">
+                      <Image
+                        src={homeTeam?.avatar || "/default-avatar.png"}
+                        alt="Home Team Avatar"
+                        width={100}
+                        height={100}
+                        className="rounded-md mr-2"
+                      />
+                      <div>
+                        <p className="font-bold">{homeTeam?.name || "N/A"}</p>
+                      </div>
+                    </div>
+                    <div className="text-center font-bold">
+                      <p>{match.date}</p>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <Image
+                        src={awayTeam?.avatar || "/default-avatar.png"}
+                        alt="Away Team Avatar"
+                        width={100}
+                        height={100}
+                        className="rounded-md ml-2"
+                      />
+                      <div className=" ml-2">
+                        <p className="font-bold">{awayTeam?.name || "N/A"}</p>
+                      </div>
+                    </div>
+                  </div>
+                  <Table aria-label="Proleague Schedule">
+                    <TableHeader>
+                      <TableColumn>세트</TableColumn>
+                      <TableColumn>맵</TableColumn>
+                      <TableColumn>Home</TableColumn>
+                      <TableColumn>티어</TableColumn>
+                      <TableColumn>Away</TableColumn>
+                    </TableHeader>
+                    <TableBody>
+                      {match.sets.map((game, idx) => {
+                        const homeUser = findUser(game.homePlayer);
+                        const awayUser = findUser(game.awayPlayer);
+                        return (
+                          <TableRow key={idx}>
+                            <TableCell>{idx + 1}</TableCell>
+                            <TableCell>{game?.map}</TableCell>
+                            <TableCell>
+                              {renderCell(
+                                homeUser,
+                                "homePlayer",
+                                game.result,
+                                true
+                              )}
+                            </TableCell>
+                            <TableCell>{game?.tier}</TableCell>
+                            <TableCell>
+                              {renderCell(
+                                awayUser,
+                                "awayPlayer",
+                                game.result,
+                                false
+                              )}
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })}
+                    </TableBody>
+                  </Table>
+                </div>
+              );
+            })}
         </CardBody>
-        <CardFooter></CardFooter>
       </Card>
     </div>
   );
