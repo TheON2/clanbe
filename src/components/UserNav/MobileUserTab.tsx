@@ -234,7 +234,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
       <Tabs aria-label="Dynamic tabs" items={tabs}>
         <Tab key={"BELO"} title={"BELO"}>
           <Card>
-            <CardBody className="">
+            <CardBody className="w-full">
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">
@@ -354,7 +354,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
         </Tab>
         <Tab key={"LEAGUE"} title={"LEAGUE"}>
           <Card>
-            <CardBody className="">
+            <CardBody className="w-full">
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">

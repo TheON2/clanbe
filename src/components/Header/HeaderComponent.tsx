@@ -45,7 +45,7 @@ export default function HeaderComponent(categoryData: any) {
     <Navbar
       onMenuOpenChange={setIsMenuOpen}
       maxWidth="full"
-      className="w-full "
+      className="w-full overflow-hidden"
     >
       <NavbarContent>
         <NavbarMenuToggle
