@@ -26,7 +26,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`w-full ${sans.className}`}>
+    <html
+      lang="en"
+      className={`w-full flex justify-center items-center ${sans.className}`}
+    >
       <Head>
         <title>CLANBE</title>
         <meta

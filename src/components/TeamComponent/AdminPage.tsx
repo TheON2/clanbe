@@ -109,6 +109,15 @@ const AdminPage = ({ teams, users }: any) => {
   const [newSubLeaderNicknameKey, setNewSubLeaderNicknameKey] =
     useState<any>("");
 
+  const raceMapping: { [key: string]: string } = useMemo(
+    () => ({
+      z: "Z",
+      t: "T",
+      p: "P",
+    }),
+    []
+  );
+
   // 모달 상태 추가
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
@@ -116,6 +125,20 @@ const AdminPage = ({ teams, users }: any) => {
   const [teamPage, setTeamPage] = useState(1);
   const [noTeamPage, setNoTeamPage] = useState(1);
   const rowsPerPage = 10;
+
+  const [teamSearch, setTeamSearch] = useState("");
+  const [noTeamSearch, setNoTeamSearch] = useState("");
+
+  const [teamSelectedTier, setTeamSelectedTier] = useState("");
+  const [noTeamSelectedTier, setNoTeamSelectedTier] = useState("");
+
+  const [teamSelectedTeam, setTeamSelectedTeam] = useState("");
+
+  const [teamSelectedRace, setTeamSelectedRace] = useState("");
+  const [noTeamSelectedRace, setNoTeamSelectedRace] = useState("");
+
+  const races = ["ALL", "Z", "T", "P"];
+  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
 
   // 선택한 팀 객체를 찾습니다.
   const selectedTeam = useMemo(
@@ -357,6 +380,65 @@ const AdminPage = ({ teams, users }: any) => {
       }));
   }, [users, getTeamNameById]);
 
+  const filteredTeamUsers: UserItem[] = useMemo(() => {
+    return teamUsers
+      .filter((user: User) => {
+        const matchesSearch = user.nickname
+          .toLowerCase()
+          .includes(teamSearch.toLowerCase());
+        const matchesTier =
+          teamSelectedTier === "ALL" ||
+          teamSelectedTier === "" ||
+          user.tier === teamSelectedTier;
+        const userRace = raceMapping[user.race.toLowerCase()] || user.race;
+        const matchesRace =
+          teamSelectedRace === "ALL" ||
+          teamSelectedRace === "" ||
+          userRace === teamSelectedRace;
+        const matchesTeam =
+          teamSelectedTeam === "ALL" ||
+          teamSelectedTeam === "" ||
+          user.teamname === teamSelectedTeam;
+
+        return matchesSearch && matchesRace && matchesTier && matchesTeam;
+      })
+      .sort((a: any, b: any) => b.belo - a.belo);
+  }, [
+    teamUsers,
+    teamSearch,
+    teamSelectedTier,
+    teamSelectedRace,
+    raceMapping,
+    teamSelectedTeam,
+  ]);
+
+  const filteredNoTeamUsers: UserItem[] = useMemo(() => {
+    return noTeamUsers
+      .filter((user: User) => {
+        const matchesSearch = user.nickname
+          .toLowerCase()
+          .includes(noTeamSearch.toLowerCase());
+        const matchesTier =
+          noTeamSelectedTier === "ALL" ||
+          noTeamSelectedTier === "" ||
+          user.tier === noTeamSelectedTier;
+        const userRace = raceMapping[user.race.toLowerCase()] || user.race;
+        const matchesRace =
+          noTeamSelectedRace === "ALL" ||
+          noTeamSelectedRace === "" ||
+          userRace === noTeamSelectedRace;
+
+        return matchesSearch && matchesRace && matchesTier;
+      })
+      .sort((a: any, b: any) => b.belo - a.belo);
+  }, [
+    noTeamUsers,
+    noTeamSearch,
+    noTeamSelectedTier,
+    noTeamSelectedRace,
+    raceMapping,
+  ]);
+
   const renderCell = useCallback(
     (user: User, columnKey: React.Key) => {
       const cellValue = user[columnKey as keyof User];
@@ -427,6 +509,68 @@ const AdminPage = ({ teams, users }: any) => {
     [teams, router]
   );
 
+  const renderCellnoTeam = useCallback(
+    (user: User, columnKey: React.Key) => {
+      const cellValue = user[columnKey as keyof User];
+
+      switch (columnKey) {
+        case "nickname":
+          return <div>{cellValue}</div>;
+        case "tier":
+          return <p className="text-black">{cellValue}</p>;
+        case "role":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">{cellValue}</p>
+              <p className="text-bold text-sm capitalize text-default-400">
+                {user.team}
+              </p>
+            </div>
+          );
+        case "actions":
+          return (
+            <div className="relative flex items-center gap-2">
+              <Tooltip content="Details">
+                <span
+                  className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                  onClick={() => router.push(`/user/profile/${user.email}`)}
+                >
+                  <EyeIcon />
+                </span>
+              </Tooltip>
+              <Tooltip content="Edit user">
+                <Popover placement={"right"}>
+                  <PopoverTrigger>
+                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                      <EditIcon />
+                    </span>
+                  </PopoverTrigger>
+                  <PopoverContent className="">
+                    <div className="flex flex-col gap-1">
+                      {teams.map((team: any) => (
+                        <Chip
+                          key={team._id}
+                          className="w-full text-sm text-center cursor-pointer"
+                          size="sm"
+                          color="primary"
+                          onClick={() => handleUpdate(user.nickname, team._id)}
+                        >
+                          <div className="w-[70px]">{team.name}</div>
+                        </Chip>
+                      ))}
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [teams, router]
+  );
+
   const columns: Column[] = [
     { name: "티어", uid: "tier", sortable: true, align: "start", width: 30 },
     {
@@ -448,6 +592,28 @@ const AdminPage = ({ teams, users }: any) => {
 
   if (userGrade >= 4) {
     columns.push({
+      name: "Actions",
+      uid: "actions",
+      sortable: true,
+      align: "center",
+      width: 30,
+    });
+  }
+
+  const columnsNoTeam: Column[] = [
+    { name: "티어", uid: "tier", sortable: true, align: "start", width: 30 },
+    {
+      name: "닉네임",
+      uid: "nickname",
+      sortable: true,
+      align: "center",
+      width: 30,
+    },
+    { name: "종족", uid: "race", sortable: true, align: "start", width: 30 },
+  ];
+
+  if (userGrade >= 4) {
+    columnsNoTeam.push({
       name: "Actions",
       uid: "actions",
       sortable: true,
@@ -705,6 +871,64 @@ const AdminPage = ({ teams, users }: any) => {
           <p className="font-bold text-3xl ml-2">팀에 소속된 유저 리스트</p>
         </CardHeader>
         <CardBody>
+          <div className="flex gap-2 mb-4 md:w-1/2 w-full">
+            <Input
+              placeholder="닉네임"
+              value={teamSearch}
+              onChange={(e) => {
+                setTeamSearch(e.target.value);
+                setTeamPage(1);
+              }}
+            />
+            <Select
+              aria-label="소속팀"
+              placeholder="소속팀"
+              value={teamSelectedTeam}
+              onChange={(e) => {
+                setTeamSelectedTeam(e.target.value);
+                setTeamPage(1);
+              }}
+            >
+              <SelectItem key={"ALL"} value={"ALL"}>
+                ALL
+              </SelectItem>
+              {teams.map((team: any) => (
+                <SelectItem key={team.name} value={team.name}>
+                  {team.name}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              aria-label="티어"
+              placeholder="티어"
+              value={teamSelectedTier}
+              onChange={(e) => {
+                setTeamSelectedTier(e.target.value);
+                setTeamPage(1);
+              }}
+            >
+              {tiers.map((tier) => (
+                <SelectItem key={tier} value={tier}>
+                  {tier}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              aria-label="종족"
+              placeholder="종족"
+              value={teamSelectedRace}
+              onChange={(e) => {
+                setTeamSelectedRace(e.target.value);
+                setTeamPage(1);
+              }}
+            >
+              {races.map((race) => (
+                <SelectItem key={race} value={race}>
+                  {race}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
           <Table
             aria-label="팀에 소속된 유저 리스트"
             bottomContent={
@@ -715,7 +939,7 @@ const AdminPage = ({ teams, users }: any) => {
                   showShadow
                   color="secondary"
                   page={teamPage}
-                  total={Math.ceil(teamUsers.length / rowsPerPage)}
+                  total={Math.ceil(filteredTeamUsers.length / rowsPerPage)}
                   onChange={(page) => setTeamPage(page)}
                 />
               </div>
@@ -737,7 +961,7 @@ const AdminPage = ({ teams, users }: any) => {
               )}
             </TableHeader>
             <TableBody
-              items={teamUsers.slice(
+              items={filteredTeamUsers.slice(
                 (teamPage - 1) * rowsPerPage,
                 teamPage * rowsPerPage
               )}
@@ -771,6 +995,46 @@ const AdminPage = ({ teams, users }: any) => {
           </p>
         </CardHeader>
         <CardBody>
+          <div className="flex gap-2 mb-4 md:w-1/2 w-full">
+            <Input
+              placeholder="닉네임"
+              value={noTeamSearch}
+              onChange={(e) => {
+                setNoTeamSearch(e.target.value);
+                setNoTeamPage(1);
+              }}
+            />
+            <Select
+              aria-label="티어"
+              placeholder="티어"
+              value={noTeamSelectedTier}
+              onChange={(e) => {
+                setNoTeamSelectedTier(e.target.value);
+                setNoTeamPage(1);
+              }}
+            >
+              {tiers.map((tier) => (
+                <SelectItem key={tier} value={tier}>
+                  {tier}
+                </SelectItem>
+              ))}
+            </Select>
+            <Select
+              aria-label="종족"
+              placeholder="종족"
+              value={noTeamSelectedRace}
+              onChange={(e) => {
+                setNoTeamSelectedRace(e.target.value);
+                setNoTeamPage(1);
+              }}
+            >
+              {races.map((race) => (
+                <SelectItem key={race} value={race}>
+                  {race}
+                </SelectItem>
+              ))}
+            </Select>
+          </div>
           <Table
             aria-label="팀에 소속되지 않은 유저 리스트"
             bottomContent={
@@ -781,7 +1045,7 @@ const AdminPage = ({ teams, users }: any) => {
                   showShadow
                   color="secondary"
                   page={noTeamPage}
-                  total={Math.ceil(noTeamUsers.length / rowsPerPage)}
+                  total={Math.ceil(filteredNoTeamUsers.length / rowsPerPage)}
                   onChange={(page) => setNoTeamPage(page)}
                 />
               </div>
@@ -790,7 +1054,7 @@ const AdminPage = ({ teams, users }: any) => {
               wrapper: "min-h-[222px]",
             }}
           >
-            <TableHeader columns={columns}>
+            <TableHeader columns={columnsNoTeam}>
               {(column) => (
                 <TableColumn
                   key={column.uid}
@@ -803,7 +1067,7 @@ const AdminPage = ({ teams, users }: any) => {
               )}
             </TableHeader>
             <TableBody
-              items={noTeamUsers.slice(
+              items={filteredNoTeamUsers.slice(
                 (noTeamPage - 1) * rowsPerPage,
                 noTeamPage * rowsPerPage
               )}
@@ -820,7 +1084,7 @@ const AdminPage = ({ teams, users }: any) => {
                           : "text-center"
                       }
                     >
-                      {renderCell(item, columnKey)}
+                      {renderCellnoTeam(item, columnKey)}
                     </TableCell>
                   )}
                 </TableRow>

@@ -6,7 +6,7 @@ import { formatDate } from "@/utils/dateUtils";
 type ProfileCardProps = {
   userData: any;
   type: number;
-  index: number;
+  index?: number;
   teamData: any;
 };
 
@@ -45,7 +45,7 @@ export default function ProleagueAvatarCard({
         <div className="flex items-center justify-between w-full p-2">
           {/* 왼쪽 부분: 순위와 아바타 */}
           <div className="flex items-center gap-2">
-            <p className="font-bold text-xl">{index + 1}.</p>
+            {index && <p className="font-bold text-xl">{index + 1}.</p>}
             <Avatar src={userData.avatar} size="md" />
             <div>
               <p className="font-bold text-xl">{userData.nickname}</p>
