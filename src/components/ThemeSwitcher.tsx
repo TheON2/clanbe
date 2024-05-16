@@ -26,7 +26,7 @@ export const ThemeSwitcher = () => {
       <Switch
         checked={isDark}
         size="lg"
-        color="secondary"
+        color="primary"
         onChange={handleToggleTheme}
         thumbIcon={({ isSelected, className }) =>
           !isSelected ? (
