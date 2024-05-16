@@ -28,11 +28,11 @@ export const HeaderEnd = () => {
           Sign Up
         </Button>
       </NavbarItem> */}
-      <NavbarItem>
+      {/* <NavbarItem>
         <Button color="primary" href="#" variant="flat" onClick={handleSubmit}>
           Dummy
         </Button>
-      </NavbarItem>
+      </NavbarItem> */}
     </NavbarContent>
   );
 };

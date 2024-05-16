@@ -1,6 +1,8 @@
-import { Button } from "@nextui-org/react";
+import { Button, Switch } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
+import { SunIcon } from "../../public/SunIcon";
+import { MoonIcon } from "../../public/MoonIcon";
 
 export const ThemeSwitcher = () => {
   const { theme, setTheme } = useTheme();
@@ -10,17 +12,30 @@ export const ThemeSwitcher = () => {
     setMounted(true);
   }, []);
 
+  // 스위치의 상태를 관리하기 위해 테마를 boolean 값으로 변환
+  const isDark = theme === "dark";
+
   if (!mounted) return null;
 
+  const handleToggleTheme = () => {
+    setTheme(theme === "dark" ? "light" : "dark");
+  };
+
   return (
-    <div>
-      <div className="px-2">
-        {theme === "dark" ? (
-          <Button onClick={() => setTheme("light")}>Light</Button>
-        ) : (
-          <Button onClick={() => setTheme("dark")}>Dark</Button>
-        )}
-      </div>
+    <div className="mx-2">
+      <Switch
+        checked={isDark}
+        size="lg"
+        color="secondary"
+        onChange={handleToggleTheme}
+        thumbIcon={({ isSelected, className }) =>
+          !isSelected ? (
+            <MoonIcon className={className} />
+          ) : (
+            <SunIcon className={className} />
+          )
+        }
+      ></Switch>
     </div>
   );
 };
