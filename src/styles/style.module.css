@@ -14,3 +14,31 @@
         /* 큰 화면에서 적용될 스타일 */
     }
 }
+
+.tabsContainer {
+    display: flex;
+    width: calc(100% - 20px);
+    /* 마진을 제외한 전체 너비 */
+    
+    /* 양쪽에 마진 설정 */
+}
+
+.tab {
+    flex: 1;
+    /* 모든 탭에 동일한 공간 배분 */
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .tabsContainer {
+        flex-direction: column;
+        /* 모바일에서는 탭을 세로로 쌓기 */
+    }
+
+    .tab {
+        width: 100%;
+        /* 모바일에서 탭 너비 전체 사용 */
+
+        /* 탭 사이의 간격 */
+    }
+}

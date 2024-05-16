@@ -48,6 +48,7 @@ import { CalendarDate, parseDate } from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
 import { useRouter } from "next/navigation";
 import { createMatch } from "@/service/match";
+import styles from "../../styles/style.module.css";
 
 type UserTabProps = {
   user: MyUser;
@@ -231,10 +232,14 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
 
   return (
     <>
-      <Tabs aria-label="Dynamic tabs" items={tabs}>
-        <Tab key={"BELO"} title={"BELO"}>
+      <Tabs
+        aria-label="Dynamic tabs"
+        items={tabs}
+        className={styles.tabsContainer}
+      >
+        <Tab key={"BELO"} title={"BELO"} className={styles.tab}>
           <Card>
-            <CardBody className="w-full">
+            <CardBody className="w-full max-w-[330px]">
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">
@@ -352,7 +357,7 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
             </CardBody>
           </Card>
         </Tab>
-        <Tab key={"LEAGUE"} title={"LEAGUE"}>
+        <Tab key={"LEAGUE"} title={"LEAGUE"} className={styles.tab}>
           <Card>
             <CardBody className="w-full">
               <div className="flex justify-between items-center">
