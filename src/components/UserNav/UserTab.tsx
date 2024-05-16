@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Key, useEffect, useMemo, useState } from "react";
 import {
   Avatar,
   Button,
@@ -23,7 +23,6 @@ import {
   useDisclosure,
   Select,
   SelectItem,
-  Input,
   Autocomplete,
   AutocompleteItem,
   DatePicker,
@@ -41,10 +40,11 @@ import {
 import {
   DateValue,
   parseDate,
-  getLocalTimeZone,
   CalendarDate,
+  CalendarDateTime,
+  ZonedDateTime,
 } from "@internationalized/date";
-import { UserTwitterCard } from ".././UserTwitterCard";
+import { UserTwitterCard } from "../UserTwitterCard";
 import { User as MyUser } from "next-auth";
 import { Team } from "../../../types/types";
 import { UserSettingIcon } from "../../../public/UserSettingIcon";
@@ -54,6 +54,8 @@ import { signOut } from "next-auth/react";
 import { useDateFormatter } from "@react-aria/i18n";
 import { useRouter } from "next/navigation";
 import { createMatch } from "@/service/match";
+import TextModal from "../TextModal"; // TextModal 컴포넌트를 가져옵니다.
+import SubmitModal from "../SubmitModal";
 
 type UserTabProps = {
   user: MyUser;
@@ -78,17 +80,25 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
 
   const [winnerNickname, setWinnerNickname] = useState("");
   const [loserNickname, setLoserNickname] = useState("");
-  const [winnerRace, setWinnerRace] = useState("");
-  const [loserRace, setLoserRace] = useState("");
+  const [winnerRace, setWinnerRace] = useState("z");
+  const [loserRace, setLoserRace] = useState("z");
   const [selectedMap, setSelectedMap] = useState("");
-  const [matchDateValue, setMatchDateValue] = useState(parseDate("2024-04-04"));
+  const [matchDateValue, setMatchDateValue] = useState<DateValue | null>(null);
   const [matchDate, setMatchDate] = useState(new Date());
 
-  const [winnerNicknameKey, setWinnerNicknameKey] = useState<any>("winner");
-  const [loserNicknameKey, setLoserNicknameKey] = useState<any>("loser");
-  const [winnerRaceKey, setWinnerRaceKey] = useState("z");
-  const [loserRaceKey, setLoserRaceKey] = useState("z");
-  const [mapKey, setMapKey] = useState(0);
+  const [winnerNicknameKey, setWinnerNicknameKey] = useState<string>("winner");
+  const [loserNicknameKey, setLoserNicknameKey] = useState<string>("loser");
+  const [winnerRaceKey, setWinnerRaceKey] = useState<string>("z");
+  const [loserRaceKey, setLoserRaceKey] = useState<string>("z");
+  const [mapKey, setMapKey] = useState<string>("0");
+
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalText, setModalText] = useState("");
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onOpenChange: onModalClose,
+  } = useDisclosure();
 
   const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
   const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
@@ -137,17 +147,38 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
-    // CalendarDate를 Date 객체로 변환
-    const newDate = new Date(
-      matchDateValue.year,
-      matchDateValue.month - 1,
-      matchDateValue.day
-    );
-    setMatchDate(newDate);
-  }, [matchDateValue]);
+    if (isOpen) {
+      setMatchDateValue(parseDate(new Date().toISOString().split("T")[0]));
+    }
+  }, [isOpen]);
 
-  const handleDateChange = (newDateValue: CalendarDate) => {
-    setMatchDateValue(newDateValue);
+  const handleDateChange = (
+    newDateValue: CalendarDate | CalendarDateTime | ZonedDateTime
+  ) => {
+    // newDateValue가 CalendarDate 타입인지 확인합니다.
+    if (newDateValue instanceof CalendarDate) {
+      setMatchDateValue(newDateValue);
+    }
+    // newDateValue가 CalendarDateTime 타입인지 확인합니다.
+    else if (newDateValue instanceof CalendarDateTime) {
+      setMatchDateValue(
+        new CalendarDate(
+          newDateValue.year,
+          newDateValue.month,
+          newDateValue.day
+        )
+      );
+    }
+    // newDateValue가 ZonedDateTime 타입인지 확인합니다.
+    else if (newDateValue instanceof ZonedDateTime) {
+      setMatchDateValue(
+        new CalendarDate(
+          newDateValue.year,
+          newDateValue.month,
+          newDateValue.day
+        )
+      );
+    }
   };
 
   const handleWinnerSelection = (nickname: string) => {
@@ -168,6 +199,14 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     }
   };
 
+  const handleWinnerSelectionChange = (key: Key | null) => {
+    setWinnerNicknameKey(key as string);
+  };
+
+  const handleLoserSelectionChange = (key: Key | null) => {
+    setLoserNicknameKey(key as string);
+  };
+
   const swapUsers = () => {
     // 닉네임과 종족 정보를 교환
     const tempNickname = winnerNickname;
@@ -181,6 +220,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     setLoserNickname(tempNickname);
     setLoserRace(tempRace);
     setLoserRaceKey(tempRaceKey);
+
+    setWinnerNicknameKey(loserNicknameKey);
+    setLoserNicknameKey(winnerNicknameKey);
   };
 
   const addMatch = async () => {
@@ -193,7 +235,16 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
       !selectedMap ||
       !matchDate
     ) {
-      alert("모든 필드를 채워주세요.");
+      setModalTitle("입력 오류");
+      setModalText("모든 필드를 채워주세요.");
+      onModalOpen();
+      return;
+    }
+
+    if (winnerNickname === loserNickname) {
+      setModalTitle("입력 오류");
+      setModalText("같은 상대끼리 전적을 등록 할 수 없습니다.");
+      onModalOpen();
       return;
     }
 
@@ -209,17 +260,21 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
 
     try {
       await createMatch(newMatch);
-      //onOpenChange();
+      setModalTitle("등록 성공");
+      setModalText("경기 결과가 성공적으로 등록되었습니다.");
+      onModalOpen();
     } catch (error) {
-      alert("등록실패");
+      setModalTitle("등록 실패");
+      setModalText("등록에 실패했습니다.");
+      onModalOpen();
     }
   };
 
   const resetData = () => {
     setWinnerNickname("");
     setLoserNickname("");
-    setWinnerRace("");
-    setLoserRace("");
+    setWinnerRace("z");
+    setLoserRace("z");
     setSelectedMap("");
     setMatchDateValue(parseDate("2024-04-04"));
     setMatchDate(new Date());
@@ -487,7 +542,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                       }
                     }}
                     selectedKey={winnerNicknameKey}
-                    onSelectionChange={setWinnerNicknameKey}
+                    onSelectionChange={handleWinnerSelectionChange}
                   >
                     {users.map((user) => (
                       <AutocompleteItem
@@ -502,13 +557,11 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     className="w-2/5"
                     aria-label="Select winner race"
                     value={winnerRace}
-                    defaultSelectedKeys={["z"]}
-                    key={winnerRaceKey}
-                    onChange={(e) => {
-                      setWinnerRaceKey(e.target.value);
-                      setWinnerRace(e.target.value);
+                    onChange={(key) => {
+                      setWinnerRace(String(key));
+                      setWinnerRaceKey(String(key));
                     }}
-                    selectedKeys={winnerRaceKey}
+                    selectedKeys={new Set([winnerRaceKey])}
                   >
                     <SelectItem key="z">Zerg</SelectItem>
                     <SelectItem key="t">Terran</SelectItem>
@@ -526,7 +579,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                       }
                     }}
                     selectedKey={loserNicknameKey}
-                    onSelectionChange={setLoserNicknameKey}
+                    onSelectionChange={handleLoserSelectionChange}
                   >
                     {users.map((user) => (
                       <AutocompleteItem
@@ -540,14 +593,12 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   <Select
                     className="w-2/5"
                     aria-label="Select loser race"
-                    key={loserRaceKey}
                     value={loserRace}
-                    defaultSelectedKeys={["z"]}
-                    onChange={(e) => {
-                      setLoserRace(e.target.value);
-                      setLoserRaceKey(e.target.value);
+                    onChange={(key) => {
+                      setLoserRace(String(key));
+                      setLoserRaceKey(String(key));
                     }}
-                    selectedKeys={loserRaceKey}
+                    selectedKeys={new Set([loserRaceKey])}
                   >
                     <SelectItem key="z">Zerg</SelectItem>
                     <SelectItem key="t">Terran</SelectItem>
@@ -619,6 +670,12 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
           )}
         </ModalContent>
       </Modal>
+      <SubmitModal
+        title={modalTitle}
+        text={modalText}
+        isOpen={isModalOpen}
+        onClose={onModalClose}
+      />
     </>
   );
 };

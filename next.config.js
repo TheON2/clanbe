@@ -5,7 +5,7 @@
  **/
 const nextConfig = {
   // 다른 Next.js 설정들이 여기 올 수 있습니다.
-
+reactStrictMode: false,
   images: {
     remotePatterns: [
       { hostname: "images.unsplash.com" },

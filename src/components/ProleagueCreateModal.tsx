@@ -1,4 +1,4 @@
-import React, { useMemo, useState, ChangeEvent } from "react";
+import React, { useMemo, useState, useEffect, ChangeEvent } from "react";
 import { useDisclosure } from "@nextui-org/use-disclosure";
 import { Button } from "@nextui-org/button";
 import {
@@ -10,8 +10,12 @@ import {
 } from "@nextui-org/modal";
 import { Select, SelectItem } from "@nextui-org/select";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
+import { Calendar, Divider } from "@nextui-org/react";
+import { parseDate, DateValue } from "@internationalized/date";
 import { Team } from "../../types/types";
 import { User } from "next-auth";
+import { createLeagueEvent } from "@/service/leagueevent";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 type Props = {
   title: string;
@@ -21,135 +25,6 @@ type Props = {
   users: User[];
 };
 
-const dummy = [
-  {
-    homeId: "660cc0e452afd8daf291b3b9",
-    awayId: "660cc0e452afd8daf291b3b9",
-    date: "2024-05-13",
-    sets: [
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 0,
-      },
-    ],
-  },
-  {
-    homeId: "660cc0e452afd8daf291b3b9",
-    awayId: "660cc0e452afd8daf291b3b9",
-    date: "2024-05-13",
-    sets: [
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 0,
-      },
-    ],
-  },
-  {
-    homeId: "660cc0e452afd8daf291b3b9",
-    awayId: "660cc0e452afd8daf291b3b9",
-    date: "2024-05-13",
-    sets: [
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 0,
-      },
-    ],
-  },
-];
-
 const ProleagueCreateModal = ({
   title,
   isOpen,
@@ -158,15 +33,22 @@ const ProleagueCreateModal = ({
   users,
 }: Props) => {
   const { onOpenChange } = useDisclosure();
+  const [selectedDate, setSelectedDate] = useState<DateValue | null>(null);
   const [homeTeam, setHomeTeam] = useState<string>("");
   const [awayTeam, setAwayTeam] = useState<string>("");
   const [sets, setSets] = useState([
-    { homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { homePlayer: "", awayPlayer: "", map: "", tier: "" },
+    { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "" },
+    { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "" },
+    { id: "3", homePlayer: "", awayPlayer: "", map: "", tier: "" },
+    { id: "4", homePlayer: "", awayPlayer: "", map: "", tier: "" },
+    { id: "5", homePlayer: "", awayPlayer: "", map: "", tier: "" },
   ]);
+
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedDate(parseDate(new Date().toISOString().split("T")[0]));
+    }
+  }, [isOpen]);
 
   const maps = [
     { id: "1", name: "폴리포이드" },
@@ -198,10 +80,27 @@ const ProleagueCreateModal = ({
     );
   };
 
-  const handleSave = () => {
-    // 리그 정보 저장 로직 추가
-    console.log({ homeTeam, awayTeam, sets });
-    //handleClose();
+  const handleSave = async () => {
+    const leagueEvent = {
+      homeId: homeTeam,
+      awayId: awayTeam,
+      date: selectedDate?.toString() || "", // DateValue 형식으로 변환
+      sets: sets.map((set) => ({
+        homePlayer: set.homePlayer,
+        awayPlayer: set.awayPlayer,
+        map: set.map,
+        tier: set.tier,
+        result: 0, // result 값을 포함
+      })),
+    };
+
+    const result = await createLeagueEvent(leagueEvent);
+    if (result) {
+      console.log("Success:", result);
+      handleClose();
+    } else {
+      console.error("Error saving league event.");
+    }
   };
 
   const handleClose = () => {
@@ -222,6 +121,16 @@ const ProleagueCreateModal = ({
     );
   };
 
+  const onDragEnd = (result: any) => {
+    if (!result.destination) return;
+
+    const reorderedSets = Array.from(sets);
+    const [removed] = reorderedSets.splice(result.source.index, 1);
+    reorderedSets.splice(result.destination.index, 0, removed);
+
+    setSets(reorderedSets);
+  };
+
   return (
     <div className="">
       <Modal
@@ -236,13 +145,23 @@ const ProleagueCreateModal = ({
       >
         <ModalContent className="max-h-[80vh] overflow-y-auto">
           <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
-          <ModalBody className="max-h-[70vh] overflow-y-auto">
-            <div className="flex gap-2">
+          <ModalBody className="max-h-[70vh] overflow-y-auto flex items-center">
+            <div className="mb-4">
+              {selectedDate && (
+                <Calendar
+                  aria-label="Date (Controlled)"
+                  value={selectedDate}
+                  onChange={setSelectedDate}
+                />
+              )}
+            </div>
+            <Divider />
+            <div className="flex gap-4 w-full">
               <Select
                 label="Home Team"
                 placeholder="Select Home Team"
                 onChange={handleSelectChange(setHomeTeam)}
-                className="mb-4"
+                className=""
               >
                 {teams.map((team) => (
                   <SelectItem key={team._id} value={team.name}>
@@ -254,7 +173,7 @@ const ProleagueCreateModal = ({
                 label="Away Team"
                 placeholder="Select Away Team"
                 onChange={handleSelectChange(setAwayTeam)}
-                className="mb-4"
+                className=""
               >
                 {teams.map((team) => (
                   <SelectItem key={team._id} value={team.name}>
@@ -263,85 +182,116 @@ const ProleagueCreateModal = ({
                 ))}
               </Select>
             </div>
-            {sets.map((set, index) => (
-              <div
-                key={index}
-                className="mb-4 flex justify-center items-center"
-              >
-                <div className="flex flex-col gap-2 mb-2">
-                  <div className="flex gap-2 w-2/3">
-                    <Select
-                      label={`Set ${index + 1} Map`}
-                      placeholder="Select Map"
-                      value={set.map}
-                      onChange={(e) =>
-                        handleSetChange(index, "map", e.target.value)
-                      }
-                    >
-                      {maps.map((map) => (
-                        <SelectItem key={map.name} value={map.name}>
-                          {map.name}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                    <Select
-                      label={`Set ${index + 1} Tier`}
-                      placeholder="Select Tier"
-                      value={set.tier}
-                      onChange={(e) =>
-                        handleSetChange(index, "tier", e.target.value)
-                      }
-                    >
-                      {tiers.map((tier) => (
-                        <SelectItem key={tier} value={tier}>
-                          {tier}
-                        </SelectItem>
-                      ))}
-                    </Select>
-                  </div>
-                  <div className="flex gap-2 ">
-                    <Autocomplete
-                      label={`Set ${index + 1} Home Player`}
-                      placeholder="Home"
-                      value={set.homePlayer}
-                      onInputChange={(value) =>
-                        handleSetChange(index, "homePlayer", value)
-                      }
-                    >
-                      {getFilteredPlayers(homeTeamPlayers, set.tier).map(
-                        (player) => (
-                          <AutocompleteItem
-                            key={String(player.email)}
-                            value={player.nickname}
+            <Divider />
+            <DragDropContext onDragEnd={onDragEnd}>
+              <Droppable droppableId="sets">
+                {(provided) => (
+                  <div {...provided.droppableProps} ref={provided.innerRef}>
+                    {sets.map((set, index) => (
+                      <Draggable
+                        key={set.id}
+                        draggableId={set.id}
+                        index={index}
+                      >
+                        {(provided) => (
+                          <div
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            {...provided.dragHandleProps}
+                            className="mb-4 flex justify-center items-center"
                           >
-                            {player.nickname}
-                          </AutocompleteItem>
-                        )
-                      )}
-                    </Autocomplete>
-                    <Autocomplete
-                      label={`Set ${index + 1} Away Player`}
-                      placeholder="Away"
-                      value={set.awayPlayer}
-                      onInputChange={(value) =>
-                        handleSetChange(index, "awayPlayer", value)
-                      }
-                    >
-                      {getFilteredPlayers(awayTeamPlayers, set.tier).map(
-                        (player) => (
-                          <AutocompleteItem
-                            key={String(player.email)}
-                            value={player.nickname}
-                          >
-                            {player.nickname}
-                          </AutocompleteItem>
-                        )
-                      )}
-                    </Autocomplete>
+                            <div className="flex flex-col gap-2 mb-2">
+                              <div className="flex gap-2 w-2/3">
+                                <Select
+                                  label={`Set ${index + 1} Tier`}
+                                  placeholder="Select Tier"
+                                  value={set.tier}
+                                  onChange={(e) =>
+                                    handleSetChange(
+                                      index,
+                                      "tier",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  {tiers.map((tier) => (
+                                    <SelectItem key={tier} value={tier}>
+                                      {tier}
+                                    </SelectItem>
+                                  ))}
+                                </Select>
+                                <Select
+                                  label={`Set ${index + 1} Map`}
+                                  placeholder="Select Map"
+                                  value={set.map}
+                                  onChange={(e) =>
+                                    handleSetChange(
+                                      index,
+                                      "map",
+                                      e.target.value
+                                    )
+                                  }
+                                >
+                                  {maps.map((map) => (
+                                    <SelectItem key={map.name} value={map.name}>
+                                      {map.name}
+                                    </SelectItem>
+                                  ))}
+                                </Select>
+                              </div>
+                              <div className="flex gap-2">
+                                <Autocomplete
+                                  label={`Set ${index + 1} Home Player`}
+                                  placeholder="Home"
+                                  value={set.homePlayer}
+                                  onInputChange={(value) =>
+                                    handleSetChange(index, "homePlayer", value)
+                                  }
+                                >
+                                  {getFilteredPlayers(
+                                    homeTeamPlayers,
+                                    set.tier
+                                  ).map((player) => (
+                                    <AutocompleteItem
+                                      key={String(player.email)}
+                                      value={player.nickname}
+                                    >
+                                      {player.nickname}
+                                    </AutocompleteItem>
+                                  ))}
+                                </Autocomplete>
+                                <Autocomplete
+                                  label={`Set ${index + 1} Away Player`}
+                                  placeholder="Away"
+                                  value={set.awayPlayer}
+                                  onInputChange={(value) =>
+                                    handleSetChange(index, "awayPlayer", value)
+                                  }
+                                >
+                                  {getFilteredPlayers(
+                                    awayTeamPlayers,
+                                    set.tier
+                                  ).map((player) => (
+                                    <AutocompleteItem
+                                      key={String(player.email)}
+                                      value={player.nickname}
+                                    >
+                                      {player.nickname}
+                                    </AutocompleteItem>
+                                  ))}
+                                </Autocomplete>
+                              </div>
+                              <Divider />
+                            </div>
+                          </div>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
                   </div>
-                </div>
-              </div>
-            ))}
+                )}
+              </Droppable>
+            </DragDropContext>
           </ModalBody>
           <ModalFooter>
             <Button color="secondary" variant="flat" onPress={handleClose}>

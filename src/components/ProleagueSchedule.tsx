@@ -89,36 +89,36 @@ const matches = [
     date: "2024-05-13",
     sets: [
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 1,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 1,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 2,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
+        map: "투혼",
+        tier: "A+/A",
+        result: 2,
+      },
+      {
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 0,
@@ -131,36 +131,36 @@ const matches = [
     date: "2024-05-13",
     sets: [
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 1,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 1,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 2,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
+        map: "투혼",
+        tier: "A+/A",
+        result: 2,
+      },
+      {
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 0,
@@ -173,36 +173,36 @@ const matches = [
     date: "2024-05-13",
     sets: [
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 1,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 1,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 2,
       },
       {
-        homePlayer: "sniperad@naver.com",
-        awayPlayer: "sniperad@naver.com",
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
+        map: "투혼",
+        tier: "A+/A",
+        result: 2,
+      },
+      {
+        homePlayer: "LAUFE",
+        awayPlayer: "LAUFE",
         map: "투혼",
         tier: "A+/A",
         result: 0,
@@ -240,24 +240,38 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
 
       if (columnKey === "homePlayer" && result !== undefined) {
         cellClass =
-          result === 1 ? "bg-blue-100" : result === 2 ? "bg-red-100" : "";
+          result === 1
+            ? "bg-gradient-to-r from-blue-200 to-blue-400 text-black"
+            : result === 2
+            ? "bg-gradient-to-r from-red-200 to-red-400 text-black"
+            : "";
       } else if (columnKey === "awayPlayer" && result !== undefined) {
         cellClass =
-          result === 2 ? "bg-blue-100" : result === 1 ? "bg-red-100" : "";
+          result === 2
+            ? "bg-gradient-to-r from-blue-200 to-blue-400 text-black"
+            : result === 1
+            ? "bg-gradient-to-r from-red-200 to-red-400 text-black"
+            : "";
       }
 
       switch (columnKey) {
         case "homePlayer":
         case "awayPlayer":
           return (
-            <div className={`text-center ${cellClass} p-2 rounded-md`}>
+            <div
+              className={`text-center font-bold ${cellClass} p-2 rounded-md shadow-md transform transition-transform hover:scale-105`}
+            >
               {user ? `${user.nickname} (${user.tear})` : "N/A"}
             </div>
           );
         case "map":
-          return <div>{cellValue}</div>;
+          return (
+            <div className="p-2 bg-gray-50 rounded-md shadow">{cellValue}</div>
+          );
         case "tier":
-          return <div>{cellValue}</div>;
+          return (
+            <div className="p-2 bg-gray-50 rounded-md shadow">{cellValue}</div>
+          );
         default:
           return cellValue;
       }
@@ -289,8 +303,8 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
     });
   }
 
-  const findUser = (email: string) =>
-    users.find((user: User) => user.email === email);
+  const findUser = (nickname: string) =>
+    users.find((user: User) => user.nickname === nickname);
 
   const findTeam = (teamid: string) =>
     teams.find((team: Team) => team._id === teamid);
@@ -492,9 +506,19 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
     return { topWins, topWinRate, topTotalGames };
   }, [topTeamUsers]);
 
+  const getMatchResult = (sets: any) => {
+    const homeWins = sets.filter((set: any) => set.result === 1).length;
+    const awayWins = sets.filter((set: any) => set.result === 2).length;
+    return {
+      homeWins,
+      awayWins,
+      result:
+        homeWins > awayWins ? "home" : awayWins > homeWins ? "away" : "draw",
+    };
+  };
+
   return (
     <div className="w-full">
-      <Button onClick={() => setIsCreate(true)}></Button>
       <ProleagueCreateModal
         title="프로리그 일정등록"
         isOpen={isCreate}
@@ -690,12 +714,15 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
       <Card className="w-full flex justify-center items-center">
         <CardHeader>
           <h3>프로리그 일정</h3>
+          <Button onClick={() => setIsCreate(true)}> 일정 생성</Button>
         </CardHeader>
         <CardBody className="md:w-2/3 w-full">
           {matches.length > 0 &&
             matches.map((match, index) => {
               const homeTeam = findTeam(match.homeId);
               const awayTeam = findTeam(match.awayId);
+              const { homeWins, awayWins, result } = getMatchResult(match.sets);
+
               return (
                 <div key={index} className="w-full mb-4 p-4 border rounded-lg">
                   <div className="flex justify-center items-center mb-2 gap-4">
@@ -713,6 +740,16 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
                     </div>
                     <div className="text-center font-bold">
                       <p>{match.date}</p>
+                      <p className="text-xl">
+                        {homeWins}:{awayWins}
+                      </p>
+                      <p>
+                        {homeWins > awayWins
+                          ? `${homeTeam?.name} 승`
+                          : awayWins > homeWins
+                          ? `${awayTeam?.name} 승`
+                          : ""}
+                      </p>
                     </div>
                     <div className="flex flex-col items-center">
                       <Image
@@ -729,7 +766,6 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
                   </div>
                   <Table aria-label="Proleague Schedule">
                     <TableHeader>
-                      <TableColumn>세트</TableColumn>
                       <TableColumn>맵</TableColumn>
                       <TableColumn>Home</TableColumn>
                       <TableColumn>티어</TableColumn>
@@ -741,7 +777,6 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
                         const awayUser = findUser(game.awayPlayer);
                         return (
                           <TableRow key={idx}>
-                            <TableCell>{idx + 1}</TableCell>
                             <TableCell>{game?.map}</TableCell>
                             <TableCell>
                               {renderCell(

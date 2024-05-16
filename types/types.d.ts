@@ -13,6 +13,23 @@ export type Team = {
   member:string[];
 };
 
+export type EventSet = {
+  _id?: string;
+  homePlayer: string;
+  awayPlayer: string;
+  map: string;
+  tier: string;
+  result: number;
+}
+
+export type LeagueEvent = {
+  _id?: string;
+  homeId: string;
+  awayId: string;
+  date: string;
+  sets: EventSet[];
+}
+
 export type SupportAmount = {
   _id?: string;
   type: number;
