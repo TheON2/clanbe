@@ -50,6 +50,7 @@ export type Support = {
     email: string;
     name: string;
   }
+  type?: number;
 }
 
 export type Match = {

@@ -495,29 +495,77 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   <p className="mx-4 font-bold">승점 {myTeam?.winpoint}</p>
                 </div>
               </div>
-              <div className="flex flex-col mx-auto my-4">
-                <p>Next Match</p>
-                <div className="p-4">
-                  <Popover showArrow placement="bottom">
-                    <PopoverTrigger>
-                      <User
-                        as="button"
-                        name="갈락티코"
-                        description="1위 3승 1패"
-                        className="transition-transform"
-                        avatarProps={{
-                          src: "/grtc.jpg",
+              <div className="flex flex-col w-full gap-3 my-4">
+                <Popover showArrow placement="top">
+                  <PopoverTrigger>
+                    <Button color="primary">내 리그정보</Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="p-1">
+                    <div className="flex my-4 ">
+                      <CircularProgress
+                        aria-label="Loading..."
+                        classNames={{
+                          svg: "w-20 h-20",
                         }}
+                        value={winRateTotal}
+                        color={winRateTotal >= 50 ? "success" : "danger"}
+                        showValueLabel={true}
                       />
-                    </PopoverTrigger>
-                    <PopoverContent className="p-1">
-                      <UserTwitterCard />
-                    </PopoverContent>
-                  </Popover>
-                </div>
-                <Tooltip showArrow={true} content="D-2">
-                  <Button>2023-07-04</Button>
-                </Tooltip>
+                      <div>
+                        <p className="mx-2 font-bold text-xl">
+                          {totalWins}W {totalLosses}L
+                        </p>
+                        <p className="mx-2 font-bold text-2xl">
+                          {user.tear} Tier
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col ml-4">
+                      <div className="flex my-2">
+                        <CircularProgress
+                          aria-label="Loading..."
+                          size="lg"
+                          value={winRateP}
+                          color={winRateP >= 50 ? "success" : "danger"}
+                          showValueLabel={true}
+                        />
+                        <p className="mx-4 font-bold">
+                          vs P <br /> {user.BELO.pw}W {user.BELO.pl}L
+                        </p>
+                      </div>
+                      <div className="flex my-2">
+                        <CircularProgress
+                          aria-label="Loading..."
+                          size="lg"
+                          value={winRateZ}
+                          color={winRateZ >= 50 ? "success" : "danger"}
+                          showValueLabel={true}
+                        />
+                        <p className="mx-4 font-bold">
+                          vs Z <br /> {user.BELO.zw}W {user.BELO.zl}L
+                        </p>
+                      </div>
+                      <div className="flex my-2">
+                        <CircularProgress
+                          aria-label="Loading..."
+                          size="lg"
+                          value={winRateT}
+                          color={winRateT >= 50 ? "success" : "danger"}
+                          showValueLabel={true}
+                        />
+                        <p className="mx-4 font-bold">
+                          vs T <br /> {user.BELO.tw}W {user.BELO.tl}L
+                        </p>
+                      </div>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+                <Button
+                  color="primary"
+                  onPress={() => router.push("/PROLEAGUE/schedule")}
+                >
+                  프로리그 일정
+                </Button>
               </div>
             </CardBody>
           </Card>

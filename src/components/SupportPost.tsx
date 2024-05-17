@@ -2,44 +2,66 @@
 
 import {
   Avatar,
-  Button,
   Card,
   CardBody,
-  CardFooter,
   CardHeader,
-  Chip,
   Divider,
-  Listbox,
-  ListboxItem,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
-  Tooltip,
-  User,
-  Tabs,
   Tab,
-  Pagination,
+  Tabs,
 } from "@nextui-org/react";
 import Image from "next/image";
-import { useCallback, useEffect, useState } from "react";
-import { EditIcon } from "../../public/EditIcon";
-import { DeleteIcon } from "../../public/DeleteIcon";
-import { EyeIcon } from "../../public/EyeIcon";
-import { columns, mobilecolumns, users } from "../../public/data";
-import styles from "../styles/style.module.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { Support } from "../../types/types";
 import { formatRelativeDate } from "@/utils/dateUtils";
-import { getSupports } from "@/service/supports";
+import styles from "../styles/style.module.css";
+
+const getCurrentMonthTotal = (supports: Support[]) => {
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+
+  return supports
+    .filter((support) => {
+      const supportDate = new Date(support.createdAt);
+      return (
+        supportDate.getMonth() === currentMonth &&
+        supportDate.getFullYear() === currentYear
+      );
+    })
+    .reduce((sum, support) => {
+      if (support.type === 1) return sum + support.amount;
+      if (support.type === 2) return sum - support.amount;
+      return sum;
+    }, 0);
+};
 
 const SupportPost = ({ supports, allSupports }: any) => {
-  const router = useRouter();
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [monthlyAmount, setMonthlyAmount] = useState(0);
 
-  if (supports.length === 0 || allSupports.length === 0) return;
+  useEffect(() => {
+    const total = supports.reduce((sum: number, support: Support) => {
+      if (support.type === 1) return sum + support.amount;
+      if (support.type === 2) return sum - support.amount;
+      return sum;
+    }, 0);
+    const monthlyTotal = getCurrentMonthTotal(supports);
+
+    setTotalAmount(total);
+    setMonthlyAmount(monthlyTotal);
+  }, [supports]);
+
+  const receivedSupports = supports.filter(
+    (support: Support) => support.type === 1
+  );
+  const receivedAllSupports = allSupports.filter(
+    (support: Support) => support.type === 1
+  );
+
+  if (receivedSupports.length === 0 || receivedAllSupports.length === 0)
+    return null;
+
+  console.log(supports);
 
   return (
     <Card className={`w-full max-h-[600px] lg:w-1/2 ${styles.customCard}`}>
@@ -56,8 +78,12 @@ const SupportPost = ({ supports, allSupports }: any) => {
         <Divider orientation="vertical" />
         <div className="flex items-center m-2 gap-4">
           <div className="flex flex-col">
-            <p className="font-bold text-xl">총액 430,400원</p>
-            <p className="font-bold text-md text-blue">이달의 도움 80,000원</p>
+            <p className="font-bold text-xl">
+              총액 {totalAmount.toLocaleString()}원
+            </p>
+            <p className="font-bold text-md text-blue">
+              이달의 도움 {monthlyAmount.toLocaleString()}원
+            </p>
             {/* <p className="font-bold text-md text-blue">이달의 사용 60,000원</p> */}
           </div>
         </div>
@@ -66,7 +92,7 @@ const SupportPost = ({ supports, allSupports }: any) => {
       <CardBody>
         <Tabs aria-label="Options">
           <Tab key="option1" title="누적금액">
-            {supports.map((support: Support, index: string) => (
+            {supports.map((support: Support, index: number) => (
               <Card key={support._id} className="my-2 pl-2 pt-2">
                 <div className="flex items-center mb-4">
                   <div className="font-bold text-2xl pl-4 w-1/5">
@@ -92,7 +118,7 @@ const SupportPost = ({ supports, allSupports }: any) => {
             ))}
           </Tab>
           <Tab key="option2" title="최신">
-            {allSupports.map((support: Support, index: string) => (
+            {allSupports.map((support: Support, index: number) => (
               <Card key={support._id} className="my-2 pl-2 pt-2">
                 <div className="flex items-center mb-4">
                   <div className="flex items-center gap-4 w-2/5 mr-4">

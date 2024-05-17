@@ -3,5 +3,6 @@ import { getEvent } from "./action";
 
 export default async function SchedulePage() {
   const schedule = await getEvent();
-  return <ScheduleComponent events={schedule.events} />;
+  // console.log(schedule);
+  return <ScheduleComponent events={schedule} />;
 }

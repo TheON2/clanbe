@@ -61,7 +61,8 @@ export async function POST(req: Request, res: Response) {
             avatar: user?.avatar,
             email: user?.email,
             name: user?.name
-          }
+          },
+          type:support.type,
         };
 
         // 모든 후원 내역을 allSupports에 추가

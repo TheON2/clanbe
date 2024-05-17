@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import {
   Button,
   Input,
+  Link,
   Modal,
   ModalBody,
   ModalContent,
@@ -17,11 +18,18 @@ import {
   ModalHeader,
   Textarea,
   useDisclosure,
+  Table,
+  TableHeader,
+  TableColumn,
+  TableBody,
+  TableRow,
+  TableCell,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { EventClickArg, EventDropArg } from "@fullcalendar/core";
 import { EventType } from "../../types/types";
 import { createEvent, deleteEvent, updateEvent } from "../service/schedule";
+import SubmitModal from "./SubmitModal";
 
 interface DateClickArguments {
   dateStr: string;
@@ -29,7 +37,7 @@ interface DateClickArguments {
 }
 
 type ScheduleComponentProps = {
-  events: EventType;
+  events: EventType[];
 };
 
 export default function ScheduleComponent({ events }: ScheduleComponentProps) {
@@ -44,11 +52,22 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
     onClose: eventOnClose,
     onOpenChange: eventOnOpenChange,
   } = useDisclosure();
+  const {
+    isOpen: submitModalOpen,
+    onOpen: submitModalOnOpen,
+    onClose: submitModalOnClose,
+    onOpenChange: submitModalOnOpenChange,
+  } = useDisclosure();
+  const [submitModalTitle, setSubmitModalTitle] = useState("");
+  const [submitModalText, setSubmitModalText] = useState("");
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [eventId, setEventId] = useState("");
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [eventType, setEventType] = useState("general");
+  const [eventSets, setEventSets] = useState([]);
+  const [homeTeamName, setHomeTeamName] = useState("");
+  const [awayTeamName, setAwayTeamName] = useState("");
   const [isEditable, setIsEditable] = useState(false);
   const [originalEvent, setOriginalEvent] = useState({
     title: "",
@@ -66,10 +85,19 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
       description: eventDescription,
       author: user?.email || "",
     };
-    await createEvent(newEvent);
-    setEventName("");
-    setEventDescription("");
-    onClose();
+    try {
+      await createEvent(newEvent);
+      setSubmitModalTitle("이벤트 생성");
+      setSubmitModalText("이벤트가 성공적으로 생성되었습니다.");
+      submitModalOnOpen();
+      setEventName("");
+      setEventDescription("");
+      onClose();
+    } catch (error) {
+      setSubmitModalTitle("에러");
+      setSubmitModalText("이벤트 생성 중 오류가 발생했습니다.");
+      submitModalOnOpen();
+    }
   };
 
   const fixEvent = async () => {
@@ -80,23 +108,55 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
       description: eventDescription,
       author: user?.email || "",
     };
-    await updateEvent(newEvent);
-    setEventName("");
-    setEventDescription("");
-    eventOnClose();
+    try {
+      await updateEvent(newEvent);
+      setSubmitModalTitle("이벤트 수정");
+      setSubmitModalText("이벤트가 성공적으로 수정되었습니다.");
+      submitModalOnOpen();
+      setEventName("");
+      setEventDescription("");
+      eventOnClose();
+    } catch (error) {
+      setSubmitModalTitle("에러");
+      setSubmitModalText("이벤트 수정 중 오류가 발생했습니다.");
+      submitModalOnOpen();
+    }
   };
 
   const delEvent = async () => {
-    await deleteEvent(eventId);
-    setEventName("");
-    setEventDescription("");
-    eventOnClose();
+    try {
+      await deleteEvent(eventId);
+      setSubmitModalTitle("이벤트 삭제");
+      setSubmitModalText("이벤트가 성공적으로 삭제되었습니다.");
+      submitModalOnOpen();
+      setEventName("");
+      setEventDescription("");
+      eventOnClose();
+    } catch (error) {
+      setSubmitModalTitle("에러");
+      setSubmitModalText("이벤트 삭제 중 오류가 발생했습니다.");
+      submitModalOnOpen();
+    }
   };
+
   const handleEventClick = (arg: EventClickArg) => {
     const { event } = arg;
+    setEventType(event.extendedProps.type);
+
     setEventName(event.title);
     setEventDescription(event.extendedProps?.description ?? "");
     setEventId(event.id);
+
+    if (event.extendedProps.type === "league") {
+      setEventSets(event.extendedProps.sets);
+      setHomeTeamName(event.extendedProps.homeTeamName);
+      setAwayTeamName(event.extendedProps.awayTeamName);
+    } else {
+      setEventSets([]);
+      setHomeTeamName("");
+      setAwayTeamName("");
+    }
+
     // 원본 이벤트 데이터 저장
     setOriginalEvent({
       title: event.title,
@@ -104,8 +164,17 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
     });
     eventOnOpen();
   };
+
   const handleEventDrop = async (info: EventDropArg) => {
     const { event } = info;
+    if (event.extendedProps.type === "league") {
+      setSubmitModalTitle("이동불가");
+      setSubmitModalText("리그일정은 드래그앤 드랍이 불가능합니다.");
+      submitModalOnOpen();
+      info.revert(); // 리그 이벤트는 드래그 앤 드랍을 취소
+      return;
+    }
+
     const startDate = event.startStr;
 
     const updatedEvent = {
@@ -118,20 +187,22 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
 
     try {
       await updateEvent(updatedEvent);
-      console.log("Event updated successfully");
     } catch (error) {
-      console.error("Error updating event:", error);
+      setSubmitModalTitle("에러");
+      setSubmitModalText("이벤트 수정 중 오류가 발생했습니다.");
+      submitModalOnOpen();
       if (originalEvent) {
         event.setStart(info.event.startStr);
       }
     }
   };
+
   const handleCancelEdit = () => {
     // 원본 데이터로 필드 값 복원
     setEventName(originalEvent.title);
     setEventDescription(originalEvent.description);
     setIsEditable(false);
-    // eventOnClose(); // 모달 닫기
+    eventOnClose(); // 모달 닫기
   };
 
   // 날짜 클릭 핸들러
@@ -140,6 +211,36 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
     setEventDescription("");
     setSelectedDate(arg.dateStr);
     onOpen();
+  };
+
+  const renderEventContent = (eventInfo: any) => {
+    const title = eventInfo.event.title;
+    const firstSpaceIndex = title.indexOf(" ");
+    const titleParts =
+      firstSpaceIndex !== -1
+        ? [title.slice(0, firstSpaceIndex), title.slice(firstSpaceIndex + 1)]
+        : [title];
+
+    const isSmallScreen = window.innerWidth <= 600;
+
+    return (
+      <div className="whitespace-normal break-words">
+        <b className={isSmallScreen ? "text-xs" : "text-base"}>
+          {eventInfo.timeText}
+        </b>
+        <div>
+          <i className={isSmallScreen ? "text-xs" : "text-base"}>
+            {titleParts[0]}
+          </i>
+          {titleParts[1] && (
+            <i className={isSmallScreen ? "text-xs block" : "text-base"}>
+              <br />
+              {titleParts[1]}
+            </i>
+          )}
+        </div>
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -176,6 +277,7 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
         eventClick={handleEventClick}
         dateClick={handleDateClick} // 날짜 클릭 핸들러 등록
         eventDrop={handleEventDrop}
+        eventContent={renderEventContent}
       />
       <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
         <ModalContent>
@@ -223,7 +325,6 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
             <>
               <ModalHeader className="flex flex-col gap-1">이벤트</ModalHeader>
               <ModalBody>
-                <p>{selectedDate}</p>
                 <Input
                   label="이벤트 이름"
                   placeholder="이벤트 이름을 입력하세요"
@@ -240,32 +341,85 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
                   readOnly={!isEditable}
                   onChange={(e) => setEventDescription(e.target.value)}
                 />
+                {eventType === "league" && (
+                  <>
+                    <div>
+                      <Table aria-label="프로리그 세트 정보">
+                        <TableHeader>
+                          <TableColumn>
+                            <div className="text-center">홈플레이어</div>
+                          </TableColumn>
+                          <TableColumn>
+                            <div className="text-center">티어</div>
+                          </TableColumn>
+                          <TableColumn>
+                            <div className="text-center">원정플레이어</div>
+                          </TableColumn>
+                        </TableHeader>
+                        <TableBody>
+                          {eventSets.map((set: any, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                {" "}
+                                <div className="text-center">
+                                  {set.homePlayer}
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                <div className="text-center">
+                                  <p className="font-bold">{set.tier}</p>
+                                  <p>{set.map}</p>
+                                </div>
+                              </TableCell>
+                              <TableCell>
+                                {" "}
+                                <div className="text-center">
+                                  {set.awayPlayer}
+                                </div>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                      <Link href="/PROLEAGUE/schedule">자세히 보기</Link>
+                    </div>
+                  </>
+                )}
               </ModalBody>
               <ModalFooter>
                 {typeof userGrade === "number" && userGrade >= 4 && (
                   <>
-                    {!isEditable ? (
-                      <Button color="primary" onPress={handleEdit}>
-                        수정
-                      </Button>
+                    {eventType === "general" ? (
+                      <>
+                        {isEditable ? (
+                          <>
+                            <Button color="primary" onPress={fixEvent}>
+                              확인
+                            </Button>
+                            <Button color="danger" onPress={handleCancelEdit}>
+                              취소
+                            </Button>
+                          </>
+                        ) : (
+                          <>
+                            <Button color="primary" onPress={handleEdit}>
+                              수정
+                            </Button>
+                            <Button
+                              color="danger"
+                              variant="flat"
+                              onPress={() => {
+                                delEvent();
+                              }}
+                            >
+                              삭제
+                            </Button>
+                          </>
+                        )}
+                      </>
                     ) : (
-                      <Button color="primary" onPress={fixEvent}>
-                        확인
-                      </Button>
-                    )}
-                    {!isEditable ? (
-                      <Button
-                        color="danger"
-                        variant="flat"
-                        onPress={() => {
-                          delEvent();
-                        }}
-                      >
-                        삭제
-                      </Button>
-                    ) : (
-                      <Button color="danger" onPress={handleCancelEdit}>
-                        취소
+                      <Button color="danger" onPress={eventOnClose}>
+                        닫기
                       </Button>
                     )}
                   </>
@@ -275,6 +429,12 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
           )}
         </ModalContent>
       </Modal>
+      <SubmitModal
+        title={submitModalTitle}
+        text={submitModalText}
+        isOpen={submitModalOpen}
+        onClose={submitModalOnClose}
+      />
     </div>
   );
 }
