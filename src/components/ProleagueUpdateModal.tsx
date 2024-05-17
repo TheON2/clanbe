@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect, ChangeEvent, Key } from "react";
+import React, { useMemo, useState, useEffect, ChangeEvent } from "react";
 import { useDisclosure } from "@nextui-org/use-disclosure";
 import { Button } from "@nextui-org/button";
 import {
@@ -8,16 +8,15 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
-import { Select, SelectItem, Selection } from "@nextui-org/react";
+import { Select, SelectItem } from "@nextui-org/select";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { Calendar, Divider } from "@nextui-org/react";
 import { parseDate, DateValue } from "@internationalized/date";
 import { Team } from "../../types/types";
 import { User } from "next-auth";
-import { createLeagueEvent, updateLeagueEvent } from "@/service/leagueevent";
+import { createLeagueEvent } from "@/service/leagueevent";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import SubmitModal from "./SubmitModal";
-import { useFilter } from "@react-aria/i18n";
 
 type Props = {
   title: string;
@@ -26,7 +25,6 @@ type Props = {
   teams: Team[];
   users: User[];
   matchData?: {
-    _id: string;
     homeId: string;
     awayId: string;
     date: string;
@@ -40,7 +38,7 @@ type Props = {
   };
 };
 
-const ProleagueCreateModal = ({
+const ProleagueUpdateModal = ({
   title,
   isOpen,
   onClose,
@@ -48,6 +46,7 @@ const ProleagueCreateModal = ({
   users,
   matchData,
 }: Props) => {
+  const { onOpenChange } = useDisclosure();
   const [selectedDate, setSelectedDate] = useState<DateValue | null>(null);
   const {
     isOpen: isModalOpen,
@@ -56,8 +55,8 @@ const ProleagueCreateModal = ({
   } = useDisclosure();
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
-  const [homeTeam, setHomeTeam] = useState<Selection>(new Set());
-  const [awayTeam, setAwayTeam] = useState<Selection>(new Set());
+  const [homeTeam, setHomeTeam] = useState<string>("");
+  const [awayTeam, setAwayTeam] = useState<string>("");
   const [sets, setSets] = useState([
     { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "" },
     { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "" },
@@ -70,14 +69,9 @@ const ProleagueCreateModal = ({
     if (isOpen) {
       if (matchData) {
         setSelectedDate(parseDate(matchData.date));
-        setHomeTeam(new Set([matchData.homeId]));
-        setAwayTeam(new Set([matchData.awayId]));
-        setSets(
-          matchData.sets.map((set, index) => ({
-            ...set,
-            id: `${index + 1}`,
-          }))
-        );
+        setHomeTeam(matchData.homeId);
+        setAwayTeam(matchData.awayId);
+        setSets(matchData.sets);
       } else {
         setSelectedDate(parseDate(new Date().toISOString().split("T")[0]));
       }
@@ -99,12 +93,12 @@ const ProleagueCreateModal = ({
   const tiers = ["S+/S", "A+/A", "B+/B", "C+/D"];
 
   const homeTeamPlayers = useMemo(
-    () => users.filter((user) => user.team === Array.from(homeTeam).join("")),
+    () => users.filter((user) => user.team === homeTeam),
     [homeTeam, users]
   );
 
   const awayTeamPlayers = useMemo(
-    () => users.filter((user) => user.team === Array.from(awayTeam).join("")),
+    () => users.filter((user) => user.team === awayTeam),
     [awayTeam, users]
   );
 
@@ -138,8 +132,8 @@ const ProleagueCreateModal = ({
     }
 
     const leagueEvent = {
-      homeId: Array.from(homeTeam).join(""),
-      awayId: Array.from(awayTeam).join(""),
+      homeId: homeTeam,
+      awayId: awayTeam,
       date: selectedDate?.toString() || "",
       sets: sets.map((set) => ({
         homePlayer: set.homePlayer,
@@ -167,72 +161,22 @@ const ProleagueCreateModal = ({
     }
   };
 
-  const handleUpdate = async () => {
-    // 기본 필드 검사
-    if (!homeTeam || !awayTeam || !selectedDate) {
-      setModalTitle("입력 오류");
-      setModalText("모든 필드를 채워주세요.");
-      onModalOpen();
-      return;
-    }
-
-    // 1~4세트의 필드 검사
-    const incompleteSet = sets
-      .slice(0, 4)
-      .some(
-        (set) => !set.homePlayer || !set.awayPlayer || !set.map || !set.tier
-      );
-
-    if (incompleteSet) {
-      setModalTitle("입력 오류");
-      setModalText("1세트부터 4세트까지 모든 필드를 채워주세요.");
-      onModalOpen();
-      return;
-    }
-
-    const leagueEvent = {
-      id: matchData?._id || "",
-      homeId: Array.from(homeTeam).join(""),
-      awayId: Array.from(awayTeam).join(""),
-      date: selectedDate?.toString() || "",
-      sets: sets.map((set) => ({
-        homePlayer: set.homePlayer,
-        awayPlayer: set.awayPlayer,
-        map: set.map,
-        tier: set.tier,
-        result: 0,
-      })),
-    };
-
-    try {
-      const result = await updateLeagueEvent(leagueEvent);
-      if (result) {
-        setModalTitle("업데이트 성공");
-        setModalText("경기 이벤트가 성공적으로 수정되었습니다.");
-        onModalOpen();
-        handleClose();
-      } else {
-        throw new Error("Error saving league event.");
-      }
-    } catch (error) {
-      setModalTitle("등록 실패");
-      setModalText("등록에 실패했습니다.");
-      onModalOpen();
-    }
+  const handleClose = () => {
+    onOpenChange();
+    onClose();
   };
 
-  const handleClose = () => {
-    setSelectedDate(null);
-    setHomeTeam(new Set());
-    setAwayTeam(new Set());
-    setSets([
-      { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "3", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "4", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "5", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    ]);
-    onClose();
+  const handleSelectChange =
+    (setter: React.Dispatch<React.SetStateAction<string>>) =>
+    (e: ChangeEvent<HTMLSelectElement>) => {
+      setter(e.target.value);
+    };
+
+  const getFilteredPlayers = (teamPlayers: User[], tier: string) => {
+    const [tier1, tier2] = tier.split("/");
+    return teamPlayers.filter(
+      (player) => player.tear === tier1 || player.tear === tier2
+    );
   };
 
   const onDragEnd = (result: any) => {
@@ -250,8 +194,8 @@ const ProleagueCreateModal = ({
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
-        onOpenChange={onModalClose}
-        onClose={handleClose}
+        onOpenChange={onOpenChange}
+        onClose={onClose}
         classNames={{
           backdrop:
             "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
@@ -274,12 +218,12 @@ const ProleagueCreateModal = ({
               <Select
                 label="Home Team"
                 placeholder="Select Home Team"
-                selectedKeys={homeTeam}
-                onSelectionChange={setHomeTeam}
+                value={homeTeam}
+                onChange={handleSelectChange(setHomeTeam)}
                 className=""
               >
                 {teams.map((team) => (
-                  <SelectItem key={team._id} value={team._id}>
+                  <SelectItem key={team._id} value={team.name}>
                     {team.name}
                   </SelectItem>
                 ))}
@@ -287,12 +231,12 @@ const ProleagueCreateModal = ({
               <Select
                 label="Away Team"
                 placeholder="Select Away Team"
-                selectedKeys={awayTeam}
-                onSelectionChange={setAwayTeam}
+                value={awayTeam}
+                onChange={handleSelectChange(setAwayTeam)}
                 className=""
               >
                 {teams.map((team) => (
-                  <SelectItem key={team._id} value={team._id}>
+                  <SelectItem key={team._id} value={team.name}>
                     {team.name}
                   </SelectItem>
                 ))}
@@ -321,12 +265,12 @@ const ProleagueCreateModal = ({
                                 <Select
                                   label={`Set ${index + 1} Tier`}
                                   placeholder="Select Tier"
-                                  selectedKeys={new Set([set.tier])}
-                                  onSelectionChange={(key) =>
+                                  value={set.tier}
+                                  onChange={(e) =>
                                     handleSetChange(
                                       index,
                                       "tier",
-                                      Array.from(key).join("")
+                                      e.target.value
                                     )
                                   }
                                 >
@@ -339,12 +283,12 @@ const ProleagueCreateModal = ({
                                 <Select
                                   label={`Set ${index + 1} Map`}
                                   placeholder="Select Map"
-                                  selectedKeys={new Set([set.map])}
-                                  onSelectionChange={(key) =>
+                                  value={set.map}
+                                  onChange={(e) =>
                                     handleSetChange(
                                       index,
                                       "map",
-                                      Array.from(key).join("")
+                                      e.target.value
                                     )
                                   }
                                 >
@@ -359,54 +303,42 @@ const ProleagueCreateModal = ({
                                 <Autocomplete
                                   label={`Set ${index + 1} Home Player`}
                                   placeholder="Home"
-                                  inputValue={set.homePlayer}
-                                  items={homeTeamPlayers}
-                                  selectedKey={set.homePlayer}
+                                  value={set.homePlayer}
                                   onInputChange={(value) =>
                                     handleSetChange(index, "homePlayer", value)
                                   }
-                                  onSelectionChange={(key) =>
-                                    handleSetChange(
-                                      index,
-                                      "homePlayer",
-                                      String(key)
-                                    )
-                                  }
                                 >
-                                  {(item) => (
+                                  {getFilteredPlayers(
+                                    homeTeamPlayers,
+                                    set.tier
+                                  ).map((player) => (
                                     <AutocompleteItem
-                                      key={String(item.email)}
-                                      value={item.nickname}
+                                      key={String(player.email)}
+                                      value={player.nickname}
                                     >
-                                      {item.nickname}
+                                      {player.nickname}
                                     </AutocompleteItem>
-                                  )}
+                                  ))}
                                 </Autocomplete>
                                 <Autocomplete
                                   label={`Set ${index + 1} Away Player`}
                                   placeholder="Away"
-                                  inputValue={set.awayPlayer}
-                                  items={awayTeamPlayers}
-                                  selectedKey={set.awayPlayer}
+                                  value={set.awayPlayer}
                                   onInputChange={(value) =>
                                     handleSetChange(index, "awayPlayer", value)
                                   }
-                                  onSelectionChange={(key) =>
-                                    handleSetChange(
-                                      index,
-                                      "awayPlayer",
-                                      String(key)
-                                    )
-                                  }
                                 >
-                                  {(item) => (
+                                  {getFilteredPlayers(
+                                    awayTeamPlayers,
+                                    set.tier
+                                  ).map((player) => (
                                     <AutocompleteItem
-                                      key={String(item.email)}
-                                      value={item.nickname}
+                                      key={String(player.email)}
+                                      value={player.nickname}
                                     >
-                                      {item.nickname}
+                                      {player.nickname}
                                     </AutocompleteItem>
-                                  )}
+                                  ))}
                                 </Autocomplete>
                               </div>
                               <Divider />
@@ -425,19 +357,9 @@ const ProleagueCreateModal = ({
             <Button color="secondary" variant="flat" onPress={handleClose}>
               취소
             </Button>
-            {matchData ? (
-              <>
-                <Button color="primary" onPress={handleUpdate}>
-                  수정
-                </Button>
-              </>
-            ) : (
-              <>
-                <Button color="primary" onPress={handleSave}>
-                  저장
-                </Button>
-              </>
-            )}
+            <Button color="primary" onPress={handleSave}>
+              저장
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -451,4 +373,4 @@ const ProleagueCreateModal = ({
   );
 };
 
-export default ProleagueCreateModal;
+export default ProleagueUpdateModal;

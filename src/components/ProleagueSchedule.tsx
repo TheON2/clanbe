@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { User } from "next-auth";
 import {
   Table,
@@ -45,6 +45,7 @@ import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProleagueCreateModal from "./ProleagueCreateModal";
+import ProleagueUpdateModal from "./ProleagueUpdateModal";
 
 interface UserItem {
   nickname: string;
@@ -211,7 +212,7 @@ const matches = [
   },
 ];
 
-export const ProleagueSchedule = ({ teams, users }: any) => {
+export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   type User = (typeof users)[0];
   // 모달 상태 추가
   const router = useRouter();
@@ -219,6 +220,8 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
   const [modalMessage, setModalMessage] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editMatchData, setEditMatchData] = useState(undefined);
   const statusColorMap: Record<string, ChipProps["color"]> = {
     active: "success",
     paused: "danger",
@@ -228,6 +231,16 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
   const userGrade = user?.grade ?? 0;
+
+  const handleDeleteClick = () => {
+    // 삭제 기능 구현 예정
+    console.log("Delete icon clicked");
+  };
+
+  const handleEditClick = (match: any) => {
+    setEditMatchData(match);
+    setIsCreate(true);
+  };
 
   const findTeamById = useCallback(
     (id: string) => teams.find((team: any) => team._id === id),
@@ -517,6 +530,12 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
     };
   };
 
+  useEffect(() => {
+    if (!isCreate) {
+      setEditMatchData(undefined);
+    }
+  }, [isCreate]);
+
   return (
     <div className="w-full">
       <ProleagueCreateModal
@@ -525,6 +544,7 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
         onClose={() => setIsCreate(false)}
         teams={teams}
         users={users}
+        matchData={editMatchData}
       />
       <SubmitModal
         title={"알림"}
@@ -717,14 +737,28 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
           <Button onClick={() => setIsCreate(true)}> 일정 생성</Button>
         </CardHeader>
         <CardBody className="md:w-2/3 w-full">
-          {matches.length > 0 &&
-            matches.map((match, index) => {
+          {leagueEvents.length > 0 &&
+            leagueEvents.map((match: any, index: string) => {
               const homeTeam = findTeam(match.homeId);
               const awayTeam = findTeam(match.awayId);
               const { homeWins, awayWins, result } = getMatchResult(match.sets);
 
               return (
                 <div key={index} className="w-full mb-4 p-4 border rounded-lg">
+                  <div className="flex gap-3 justify-end mb-4">
+                    <Button
+                      color="success"
+                      isIconOnly
+                      onClick={() => handleEditClick(match)}
+                      startContent={<EditIcon fill="currentColor" />}
+                    />
+                    <Button
+                      color="danger"
+                      isIconOnly
+                      onClick={handleDeleteClick}
+                      startContent={<DeleteIcon fill="currentColor" />}
+                    />
+                  </div>
                   <div className="flex justify-center items-center mb-2 gap-4">
                     <div className="flex flex-col items-center">
                       <Image
@@ -772,7 +806,7 @@ export const ProleagueSchedule = ({ teams, users }: any) => {
                       <TableColumn>Away</TableColumn>
                     </TableHeader>
                     <TableBody>
-                      {match.sets.map((game, idx) => {
+                      {match.sets.map((game: any, idx: string) => {
                         const homeUser = findUser(game.homePlayer);
                         const awayUser = findUser(game.awayPlayer);
                         return (

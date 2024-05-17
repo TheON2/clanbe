@@ -1,3 +1,4 @@
+import LeagueEventModel from "@/models/leagueevent";
 import mongoose from "mongoose";
 
 
@@ -8,9 +9,15 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-   
+    const leagueEvents = await LeagueEventModel.find({})
+    
+    if (!leagueEvents) {
+      return new Response(JSON.stringify({ message: "조회 실패" }), {
+      status: 401,
+    });
+    }
 
-    return new Response(JSON.stringify({ }), {
+    return new Response(JSON.stringify({leagueEvents}), {
       status: 200,
     });
   } catch (error) {
