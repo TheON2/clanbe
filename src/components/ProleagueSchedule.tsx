@@ -46,6 +46,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProleagueCreateModal from "./ProleagueCreateModal";
 import ProleagueUpdateModal from "./ProleagueUpdateModal";
+import { deleteLeagueEvent } from "@/service/leagueevent";
 
 interface UserItem {
   nickname: string;
@@ -232,9 +233,20 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   const user = session?.user;
   const userGrade = user?.grade ?? 0;
 
-  const handleDeleteClick = () => {
-    // 삭제 기능 구현 예정
-    console.log("Delete icon clicked");
+  const handleDeleteClick = async (matchId: string) => {
+    if (!matchId) return;
+
+    try {
+      const response = await deleteLeagueEvent(matchId);
+      if (response) {
+        setModalMessage("경기 이벤트가 성공적으로 삭제되었습니다.");
+      } else {
+        setModalMessage("경기 이벤트 삭제에 실패했습니다.");
+      }
+    } catch (error) {
+      setModalMessage("경기 이벤트 삭제 중 오류가 발생했습니다.");
+    }
+    setIsSubmit(true);
   };
 
   const handleEditClick = (match: any) => {
@@ -755,7 +767,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                     <Button
                       color="danger"
                       isIconOnly
-                      onClick={handleDeleteClick}
+                      onClick={() => handleDeleteClick(match._id)}
                       startContent={<DeleteIcon fill="currentColor" />}
                     />
                   </div>

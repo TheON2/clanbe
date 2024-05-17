@@ -4,7 +4,7 @@ import LeagueEventModel from "@/models/leagueevent";
 export async function POST(req: Request) {
   try {
     // 요청 본문에서 삭제할 이벤트 ID를 가져옵니다.
-    const { deleteId } = await req.json();
+    const deleteId = await req.json();
 
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
     if (mongoose.connection.readyState !== 1) {
