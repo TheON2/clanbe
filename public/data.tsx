@@ -18,6 +18,8 @@ export const categoryLabels: CategoryLabels = {
   versus: "끝장전",
   notice: "공지사항",
   proleaguenotice: "프로리그",
+  beforetear: "티어배정신청",
+  aftertear: "티어배정완료",
 };
 
 export const column = [
@@ -1684,6 +1686,12 @@ export const headerBELO = {
 export const headerLEAGUE = {
   buttonTitle: "리그",
   menuItems: [
+    {
+      title: "티어배정",
+      description: "티어배정신청 및 티어배정결과를 확인하는 페이지",
+      icon: "scale",
+      href: "/LEAGUE/tear",
+    },
     {
       title: "랭킹전",
       description: "더미임",

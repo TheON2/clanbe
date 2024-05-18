@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import dynamic from "next/dynamic";
 import { Button } from "@nextui-org/button";
@@ -19,13 +20,16 @@ import {
 import ButtonModal from "./ButtonModal";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
-import { revalidatePath, revalidateTag } from "next/cache";
 import { useSession } from "next-auth/react";
 import { SupportAmount } from "../../types/types";
 
 const MyEditorWithNoSSR = dynamic(() => import("./MyEditor/MyEditor"), {
   ssr: false,
 });
+
+interface InitialContent {
+  [key: string]: string;
+}
 
 export default function CKEditorForm({
   post,
@@ -54,6 +58,9 @@ export default function CKEditorForm({
   const [supporter, setSupporter] = useState("");
   const [supporterKey, setSupporterKey] = useState<any>("supporter");
   const [amount, setAmount] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [nextCategory, setNextCategory] = useState("");
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
 
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
@@ -73,6 +80,7 @@ export default function CKEditorForm({
       setAmount(supportData?.amount);
       setSupporterKey(supportData?.email);
     }
+    setIsInitialLoad(false);
   }, [
     postHTML,
     post.title,
@@ -88,19 +96,25 @@ export default function CKEditorForm({
   };
 
   const handleCategoryChange = (event: any) => {
-    if (user && user?.grade < 4 && event.target.value === "notice") {
-      alert("운영자만 접근 가능합니다.");
-      setCategory("forum");
-      return;
+    const selectedCategory = event.target.value;
+
+    if (!isInitialLoad) {
+      setNextCategory(selectedCategory);
+      setModalOpen(true);
+    } else {
+      setCategory(selectedCategory);
     }
-    setCategory(event.target.value);
   };
 
-  const handleSelectUser = (nickname: string) => {
-    const selectedUser = nicknames.find((n: string) => n === nickname);
-    if (selectedUser) {
-      setSupporter(selectedUser);
-    }
+  const applyTemplate = () => {
+    setEditorData(initialContent[nextCategory] || "");
+    setCategory(nextCategory);
+    setModalOpen(false);
+  };
+
+  const closeModal = () => {
+    setCategory(nextCategory);
+    setModalOpen(false);
   };
 
   const handleEditorChange = (event: any, editor: any) => {
@@ -114,6 +128,13 @@ export default function CKEditorForm({
     }
     if (doc && doc.body.textContent) {
       setDescription(doc.body.textContent.trim().substring(0, 40));
+    }
+  };
+
+  const handleSelectUser = (nickname: string) => {
+    const selectedUser = nicknames.find((n: string) => n === nickname);
+    if (selectedUser) {
+      setSupporter(selectedUser);
     }
   };
 
@@ -146,13 +167,62 @@ export default function CKEditorForm({
   const headingClasses =
     "flex w-full sticky top-1 z-20 py-1.5 px-2 bg-default-100 shadow-small rounded-small";
 
-  // useEffect(() => {
-  //   if (category !== "support") {
-  //     setType(1);
-  //     setAmount(0);
-  //     setSupporter("");
-  //   }
-  // }, [category]);
+  const initialContent: InitialContent = {
+    notice: "<p>공지사항 내용을 입력하세요.</p>",
+    support: "<p>클랜을 위해 헌신하는 모든분들께 감사드립니다.</p>",
+    forum: "<p>자유게시판 내용을 입력하세요.</p>",
+    introduce: `<p>① 이름：<br><br>
+      ② 생년월일：<br>
+      <br>
+      ③ 카톡아이디 :<br>
+      <br>
+      ④ 종족 :<br>
+      <br>
+      ⑤ 배틀태그ID#0000：<br>
+      <br>
+      ⑥ 현재 ID :<br>
+      <br>
+      ⑦ 희망 ID :<br>
+      <br>
+      ⑧ 래더점수(현재래더 / 하이래더)：<br>
+      <br>
+      ⑨ 유입경로(ex 인벤, 와고, 지인) :<br>
+      <br>
+      ⑩ 포부한마디: </p>`,
+    feedback: "<p>건의사항 내용을 입력하세요.</p>",
+    tactics: "<p>전략전술 내용을 입력하세요.</p>",
+    dailycheckin: "<p>출석체크 내용을 입력하세요.</p>",
+    proleaguenotice: "<p>프로리그 공지 내용을 입력하세요.</p>",
+    ranking: "<p>랭킹전 내용을 입력하세요.</p>",
+    event: "<p>이벤트 내용을 입력하세요.</p>",
+    opponent: "<p>외부리그 내용을 입력하세요.</p>",
+    versus: "<p>끝장전 내용을 입력하세요.</p>",
+    beforetear: `<p>① 클랜아이디 : <br>
+          <br>
+          ② 배틀코드 : <br>
+          <br>
+          ③ 종족 : <br>
+          <br>
+          ④ 하이래더 : <br>
+          <br>
+          ⑤ 현래더 : <br>
+          <br>
+          <br>
+          <br>
+          &lt;&lt;필독&gt;&gt;<br>
+          <br>
+          ㄱ. 해당게시판에 양식에 맞추어 작성합니다.<br>
+          ㄴ. 티어배정담당 [Be]_fOrU, [Be]_Ting 을 통하여 티어배정을 요청합니다.<br>
+          ㄷ. 티어배정담당자의 매칭으로 게임을 진행합니다.<br>
+          ㄹ. 총 3명과 3/2 경기 후 댓글로 경기결과를 작성합니다.<br>
+          <br>
+          <br>
+          <br>
+          ex)<br>
+          vs [Be]_hOn 2:0 승<br>
+          vs [Be]_fOru 1:2 패<br>
+          vs [Be]_Ting 0:2 패</p>`,
+  };
 
   return (
     <div className="flex flex-col lg:flex-row w-full gap-4">
@@ -212,6 +282,8 @@ export default function CKEditorForm({
                   heading: headingClasses,
                 }}
               >
+                <SelectItem key="beforetear">티어배정신청</SelectItem>
+                <SelectItem key="aftertear">티어배정완료</SelectItem>
                 <SelectItem key="ranking">랭킹전</SelectItem>
                 <SelectItem key="event">이벤트</SelectItem>
                 <SelectItem key="opponent">외부리그</SelectItem>
@@ -340,6 +412,14 @@ export default function CKEditorForm({
           ></div>
         </Card>
       </div>
+      {/* 모달 컴포넌트 */}
+      <SubmitModal
+        title="양식 사용 확인"
+        text="이 카테고리의 양식을 사용하시겠습니까?"
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onSubmit={applyTemplate}
+      />
     </div>
   );
 }

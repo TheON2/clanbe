@@ -15,14 +15,23 @@ type Props = {
   text: string;
   isOpen: any;
   onClose: () => void;
+  onSubmit?: () => void;
 };
 
-const SubmitModal = ({ title, text, isOpen, onClose }: Props) => {
+const SubmitModal = ({ title, text, isOpen, onClose, onSubmit }: Props) => {
   const { onOpenChange } = useDisclosure();
   const handleClose = () => {
     onOpenChange();
     onClose();
   };
+
+  const handleConfirm = () => {
+    if (onSubmit) {
+      onSubmit();
+    }
+    handleClose();
+  };
+
   return (
     <div>
       <Modal
@@ -40,8 +49,11 @@ const SubmitModal = ({ title, text, isOpen, onClose }: Props) => {
             <p>{text}</p>
           </ModalBody>
           <ModalFooter>
-            <Button color="danger" variant="light" onPress={handleClose}>
+            <Button color="primary" variant="light" onPress={handleConfirm}>
               확인
+            </Button>
+            <Button color="danger" variant="light" onPress={handleClose}>
+              취소
             </Button>
           </ModalFooter>
         </ModalContent>
