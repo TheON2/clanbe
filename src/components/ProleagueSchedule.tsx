@@ -1,6 +1,14 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useState } from "react";
+import FullCalendar from "@fullcalendar/react";
+import dayGridPlugin from "@fullcalendar/daygrid";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
+import timeGridPlugin from "@fullcalendar/timegrid";
+import listPlugin from "@fullcalendar/list";
+import koLocale from "@fullcalendar/core/locales/ko";
+import { EventClickArg, EventDropArg } from "@fullcalendar/core";
+import { EventType, LeagueEvent } from "../../types/types";
 import { User } from "next-auth";
 import {
   Table,
@@ -30,6 +38,7 @@ import {
   ModalBody,
   ModalFooter,
   useDisclosure,
+  DatePicker,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../types/types";
@@ -47,6 +56,11 @@ import { useSession } from "next-auth/react";
 import ProleagueCreateModal from "./ProleagueCreateModal";
 import ProleagueUpdateModal from "./ProleagueUpdateModal";
 import { deleteLeagueEvent } from "@/service/leagueevent";
+
+interface DateClickArguments {
+  dateStr: string;
+  allDay: boolean;
+}
 
 interface UserItem {
   nickname: string;
@@ -84,135 +98,6 @@ const tierColorMap: Record<string, string> = {
   D: "bg-red-200",
 };
 
-const matches = [
-  {
-    homeId: "660cc0e452afd8daf291b3b9",
-    awayId: "660cc0e452afd8daf291b3b9",
-    date: "2024-05-13",
-    sets: [
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 0,
-      },
-    ],
-  },
-  {
-    homeId: "660cc0e452afd8daf291b3b9",
-    awayId: "660cc0e452afd8daf291b3b9",
-    date: "2024-05-13",
-    sets: [
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 0,
-      },
-    ],
-  },
-  {
-    homeId: "660cc0e452afd8daf291b3b9",
-    awayId: "660cc0e452afd8daf291b3b9",
-    date: "2024-05-13",
-    sets: [
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 1,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 2,
-      },
-      {
-        homePlayer: "LAUFE",
-        awayPlayer: "LAUFE",
-        map: "투혼",
-        tier: "A+/A",
-        result: 0,
-      },
-    ],
-  },
-];
-
 export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   type User = (typeof users)[0];
   // 모달 상태 추가
@@ -221,13 +106,9 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   const [modalMessage, setModalMessage] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
   const [isCreate, setIsCreate] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isEdit, setIsEdit] = useState(false);
   const [editMatchData, setEditMatchData] = useState(undefined);
-  const statusColorMap: Record<string, ChipProps["color"]> = {
-    active: "success",
-    paused: "danger",
-    vacation: "warning",
-  };
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
@@ -254,10 +135,30 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     setIsCreate(true);
   };
 
-  const findTeamById = useCallback(
-    (id: string) => teams.find((team: any) => team._id === id),
+  const getTeamNameById = useCallback(
+    (id: string) => {
+      const team = teams.find((team: Team) => team._id.toString() === id);
+      return team ? team.name : "Unknown";
+    },
     [teams]
   );
+
+  const formattedLeagueEvents = leagueEvents.map((event: LeagueEvent) => ({
+    ...event,
+    id: event._id,
+    title: `BPL ${getTeamNameById(event.homeId)} vs ${getTeamNameById(
+      event.awayId
+    )}`,
+    description: `Be클랜 프로리그 ${getTeamNameById(
+      event.homeId
+    )} vs ${getTeamNameById(event.awayId)}`,
+    date: event.date,
+    author: "sniperad@naver.com",
+    type: "league",
+    homeTeamName: getTeamNameById(event.homeId),
+    awayTeamName: getTeamNameById(event.awayId),
+  }));
+
   const renderCell = useCallback(
     (user: User, columnKey: React.Key, result?: number, isHome?: boolean) => {
       const cellValue = user[columnKey as keyof User];
@@ -335,31 +236,9 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     teams.find((team: Team) => team._id === teamid);
 
   const [page, setPage] = useState(1);
-  const [search, setSearch] = useState("");
-  const [selectedTier, setSelectedTier] = useState("");
-  const [selectedRace, setSelectedRace] = useState("");
-  const [selectedTeamName, setSelectedTeamName] = useState("");
   const [isSelected, setIsSelected] = useState(false);
 
-  // 선택한 팀 객체를 찾습니다.
-  const selectedTeam = useMemo(
-    () => teams.find((team: Team) => team.name === selectedTeamName),
-    [selectedTeamName, teams]
-  );
-
-  const rowsPerPage = 10;
-
-  const races = ["ALL", "Z", "T", "P"];
-  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
-
-  const raceMapping: { [key: string]: string } = useMemo(
-    () => ({
-      z: "Z",
-      t: "T",
-      p: "P",
-    }),
-    []
-  ); // Dependencies array is empty, it only initializes once
+  const rowsPerPage = 1;
 
   const { topWins, topWinRate, topTotalGames } = useMemo(() => {
     // 다승 계산
@@ -397,71 +276,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
 
     return { topWins, topWinRate, topTotalGames };
   }, [users]);
-
-  const filteredData: UserItem[] = useMemo(() => {
-    const data = users
-      .filter((user: User) => {
-        const matchesSearch = user.nickname
-          .toLowerCase()
-          .includes(search.toLowerCase());
-        const matchesTier =
-          selectedTier === "ALL" ||
-          selectedTier === "" ||
-          user.tear === selectedTier;
-        const userTeam = teams.filter((team: any) => team._id === user.team);
-        const matchesTeam =
-          selectedTeamName === "ALL" ||
-          selectedTeamName === "" ||
-          userTeam[0]?.name === selectedTeamName;
-        const userRace =
-          raceMapping[user.BELO.race.toLowerCase()] || user.BELO.race;
-        const matchesRace =
-          selectedRace === "ALL" ||
-          selectedRace === "" ||
-          userRace === selectedRace;
-
-        return matchesSearch && matchesRace && matchesTier && matchesTeam;
-      })
-      .map((user: User) => ({
-        nickname: user.nickname,
-        email: user.email,
-        avatar: user.avatar,
-        tier: user.tear,
-        race: raceMapping[user.league.race.toLowerCase()] || user.league.race,
-        wins: user.league.tw + user.league.pw + user.league.zw,
-        losses: user.league.tl + user.league.pl + user.league.zl,
-        belo: user.BELO.belo,
-      }));
-    return data.sort((a: any, b: any) => b.belo - a.belo);
-  }, [
-    search,
-    selectedRace,
-    selectedTier,
-    selectedTeamName,
-    users,
-    raceMapping,
-    teams,
-  ]);
-
-  const pages = Math.ceil(filteredData.length / rowsPerPage);
-  const items = useMemo(() => {
-    return filteredData.slice((page - 1) * rowsPerPage, page * rowsPerPage);
-  }, [page, filteredData]);
-
-  const handleDelete = async (userId: string) => {
-    try {
-      const response = await updateUserTeam(userId, "");
-      if (response) {
-        setModalMessage("성공적으로 팀에서 제외 했습니다.");
-      } else {
-        setModalMessage("유저 삭제에 실패했습니다.");
-      }
-      setIsSubmit(true);
-    } catch (error) {
-      setModalMessage("유저 삭제 중 오류가 발생했습니다.");
-      setIsSubmit(true);
-    }
-  };
 
   const columnRank = [
     { name: "순위", uid: "ranking" },
@@ -540,6 +354,44 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
       result:
         homeWins > awayWins ? "home" : awayWins > homeWins ? "away" : "draw",
     };
+  };
+
+  const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const filteredEvents = useMemo(() => {
+    if (selectedDate) {
+      return leagueEvents.filter((event) =>
+        event.date.startsWith(selectedDate)
+      );
+    } else if (selectedEvent) {
+      return formattedLeagueEvents.filter(
+        (event) => event.id === selectedEvent._id
+      );
+    }
+    return [];
+  }, [selectedDate, selectedEvent, leagueEvents, formattedLeagueEvents]);
+
+  const paginatedEvents = useMemo(() => {
+    const startIndex = (page - 1) * rowsPerPage;
+    const endIndex = startIndex + rowsPerPage;
+    return filteredEvents.slice(startIndex, endIndex);
+  }, [page, filteredEvents]);
+
+  const pages = Math.ceil(filteredEvents.length / rowsPerPage);
+
+  const handleDateClick = (arg: DateClickArg) => {
+    // 날짜를 선택하면 selectedDate 상태를 업데이트하고, selectedEvent를 null로 초기화
+    setSelectedDate(arg.dateStr);
+    setSelectedEvent(null);
+  };
+
+  const handleEventClick = (clickInfo: EventClickArg) => {
+    // 이벤트를 선택하면 selectedEvent 상태를 해당 이벤트로 설정하고, selectedDate를 null로 초기화
+    const event = formattedLeagueEvents.find(
+      (event) => event.id === clickInfo.event.id
+    );
+    setSelectedEvent(event);
+    setSelectedDate(null);
   };
 
   useEffect(() => {
@@ -744,13 +596,36 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
         </CardBody>
       </Card>
       <Card className="w-full flex justify-center items-center">
-        <CardHeader>
-          <h3>프로리그 일정</h3>
-          <Button onClick={() => setIsCreate(true)}> 일정 생성</Button>
+        <CardHeader className="">
+          <div className="flex flex-col w-full justify-center items-center">
+            <div>
+              <FullCalendar
+                plugins={[
+                  dayGridPlugin,
+                  interactionPlugin,
+                  timeGridPlugin,
+                  listPlugin,
+                ]}
+                initialView="listWeek"
+                events={formattedLeagueEvents}
+                weekends={true}
+                locale={koLocale}
+                dateClick={handleDateClick}
+                eventClick={handleEventClick}
+                headerToolbar={{
+                  left: "prev,next today",
+                  center: "title",
+                  right: "listWeek,dayGridMonth",
+                }}
+                height={"300px"}
+                editable={typeof userGrade === "number" && userGrade > 4}
+              />
+            </div>
+          </div>
         </CardHeader>
         <CardBody className="md:w-2/3 w-full">
-          {leagueEvents.length > 0 &&
-            leagueEvents.map((match: any, index: string) => {
+          {filteredEvents.length > 0 &&
+            filteredEvents.map((match: any, index: string) => {
               const homeTeam = findTeam(match.homeId);
               const awayTeam = findTeam(match.awayId);
               const { homeWins, awayWins, result } = getMatchResult(match.sets);
@@ -850,6 +725,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
               );
             })}
         </CardBody>
+        <CardFooter></CardFooter>
       </Card>
     </div>
   );

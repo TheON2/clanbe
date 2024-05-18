@@ -39,7 +39,7 @@ export const HeaderDropdown: React.FC<HeaderDropdownProps> = ({
             radius="sm"
             variant="light"
           >
-            {buttonTitle}
+            <i className="font-bold text-lg">{buttonTitle}</i>
           </Button>
         </DropdownTrigger>
       </NavbarItem>

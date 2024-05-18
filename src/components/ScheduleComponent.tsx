@@ -275,7 +275,7 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
         height={"800px"}
         editable={typeof userGrade === "number" && userGrade > 4}
         eventClick={handleEventClick}
-        dateClick={handleDateClick} // 날짜 클릭 핸들러 등록
+        dateClick={handleDateClick}
         eventDrop={handleEventDrop}
         eventContent={renderEventContent}
       />
