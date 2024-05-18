@@ -5,8 +5,6 @@ export interface CarouselItemProps {
   alt: string;
 }
 
-
-
 const bannerItems = [
   {
     src: "https://upload3.inven.co.kr/upload/2024/04/10/bbs/i015769532273.gif",
@@ -20,8 +18,19 @@ const bannerItems = [
 
 const Banner: React.FC = () => {
   return (
-    <div>
-      <NextCarousel images={bannerItems} />
+    <div className="flex flex-col gap-2">
+      <NextCarousel
+        images={true}
+        items={bannerItems}
+        aspectRatio="23/9"
+        autoPlayInterval={10000}
+      />
+      {/* <NextCarousel
+        images={true}
+        items={bannerItems}
+        aspectRatio="21/9"
+        autoPlayInterval={10000}
+      /> */}
     </div>
   );
 };
