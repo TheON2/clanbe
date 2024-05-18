@@ -26,6 +26,7 @@ import {
   Autocomplete,
   AutocompleteItem,
   DatePicker,
+  Input,
 } from "@nextui-org/react";
 
 import {
@@ -49,6 +50,8 @@ import { User as MyUser } from "next-auth";
 import { Team } from "../../../types/types";
 import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
+import { PointIcon } from "../../../public/point";
+import { ListIcon } from "../../../public/list";
 import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
 import { useDateFormatter } from "@react-aria/i18n";
@@ -85,6 +88,8 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   const [selectedMap, setSelectedMap] = useState("");
   const [matchDateValue, setMatchDateValue] = useState<DateValue | null>(null);
   const [matchDate, setMatchDate] = useState(new Date());
+  const [point, setPoint] = useState("0");
+  const [message, setMessage] = useState("");
 
   const [winnerNicknameKey, setWinnerNicknameKey] = useState<string>("winner");
   const [loserNicknameKey, setLoserNicknameKey] = useState<string>("loser");
@@ -98,6 +103,12 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     isOpen: isModalOpen,
     onOpen: onModalOpen,
     onOpenChange: onModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isPointOpen,
+    onOpen: onPointOpen,
+    onOpenChange: onPointChange,
+    onClose: onPointClose,
   } = useDisclosure();
 
   const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
@@ -348,8 +359,17 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   value={expPercentage}
                   showValueLabel={true}
                 />
-                <div className="mt-2">
+                <div className="mt-2 flex items-center justify-center gap-2">
                   <p className="font-bold text-lg">POINT : {user.point}</p>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="danger"
+                    startContent={
+                      <PointIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointOpen()}
+                  ></Button>
                 </div>
               </div>
               <div className="flex my-4 ">
@@ -702,6 +722,94 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     </TableBody>
                   </Table>
                 </Card>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="secondary" variant="flat" onPress={swapUsers}>
+                  유저전환
+                </Button>
+                <Button color="primary" variant="flat" onPress={resetData}>
+                  초기화
+                </Button>
+                <Button color="danger" variant="flat" onPress={closeModal}>
+                  닫기
+                </Button>
+                <Button color="success" onPress={addMatch}>
+                  등록
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isPointOpen}
+        onOpenChange={onPointChange}
+        placement="top-center"
+      >
+        <ModalContent>
+          {(onPointClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                포인트 조회 / 전송
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex flex-col gap-2 mx-4 justify-center items-center">
+                  <div className="flex w-full justify-center items-center gap-2">
+                    <Autocomplete
+                      label="클랜원"
+                      className=""
+                      value={winnerNickname}
+                      onInputChange={(value) => {
+                        if (value !== winnerNickname) {
+                          handleWinnerSelection(value);
+                        }
+                      }}
+                      selectedKey={winnerNicknameKey}
+                      onSelectionChange={handleWinnerSelectionChange}
+                    >
+                      {users.map((user) => (
+                        <AutocompleteItem
+                          key={String(user.name)}
+                          value={user.nickname}
+                        >
+                          {user.nickname}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    <Input
+                      type="number"
+                      name="point"
+                      labelPlacement={"outside"}
+                      placeholder="보낼 포인트"
+                      value={point}
+                      className="py-4"
+                      size="lg"
+                      onChange={(e) => {
+                        setPoint(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <Input
+                      type="text"
+                      name="message"
+                      labelPlacement={"outside"}
+                      placeholder="보낼 메세지"
+                      value={message}
+                      className="py-4"
+                      size="lg"
+                      onChange={(e) => {
+                        setMessage(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full px-4">
+                    <p className="font-bold">전송 전 포인트 : {user.point}</p>
+                    <p className="font-bold">
+                      전송 후 포인트 : {user.point - Number(point)}
+                    </p>
+                  </div>
+                </div>
               </ModalBody>
               <ModalFooter>
                 <Button color="secondary" variant="flat" onPress={swapUsers}>
