@@ -36,6 +36,7 @@ type Props = {
       awayPlayer: string;
       map: string;
       tier: string;
+      result: number; // 추가된 부분
     }[];
   };
 };
@@ -59,11 +60,11 @@ const ProleagueCreateModal = ({
   const [homeTeam, setHomeTeam] = useState<Selection>(new Set());
   const [awayTeam, setAwayTeam] = useState<Selection>(new Set());
   const [sets, setSets] = useState([
-    { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { id: "3", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { id: "4", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-    { id: "5", homePlayer: "", awayPlayer: "", map: "", tier: "" },
+    { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+    { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+    { id: "3", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+    { id: "4", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+    { id: "5", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
   ]);
 
   useEffect(() => {
@@ -97,6 +98,11 @@ const ProleagueCreateModal = ({
   ];
 
   const tiers = ["S+/S", "A+/A", "B+/B", "C+/D"];
+  const results = [
+    { id: "0", name: "경기전" },
+    { id: "1", name: "홈승" },
+    { id: "2", name: "원정승" },
+  ];
 
   const homeTeamPlayers = useMemo(
     () => users.filter((user) => user.team === Array.from(homeTeam).join("")),
@@ -115,7 +121,6 @@ const ProleagueCreateModal = ({
   };
 
   const handleSave = async () => {
-    // 기본 필드 검사
     if (!homeTeam || !awayTeam || !selectedDate) {
       setModalTitle("입력 오류");
       setModalText("모든 필드를 채워주세요.");
@@ -123,7 +128,6 @@ const ProleagueCreateModal = ({
       return;
     }
 
-    // 1~4세트의 필드 검사
     const incompleteSet = sets
       .slice(0, 4)
       .some(
@@ -146,7 +150,7 @@ const ProleagueCreateModal = ({
         awayPlayer: set.awayPlayer,
         map: set.map,
         tier: set.tier,
-        result: 0,
+        result: set.result, // result 값 포함
       })),
     };
 
@@ -168,7 +172,6 @@ const ProleagueCreateModal = ({
   };
 
   const handleUpdate = async () => {
-    // 기본 필드 검사
     if (!homeTeam || !awayTeam || !selectedDate) {
       setModalTitle("입력 오류");
       setModalText("모든 필드를 채워주세요.");
@@ -176,7 +179,6 @@ const ProleagueCreateModal = ({
       return;
     }
 
-    // 1~4세트의 필드 검사
     const incompleteSet = sets
       .slice(0, 4)
       .some(
@@ -200,7 +202,7 @@ const ProleagueCreateModal = ({
         awayPlayer: set.awayPlayer,
         map: set.map,
         tier: set.tier,
-        result: 0,
+        result: set.result, // result 값 포함
       })),
     };
 
@@ -226,11 +228,11 @@ const ProleagueCreateModal = ({
     setHomeTeam(new Set());
     setAwayTeam(new Set());
     setSets([
-      { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "3", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "4", homePlayer: "", awayPlayer: "", map: "", tier: "" },
-      { id: "5", homePlayer: "", awayPlayer: "", map: "", tier: "" },
+      { id: "1", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+      { id: "2", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+      { id: "3", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+      { id: "4", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
+      { id: "5", homePlayer: "", awayPlayer: "", map: "", tier: "", result: 0 },
     ]);
     onClose();
   };
@@ -317,7 +319,7 @@ const ProleagueCreateModal = ({
                             className="mb-4 flex justify-center items-center"
                           >
                             <div className="flex flex-col gap-2 mb-2">
-                              <div className="flex gap-2 w-2/3">
+                              <div className="flex gap-2 w-full">
                                 <Select
                                   label={`Set ${index + 1} Tier`}
                                   placeholder="Select Tier"
@@ -351,6 +353,27 @@ const ProleagueCreateModal = ({
                                   {maps.map((map) => (
                                     <SelectItem key={map.name} value={map.name}>
                                       {map.name}
+                                    </SelectItem>
+                                  ))}
+                                </Select>
+                                <Select
+                                  label={`Set ${index + 1} Result`}
+                                  placeholder="Select Result"
+                                  selectedKeys={new Set([String(set.result)])}
+                                  onSelectionChange={(key) =>
+                                    handleSetChange(
+                                      index,
+                                      "result",
+                                      Array.from(key).join("")
+                                    )
+                                  }
+                                >
+                                  {results.map((result) => (
+                                    <SelectItem
+                                      key={result.id}
+                                      value={result.id}
+                                    >
+                                      {result.name}
                                     </SelectItem>
                                   ))}
                                 </Select>

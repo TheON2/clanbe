@@ -22,6 +22,18 @@ export type EventSet = {
   result: number;
 }
 
+export type Point = {
+  _id?: string;
+  senduser: string;
+  receiveuser: string;
+  point: number;
+  sbeforepoint: number;
+  safterpoint: number;
+  rbeforepoint: number;
+  rafterpoint: number;
+  message: string;
+}
+
 export type LeagueEvent = {
   _id?: string;
   homeId: string;

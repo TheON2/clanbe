@@ -348,6 +348,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   value={expPercentage}
                   showValueLabel={true}
                 />
+                <div className="mt-2">
+                  <p className="font-bold text-lg">POINT : {user.point}</p>
+                </div>
               </div>
               <div className="flex my-4 ">
                 <CircularProgress
