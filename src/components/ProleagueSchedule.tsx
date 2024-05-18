@@ -56,6 +56,7 @@ import { useSession } from "next-auth/react";
 import ProleagueCreateModal from "./ProleagueCreateModal";
 import ProleagueUpdateModal from "./ProleagueUpdateModal";
 import { deleteLeagueEvent } from "@/service/leagueevent";
+import LeagueEventModel from "@/models/leagueevent";
 
 interface DateClickArguments {
   dateStr: string;
@@ -102,6 +103,11 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   type User = (typeof users)[0];
   // 모달 상태 추가
   const router = useRouter();
+  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const isLoggedIn = status === "authenticated";
+  const user = session?.user;
+  const userGrade = user?.grade ?? 0;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
   const [isSubmit, setIsSubmit] = useState(false);
@@ -109,10 +115,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [isEdit, setIsEdit] = useState(false);
   const [editMatchData, setEditMatchData] = useState(undefined);
-  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
-  const isLoggedIn = status === "authenticated";
-  const user = session?.user;
-  const userGrade = user?.grade ?? 0;
 
   const handleDeleteClick = async (matchId: string) => {
     if (!matchId) return;
@@ -356,16 +358,16 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     };
   };
 
-  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [selectedEvent, setSelectedEvent] = useState<LeagueEvent | null>();
 
   const filteredEvents = useMemo(() => {
     if (selectedDate) {
-      return leagueEvents.filter((event) =>
+      return leagueEvents.filter((event: EventType) =>
         event.date.startsWith(selectedDate)
       );
     } else if (selectedEvent) {
       return formattedLeagueEvents.filter(
-        (event) => event.id === selectedEvent._id
+        (event: any) => event.id === selectedEvent._id
       );
     }
     return [];
@@ -388,7 +390,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   const handleEventClick = (clickInfo: EventClickArg) => {
     // 이벤트를 선택하면 selectedEvent 상태를 해당 이벤트로 설정하고, selectedDate를 null로 초기화
     const event = formattedLeagueEvents.find(
-      (event) => event.id === clickInfo.event.id
+      (event: EventType) => event.id === clickInfo.event.id
     );
     setSelectedEvent(event);
     setSelectedDate(null);
@@ -597,7 +599,10 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
       </Card>
       <Card className="w-full flex justify-center items-center">
         <CardHeader className="">
-          <div className="flex flex-col w-full justify-center items-center">
+          <div className="flex flex-col w-full justify-center items-center gap-2">
+            <div>
+              <Button onPress={() => setIsCreate(true)}>리그정보 등록</Button>
+            </div>
             <div>
               <FullCalendar
                 plugins={[

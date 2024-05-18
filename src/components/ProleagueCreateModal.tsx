@@ -250,8 +250,8 @@ const ProleagueCreateModal = ({
       <Modal
         backdrop="opaque"
         isOpen={isOpen}
-        onOpenChange={onModalClose}
-        onClose={handleClose}
+        onOpenChange={onClose}
+        onClose={onClose}
         classNames={{
           backdrop:
             "bg-gradient-to-t from-zinc-900 to-zinc-900/10 backdrop-opacity-20",
@@ -422,7 +422,7 @@ const ProleagueCreateModal = ({
             </DragDropContext>
           </ModalBody>
           <ModalFooter>
-            <Button color="secondary" variant="flat" onPress={handleClose}>
+            <Button color="danger" variant="flat" onPress={handleClose}>
               취소
             </Button>
             {matchData ? (
