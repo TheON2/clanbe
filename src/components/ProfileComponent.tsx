@@ -56,7 +56,12 @@ import { formatDateOnly, formatRelativeDate } from "@/utils/dateUtils";
 import CommentCard from "./CommentCard/CommentCard";
 import PostCommentCard from "./CommentCard/ProfileCommentCard";
 import { Post } from "../../types/types";
-import { imageUpload, updatePasswordData, updateProfileData } from "@/service/profile";
+import {
+  imageUpload,
+  updatePasswordData,
+  updateProfileData,
+} from "@/service/profile";
+import SubmitModal from "./SubmitModal";
 
 export default function ProfileComponent({ user, posts, comments }: any) {
   const router = useRouter();
@@ -112,6 +117,30 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     race: "",
     message: "",
   });
+
+  // 모달 상태 관리
+  const [modalState, setModalState] = useState({
+    isOpen: false,
+    title: "",
+    text: "",
+    onSubmit: () => {},
+  });
+
+  // 모달 열기 함수
+  const openModal = (title: string, text: string, onSubmit?: () => void) => {
+    setModalState({
+      isOpen: true,
+      title,
+      text,
+      onSubmit:
+        onSubmit || (() => setModalState({ ...modalState, isOpen: false })),
+    });
+  };
+
+  // 모달 닫기 함수
+  const closeModal = () => {
+    setModalState({ ...modalState, isOpen: false });
+  };
 
   const handleRaceClick = (race: string) => {
     setSignUpState((prev) => ({
@@ -207,22 +236,28 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     formData.append("upload", file);
     formData.append("email", signUpState.email);
 
-     try {
-       const data = await imageUpload({ formData });
-
-       setSelected("PROFILE");
-     } catch (error: any) {
-       alert(error.message);
-     }
-  }
+    try {
+      const data = await imageUpload({ formData });
+      openModal("업로드 성공", "이미지가 성공적으로 업로드되었습니다.", () => {
+        setSignUpState((prev) => ({
+          ...prev,
+          avatar: data.url,
+        }));
+        setSelected("PROFILE");
+      });
+    } catch (error: any) {
+      openModal("업로드 실패", error.message);
+    }
+  };
 
   const updateProfile = async () => {
     try {
       const data = await updateProfileData({ signUpState });
-
-      setSelected("PROFILE");
+      openModal("수정 성공", "프로필이 성공적으로 수정되었습니다.", () => {
+        setSelected("PROFILE");
+      });
     } catch (error: any) {
-      alert(error.message);
+      openModal("수정 실패", error.message);
     }
   };
 
@@ -230,18 +265,21 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     if (error.password.length > 1 || error.passwordConfirm.length > 1) return;
     try {
       const data = await updatePasswordData({ signUpState });
-
-      alert("비밀번호 변경 성공");
-      setSelected("PROFILE");
-      // 비밀번호 필드 초기화
-      setSignUpState((prev) => ({
-        ...prev,
-        password: "",
-        passwordConfirm: "",
-      }));
-      setIsEditPassword(false); // 비밀번호 변경 후 프로필 수정 모드로 전환
+      openModal(
+        "비밀번호 변경 성공",
+        "비밀번호가 성공적으로 변경되었습니다.",
+        () => {
+          setSelected("PROFILE");
+          setSignUpState((prev) => ({
+            ...prev,
+            password: "",
+            passwordConfirm: "",
+          }));
+          setIsEditPassword(false); // 비밀번호 변경 후 프로필 수정 모드로 전환
+        }
+      );
     } catch (error: any) {
-      alert(error.message);
+      openModal("비밀번호 변경 실패", error.message);
     }
   };
 
@@ -625,6 +663,13 @@ export default function ProfileComponent({ user, posts, comments }: any) {
           </Tabs>
         </Card>
       </div>
+      <SubmitModal
+        title={modalState.title}
+        text={modalState.text}
+        isOpen={modalState.isOpen}
+        onClose={closeModal}
+        onSubmit={modalState.onSubmit}
+      />
     </div>
   );
 }
