@@ -2,102 +2,52 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { LeagueEvent } from "../../types/types";
+import { Point } from "../../types/types";
 
-export async function createLeagueEvent(newEvent: LeagueEvent) {
+export async function sendPoint(newPointData: any) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/leagueevent/create`,
+      `${process.env.NEXT_PUBLIC_URL}/api/point/create`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newEvent),
-        next: { tags: ["leagueevent"] },
+        body: JSON.stringify(newPointData),
+        next: { tags: ["point"] },
         cache: "no-store",
       }
     );
     if (!response.ok) {
-      throw new Error("Failed to create event. Status: " + response.status);
+      throw new Error("Failed to send point. Status: " + response.status);
     }
-    revalidateTag("leagueevent");
+    revalidateTag("point");
     return await response.json();
   } catch (error) {
-    console.error("Error creating event:", error);
+    console.error("Error send point:", error);
     return null;
   }
 }
 
-export async function updateLeagueEvent(newEvent: LeagueEvent) {
+export async function getPointData() {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/leagueevent/update`,
+      `${process.env.NEXT_PUBLIC_URL}/api/point`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newEvent),
-        next: { tags: ["leagueevent"] },
-        cache: "no-store",
+        next: { tags: ["point"] },
       }
     );
     if (!response.ok) {
-      throw new Error("Failed to update event. Status: " + response.status);
+      throw new Error("Failed to fetch pointData. Status: " + response.status);
     }
-    revalidateTag("leagueevent");
+    revalidateTag("point");
     return await response.json();
   } catch (error) {
-    console.error("Error update event:", error);
-    return null;
-  }
-}
-
-export async function deleteLeagueEvent(deleteId:string) {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/leagueevent/delete`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(deleteId),
-        next: { tags: ["leagueevent"] },
-        cache: "no-store",
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to delete event. Status: " + response.status);
-    }
-    revalidateTag("leagueevent");
-    return await response.json();
-  } catch (error) {
-    console.error("Error delete event:", error);
-    return null;
-  }
-}
-
-export async function getLeagueEvent() {
-  try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/leagueevent`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        next: { tags: ["leagueevent"] },
-      }
-    );
-    if (!response.ok) {
-      throw new Error("Failed to fetch event. Status: " + response.status);
-    }
-    revalidateTag("leagueevent");
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetch event:", error);
+    console.error("Error fetch pointData:", error);
     return null;
   }
 }

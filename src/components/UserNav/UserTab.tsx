@@ -59,6 +59,7 @@ import { useRouter } from "next/navigation";
 import { createMatch } from "@/service/match";
 import TextModal from "../TextModal"; // TextModal 컴포넌트를 가져옵니다.
 import SubmitModal from "../SubmitModal";
+import { sendPoint } from "@/service/point";
 
 type UserTabProps = {
   user: MyUser;
@@ -66,7 +67,7 @@ type UserTabProps = {
   users: MyUser[];
 };
 
-const UserTab = ({ user, teams, users }: UserTabProps) => {
+const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
   const router = useRouter();
   const maps = [
     { id: "1", name: "폴리포이드" },
@@ -111,34 +112,55 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     onClose: onPointClose,
   } = useDisclosure();
 
-  const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
-  const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
+  // Find the current user from the users array based on email
+  let currentUser = users.find((u) => u.email === sessionUser.email);
+
+  if (!currentUser) {
+    currentUser = sessionUser;
+  }
+
+  const totalWins =
+    currentUser?.BELO.pw + currentUser?.BELO.tw + currentUser?.BELO.zw;
+  const totalLosses =
+    currentUser?.BELO.pl + currentUser?.BELO.tl + currentUser?.BELO.zl;
 
   const totalGames = totalWins + totalLosses;
 
   const winRateTotal = useMemo(() => {
-    const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
-    const totalGames = totalWins + (user.BELO.pl + user.BELO.tl + user.BELO.zl);
+    const totalWins =
+      currentUser?.BELO.pw + currentUser?.BELO.tw + currentUser?.BELO.zw;
+    const totalGames =
+      totalWins +
+      (currentUser?.BELO.pl + currentUser?.BELO.tl + currentUser?.BELO.zl);
     return (totalWins / totalGames) * 100;
-  }, [user.BELO]);
+  }, [currentUser?.BELO]);
 
   const winRateP = useMemo(() => {
-    return (user.BELO.pw / (user.BELO.pw + user.BELO.pl)) * 100;
-  }, [user.BELO.pw, user.BELO.pl]);
+    return (
+      (currentUser?.BELO.pw / (currentUser?.BELO.pw + currentUser?.BELO.pl)) *
+      100
+    );
+  }, [currentUser?.BELO.pw, currentUser?.BELO.pl]);
 
   const winRateT = useMemo(() => {
-    return (user.BELO.tw / (user.BELO.tw + user.BELO.tl)) * 100;
-  }, [user.BELO.tw, user.BELO.tl]);
+    return (
+      (currentUser?.BELO.tw / (currentUser?.BELO.tw + currentUser?.BELO.tl)) *
+      100
+    );
+  }, [currentUser?.BELO.tw, currentUser?.BELO.tl]);
 
   const winRateZ = useMemo(() => {
-    return (user.BELO.zw / (user.BELO.zw + user.BELO.zl)) * 100;
-  }, [user.BELO.zw, user.BELO.zl]);
+    return (
+      (currentUser?.BELO.zw / (currentUser?.BELO.zw + currentUser?.BELO.zl)) *
+      100
+    );
+  }, [currentUser?.BELO.zw, currentUser?.BELO.zl]);
 
   // 레벨과 경험치 백분율 계산
-  const level = Math.floor(user.point / 1000);
-  const expPercentage = (user.point % 1000) / 10;
+  const level = Math.floor(currentUser?.point / 1000);
+  const expPercentage = (currentUser?.point % 1000) / 10;
 
-  const myTeam = teams?.find((team: Team) => team._id === user.team);
+  const myTeam = teams?.find((team: Team) => team._id === currentUser?.team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정
@@ -151,7 +173,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
   };
 
   // 선택한 팀에 따른 이미지 경로 결정
-  const imagePath = teamImagePaths[user.team] || "/Belogo.png";
+  const imagePath = teamImagePaths[currentUser?.team] || "/Belogo.png";
 
   let formatter = useDateFormatter({ dateStyle: "full" });
 
@@ -281,6 +303,34 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     }
   };
 
+  const sendPointData = async () => {
+    // 입력 값 검사
+    if (!point || !winnerNickname) {
+      setModalTitle("입력 오류");
+      setModalText("모든 필드를 채워주세요.");
+      onModalOpen();
+      return;
+    }
+
+    const newPointData = {
+      senduser: currentUser.nickname,
+      receiveuser: winnerNickname,
+      point,
+      message,
+    };
+
+    try {
+      await sendPoint(newPointData);
+      setModalTitle("등록 성공");
+      setModalText("경기 결과가 성공적으로 등록되었습니다.");
+      onModalOpen();
+    } catch (error) {
+      setModalTitle("등록 실패");
+      setModalText("등록에 실패했습니다.");
+      onModalOpen();
+    }
+  };
+
   const resetData = () => {
     setWinnerNickname("");
     setLoserNickname("");
@@ -302,6 +352,10 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
     onOpenChange();
   };
 
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <>
       <Tabs aria-label="Dynamic tabs" items={tabs}>
@@ -311,7 +365,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">
-                    {user.role}
+                    {currentUser.role}
                   </p>
                 </div>
                 <div>
@@ -322,7 +376,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
-                    onPress={() => router.push(`/user/profile/${user.email}`)}
+                    onPress={() =>
+                      router.push(`/user/profile/${currentUser.email}`)
+                    }
                   ></Button>
                   <Button
                     isIconOnly
@@ -339,10 +395,15 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
               <div className="mt-4 mb-6">
                 <div className="flex items-center m-2 gap-4 ">
                   {/* Avatar 위치를 조정합니다. */}
-                  <Avatar src={user.avatar} className="w-20 h-20 text-large" />
+                  <Avatar
+                    src={currentUser.avatar}
+                    className="w-20 h-20 text-large"
+                  />
                   <div className="flex flex-col">
-                    <p className="font-bold text-2xl">{user.nickname}</p>
-                    <p className="font-bold text-md text-blue">@{user.name}</p>
+                    <p className="font-bold text-2xl">{currentUser.nickname}</p>
+                    <p className="font-bold text-md text-blue">
+                      @{currentUser.name}
+                    </p>
                   </div>
                 </div>
                 <Progress
@@ -360,7 +421,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   showValueLabel={true}
                 />
                 <div className="mt-2 flex items-center justify-center gap-2">
-                  <p className="font-bold text-lg">POINT : {user.point}</p>
+                  <p className="font-bold text-lg">
+                    POINT : {currentUser.point}
+                  </p>
                   <Button
                     isIconOnly
                     variant="light"
@@ -386,7 +449,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                   <p className="mx-2 font-bold text-xl">
                     {totalWins}W {totalLosses}L
                   </p>
-                  <p className="mx-2 font-bold text-2xl">{user.tear} Tier</p>
+                  <p className="mx-2 font-bold text-2xl">
+                    {currentUser.tear} Tier
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col ml-4">
@@ -399,7 +464,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     showValueLabel={true}
                   />
                   <p className="mx-4 font-bold">
-                    vs P <br /> {user.BELO.pw}W {user.BELO.pl}L
+                    vs P <br /> {currentUser.BELO.pw}W {currentUser.BELO.pl}L
                   </p>
                 </div>
                 <div className="flex my-2">
@@ -411,7 +476,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     showValueLabel={true}
                   />
                   <p className="mx-4 font-bold">
-                    vs Z <br /> {user.BELO.zw}W {user.BELO.zl}L
+                    vs Z <br /> {currentUser.BELO.zw}W {currentUser.BELO.zl}L
                   </p>
                 </div>
                 <div className="flex my-2">
@@ -423,7 +488,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     showValueLabel={true}
                   />
                   <p className="mx-4 font-bold">
-                    vs T <br /> {user.BELO.tw}W {user.BELO.tl}L
+                    vs T <br /> {currentUser.BELO.tw}W {currentUser.BELO.tl}L
                   </p>
                 </div>
               </div>
@@ -441,7 +506,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">
-                    {user.role}
+                    {currentUser.role}
                   </p>
                 </div>
                 <div>
@@ -452,7 +517,9 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     startContent={
                       <UserSettingIcon filled={"none"} height={24} width={24} />
                     }
-                    onPress={() => router.push(`/user/profile/${user.email}`)}
+                    onPress={() =>
+                      router.push(`/user/profile/${currentUser.email}`)
+                    }
                   ></Button>
                   <Button
                     isIconOnly
@@ -469,10 +536,15 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
               <div className="mt-4 mb-6">
                 <div className="flex items-center m-2 gap-4">
                   {/* Avatar 위치를 조정합니다. */}
-                  <Avatar src={user.avatar} className="w-20 h-20 text-large" />
+                  <Avatar
+                    src={currentUser.avatar}
+                    className="w-20 h-20 text-large"
+                  />
                   <div className="flex flex-col">
-                    <p className="font-bold text-2xl">{user.nickname}</p>
-                    <p className="font-bold text-md text-blue">@{user.name}</p>
+                    <p className="font-bold text-2xl">{currentUser.nickname}</p>
+                    <p className="font-bold text-md text-blue">
+                      @{currentUser.name}
+                    </p>
                   </div>
                 </div>
                 <Progress
@@ -539,7 +611,7 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                           {totalWins}W {totalLosses}L
                         </p>
                         <p className="mx-2 font-bold text-2xl">
-                          {user.tear} Tier
+                          {currentUser.tear} Tier
                         </p>
                       </div>
                     </div>
@@ -553,7 +625,8 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                           showValueLabel={true}
                         />
                         <p className="mx-4 font-bold">
-                          vs P <br /> {user.BELO.pw}W {user.BELO.pl}L
+                          vs P <br /> {currentUser.BELO.pw}W{" "}
+                          {currentUser.BELO.pl}L
                         </p>
                       </div>
                       <div className="flex my-2">
@@ -565,7 +638,8 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                           showValueLabel={true}
                         />
                         <p className="mx-4 font-bold">
-                          vs Z <br /> {user.BELO.zw}W {user.BELO.zl}L
+                          vs Z <br /> {currentUser.BELO.zw}W{" "}
+                          {currentUser.BELO.zl}L
                         </p>
                       </div>
                       <div className="flex my-2">
@@ -577,7 +651,8 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                           showValueLabel={true}
                         />
                         <p className="mx-4 font-bold">
-                          vs T <br /> {user.BELO.tw}W {user.BELO.tl}L
+                          vs T <br /> {currentUser.BELO.tw}W{" "}
+                          {currentUser.BELO.tl}L
                         </p>
                       </div>
                     </div>
@@ -804,25 +879,21 @@ const UserTab = ({ user, teams, users }: UserTabProps) => {
                     />
                   </div>
                   <div className="w-full px-4">
-                    <p className="font-bold">전송 전 포인트 : {user.point}</p>
                     <p className="font-bold">
-                      전송 후 포인트 : {user.point - Number(point)}
+                      전송 전 포인트 : {currentUser.point}
+                    </p>
+                    <p className="font-bold">
+                      전송 후 포인트 : {currentUser.point - Number(point)}
                     </p>
                   </div>
                 </div>
               </ModalBody>
               <ModalFooter>
-                <Button color="secondary" variant="flat" onPress={swapUsers}>
-                  유저전환
-                </Button>
-                <Button color="primary" variant="flat" onPress={resetData}>
-                  초기화
-                </Button>
-                <Button color="danger" variant="flat" onPress={closeModal}>
+                <Button color="danger" variant="flat" onPress={onPointClose}>
                   닫기
                 </Button>
-                <Button color="success" onPress={addMatch}>
-                  등록
+                <Button color="success" onPress={sendPointData}>
+                  보내기
                 </Button>
               </ModalFooter>
             </>

@@ -240,10 +240,10 @@ export default function ProfileComponent({ user, posts, comments }: any) {
       const data = await response.json();
 
       if (response.ok) {
-        alert("데이터 갱신을 위해 재로그인 합니다.");
+        //alert("데이터 갱신을 위해 재로그인 합니다.");
         setSelected("PROFILE");
-        signOut();
-        window.location.href = `/`;
+        //signOut();
+        //window.location.href = `/`;
       } else {
         throw new Error(data.message);
       }

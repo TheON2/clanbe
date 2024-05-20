@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { senduser, receiveuser, point } = body;
+    const { senduser, receiveuser, point , message } = body;
 
     // 보내는 유저와 받는 유저를 찾아냅니다.
     const sender = await UserModel.findById(senduser);
@@ -50,6 +50,7 @@ export async function POST(req: Request) {
       rbeforepoint: rbeforepoint,
       rafterpoint: rafterpoint,
       point: point,
+      message:message,
     });
 
     await newPoint.save();
