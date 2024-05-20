@@ -37,6 +37,7 @@ const userSchema = new mongoose.Schema(
     },
     team: String, // 소속 팀 이름
     message: String, // 상태 메세지
+    idData:String,
   },
   {
     timestamps: true, // createdAt 및 updatedAt 타임스탬프 자동 생성

@@ -126,6 +126,7 @@ export type User = {
   }
   team: string;
   message: string;
+  idData?: string;
 };
 
 export type Category = {
@@ -191,6 +192,7 @@ export type Signup = {
   nickname: string;
   race: string;
   phone: string;
+  idData?: string;
 };
 
 //회원가입 에러메세지

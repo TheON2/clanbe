@@ -1,11 +1,12 @@
 import UserModel from "@/models/user";
 import mongoose from "mongoose";
 import bcrypt from "bcrypt";
+import { uploadImage } from "@/service/posts";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  let { email, password, nickname, name, kakao, birth, race, phone } =
+  let { email, password, nickname, name, kakao, birth, race, phone, idData } =
     body.signUpState;
 
   try {
@@ -39,6 +40,15 @@ export async function POST(req: Request, res: Response) {
       });
     }
 
+    let fileUrl
+
+    if (idData) {
+      const blob = await fetch(idData).then((res) => res.blob());
+      fileUrl = await uploadImage(blob as File);
+    }
+
+    console.log(fileUrl)
+
     // 비밀번호 해싱
     const hashedPassword = await bcrypt.hash(password, 10); // 10은 솔트 라운드 수입니다.
 
@@ -57,6 +67,7 @@ export async function POST(req: Request, res: Response) {
       tear: "미배정",
       BELO: { race: race, pw: 0, pl: 0, tw: 0, tl: 0, zw: 0, zl: 0, belo: 0 },
       team: "미배정",
+      idData:fileUrl,
     };
 
     const user = new UserModel(myProfile);

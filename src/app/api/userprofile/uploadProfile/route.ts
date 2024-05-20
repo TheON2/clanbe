@@ -13,6 +13,8 @@ export async function POST(req: Request, res: Response) {
     if (!file) {
       throw new Error("이미지를 찾을 수 없음");
     }
+
+    console.log(file)
     const fileUrl = await uploadImage(file);
     // 이미지 업로드 성공 후 유저 정보 업데이트
     if (fileUrl) {

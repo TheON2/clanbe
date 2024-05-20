@@ -5,10 +5,13 @@ import {
   Button,
   ButtonGroup,
   Card,
+  CardBody,
+  CardFooter,
   CardHeader,
   Divider,
   Input,
 } from "@nextui-org/react";
+import Image from "next/image";
 import { useState } from "react";
 import { CheckBoxInterface, Signup } from "../../../../types/types";
 import Link from "next/link";
@@ -29,6 +32,7 @@ export default function SignUpPage() {
     birth: "",
     race: "",
     phone: "",
+    idData: "",
   });
   const [error, setError] = useState<Signup>({
     email: "",
@@ -40,16 +44,8 @@ export default function SignUpPage() {
     birth: "",
     race: "",
     phone: "",
+    idData: "",
   });
-  const [checkboxes, setCheckboxes] = useState<CheckBoxInterface>({
-    checkAll: false,
-    checkTerms: false,
-    checkPersonalInfo: false,
-    checkNewsletter: false,
-  });
-  const [checkboxErrorMessage, setCheckboxErrorMessage] = useState("");
-  const [serverError, setServerError] = useState<string>("");
-  const [serverNicknameError, setServerNicknameError] = useState<string>("");
 
   const validatePhoneNumber = (phone: string) => {
     const phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
@@ -61,6 +57,24 @@ export default function SignUpPage() {
       ...prev,
       race: race,
     }));
+  };
+
+  const [newPreviewImage, setNewPreviewImage] = useState("");
+
+  const handleNewImageChange = (event: any) => {
+    const file = event.target.files[0];
+    if (file) {
+      console.log("진입");
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewPreviewImage(reader.result as string);
+        setSignUpState((prev) => ({
+          ...prev,
+          idData: reader.result as string,
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleInputChange = (e: any) => {
@@ -164,7 +178,8 @@ export default function SignUpPage() {
       !signUpState.kakao ||
       !signUpState.birth ||
       !signUpState.race ||
-      !signUpState.phone;
+      !signUpState.phone ||
+      !signUpState.idData;
 
     return !hasErrors && !hasEmptyFields;
   };
@@ -191,6 +206,8 @@ export default function SignUpPage() {
       alert(error.message);
     }
   };
+
+  console.log(signUpState);
 
   return (
     <div className="w-full max-w-[500px] mt-8 mx-auto">
@@ -305,6 +322,27 @@ export default function SignUpPage() {
               isInvalid={error.birth.length !== 0}
               errorMessage={error.birth}
             />
+            <p className="text-center">신분증 사진</p>
+            <Card className="h-full my-4 w-full">
+              <div className="flex flex-col justify-center items-center">
+                <p className="text-center">
+                  주민등록번호 뒷자리를 가린 <br />
+                  이미지를 업로드해주세요.
+                </p>
+              </div>
+
+              <CardBody className="flex justify-center items-center">
+                <Image
+                  src={newPreviewImage || "/Belogo.png"}
+                  height={200}
+                  width={350}
+                  alt="team"
+                />
+              </CardBody>
+              <CardFooter>
+                <input type="file" onChange={handleNewImageChange} />
+              </CardFooter>
+            </Card>
             <ButtonGroup>
               <Button
                 color={signUpState.race === "z" ? "success" : "default"}
