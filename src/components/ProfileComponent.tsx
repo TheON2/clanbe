@@ -56,6 +56,7 @@ import { formatDateOnly, formatRelativeDate } from "@/utils/dateUtils";
 import CommentCard from "./CommentCard/CommentCard";
 import PostCommentCard from "./CommentCard/ProfileCommentCard";
 import { Post } from "../../types/types";
+import { imageUpload, updatePasswordData, updateProfileData } from "@/service/profile";
 
 export default function ProfileComponent({ user, posts, comments }: any) {
   const router = useRouter();
@@ -198,7 +199,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     }
   };
 
-  function handleImageUpload(e: any) {
+  const handleImageUpload = async (e: any) => {
     const file = e.target.files[0];
     if (!file) return;
 
@@ -206,47 +207,20 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     formData.append("upload", file);
     formData.append("email", signUpState.email);
 
-    fetch("/api/userprofile/uploadProfile", {
-      // 이미지를 업로드하는 API 경로를 지정하세요.
-      method: "POST",
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.uploaded) {
-          setSignUpState((prev) => ({
-            ...prev,
-            avatar: data.url, // 상태 업데이트
-          }));
-        } else {
-          console.error("업로드 실패:", data.error);
-        }
-      })
-      .catch((error) => {
-        console.error("업로드 중 오류 발생:", error);
-      });
+     try {
+       const data = await imageUpload({ formData });
+
+       setSelected("PROFILE");
+     } catch (error: any) {
+       alert(error.message);
+     }
   }
 
   const updateProfile = async () => {
     try {
-      const response = await fetch("/api/userprofile/update", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ signUpState }),
-      });
+      const data = await updateProfileData({ signUpState });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        //alert("데이터 갱신을 위해 재로그인 합니다.");
-        setSelected("PROFILE");
-        //signOut();
-        //window.location.href = `/`;
-      } else {
-        throw new Error(data.message);
-      }
+      setSelected("PROFILE");
     } catch (error: any) {
       alert(error.message);
     }
@@ -255,29 +229,17 @@ export default function ProfileComponent({ user, posts, comments }: any) {
   const updatePassword = async () => {
     if (error.password.length > 1 || error.passwordConfirm.length > 1) return;
     try {
-      const response = await fetch("/api/userprofile/updatepw", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ signUpState }),
-      });
+      const data = await updatePasswordData({ signUpState });
 
-      const data = await response.json();
-
-      if (response.ok) {
-        alert("비밀번호 변경 성공");
-        setSelected("PROFILE");
-        // 비밀번호 필드 초기화
-        setSignUpState((prev) => ({
-          ...prev,
-          password: "",
-          passwordConfirm: "",
-        }));
-        setIsEditPassword(false); // 비밀번호 변경 후 프로필 수정 모드로 전환
-      } else {
-        throw new Error(data.message);
-      }
+      alert("비밀번호 변경 성공");
+      setSelected("PROFILE");
+      // 비밀번호 필드 초기화
+      setSignUpState((prev) => ({
+        ...prev,
+        password: "",
+        passwordConfirm: "",
+      }));
+      setIsEditPassword(false); // 비밀번호 변경 후 프로필 수정 모드로 전환
     } catch (error: any) {
       alert(error.message);
     }
