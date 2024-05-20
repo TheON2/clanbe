@@ -111,6 +111,12 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
     onOpenChange: onPointChange,
     onClose: onPointClose,
   } = useDisclosure();
+  const {
+    isOpen: isPointDataOpen,
+    onOpen: onPointDataOpen,
+    onOpenChange: onPointDataChange,
+    onClose: onPointDataClose,
+  } = useDisclosure();
 
   // Find the current user from the users array based on email
   let currentUser = users.find((u) => u.email === sessionUser.email);
@@ -321,12 +327,12 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
 
     try {
       await sendPoint(newPointData);
-      setModalTitle("등록 성공");
-      setModalText("경기 결과가 성공적으로 등록되었습니다.");
+      setModalTitle("포인트 전송 성공");
+      setModalText("성공적으로 포인트를 보냈습니다.");
       onModalOpen();
     } catch (error) {
-      setModalTitle("등록 실패");
-      setModalText("등록에 실패했습니다.");
+      setModalTitle("포인트 전송 실패");
+      setModalText("포인트 전송에 실패했습니다.");
       onModalOpen();
     }
   };
@@ -393,7 +399,7 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
               </div>
               <Divider />
               <div className="mt-4 mb-6">
-                <div className="flex items-center m-2 gap-4 ">
+                <div className="flex items-center m-2 gap-2 ">
                   {/* Avatar 위치를 조정합니다. */}
                   <Avatar
                     src={currentUser.avatar}
@@ -421,8 +427,8 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
                   showValueLabel={true}
                 />
                 <div className="mt-2 flex items-center justify-center gap-2">
-                  <p className="font-bold text-lg">
-                    POINT : {currentUser.point}
+                  <p className="font-bold text-md text-center">
+                    POINT {currentUser.point}
                   </p>
                   <Button
                     isIconOnly
@@ -432,6 +438,15 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
                       <PointIcon filled={"none"} height={24} width={24} />
                     }
                     onPress={() => onPointOpen()}
+                  ></Button>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="primary"
+                    startContent={
+                      <ListIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointDataOpen()}
                   ></Button>
                 </div>
               </div>
@@ -825,7 +840,7 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
           {(onPointClose) => (
             <>
               <ModalHeader className="flex flex-col gap-1">
-                포인트 조회 / 전송
+                포인트 전송
               </ModalHeader>
               <ModalBody>
                 <div className="flex flex-col gap-2 mx-4 justify-center items-center">
@@ -894,6 +909,38 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
                 </Button>
                 <Button color="success" onPress={sendPointData}>
                   보내기
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isPointDataOpen}
+        onOpenChange={onPointDataChange}
+        placement="top-center"
+      >
+        <ModalContent>
+          {(onPointDataClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                포인트 내역 조회
+              </ModalHeader>
+              <ModalBody>
+                <div>
+                  <Tabs aria-label="Dynamic tabs">
+                    <Tab key={"send"} title={"포인트 전송내역"}></Tab>
+                    <Tab key={"recieve"} title={"포인트 수신내역"}></Tab>
+                  </Tabs>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onPointDataClose}
+                >
+                  닫기
                 </Button>
               </ModalFooter>
             </>

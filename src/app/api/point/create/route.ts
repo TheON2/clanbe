@@ -12,8 +12,8 @@ export async function POST(req: Request) {
     const { senduser, receiveuser, point , message } = body;
 
     // 보내는 유저와 받는 유저를 찾아냅니다.
-    const sender = await UserModel.findById(senduser);
-    const receiver = await UserModel.findById(receiveuser);
+    const sender = await UserModel.findOne({ nickname: senduser });
+    const receiver = await UserModel.findOne({ nickname: receiveuser });
 
     if (!sender || !receiver) {
       return new Response(JSON.stringify({ message: "유저를 찾을 수 없습니다." }), {
@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     }
 
     const safterpoint = sbeforepoint - point;
-    const rafterpoint = rbeforepoint + point;
+    const rafterpoint = rbeforepoint + Number(point);
 
     // 유저 포인트 업데이트
     sender.point = safterpoint;
