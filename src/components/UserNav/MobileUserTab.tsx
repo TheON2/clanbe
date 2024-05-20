@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { Key, useEffect, useMemo, useState } from "react";
 import {
   Avatar,
   Button,
@@ -44,11 +44,21 @@ import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
 import { tabs } from "../../../public/data";
 import { signOut } from "next-auth/react";
-import { CalendarDate, parseDate } from "@internationalized/date";
+import {
+  CalendarDate,
+  CalendarDateTime,
+  parseDate,
+  ZonedDateTime,
+} from "@internationalized/date";
 import { useDateFormatter } from "@react-aria/i18n";
 import { useRouter } from "next/navigation";
 import { createMatch } from "@/service/match";
 import styles from "../../styles/style.module.css";
+import { formatDateOnly } from "@/utils/dateUtils";
+import { sendPoint } from "@/service/point";
+import SubmitModal from "../SubmitModal";
+import { PointIcon } from "../../../public/point";
+import { ListIcon } from "../../../public/list";
 
 type UserTabProps = {
   user: MyUser;
@@ -57,7 +67,32 @@ type UserTabProps = {
   points: Point[];
 };
 
-const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
+function PointTable({ data }: { data: any[] }) {
+  return (
+    <Table aria-label="Example static collection table">
+      <TableHeader>
+        <TableColumn>SEND</TableColumn>
+        <TableColumn>RECEIVE</TableColumn>
+        <TableColumn>POINT</TableColumn>
+        <TableColumn>MESSAGE</TableColumn>
+        <TableColumn>CREATED AT</TableColumn>
+      </TableHeader>
+      <TableBody>
+        {data.map((item) => (
+          <TableRow key={item._id}>
+            <TableCell>{item.senduser}</TableCell>
+            <TableCell>{item.receiveuser}</TableCell>
+            <TableCell>{item.point}</TableCell>
+            <TableCell>{item.message}</TableCell>
+            <TableCell>{formatDateOnly(item.createdAt)}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
+
+const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
   const router = useRouter();
   const maps = [
     { id: "1", name: "폴리포이드" },
@@ -79,6 +114,8 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
   const [selectedMap, setSelectedMap] = useState("");
   const [matchDateValue, setMatchDateValue] = useState(parseDate("2024-04-04"));
   const [matchDate, setMatchDate] = useState(new Date());
+  const [point, setPoint] = useState("0");
+  const [message, setMessage] = useState("");
 
   const [winnerNicknameKey, setWinnerNicknameKey] = useState<any>("winner");
   const [loserNicknameKey, setLoserNicknameKey] = useState<any>("loser");
@@ -86,34 +123,75 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
   const [loserRaceKey, setLoserRaceKey] = useState("z");
   const [mapKey, setMapKey] = useState(0);
 
-  const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
-  const totalLosses = user.BELO.pl + user.BELO.tl + user.BELO.zl;
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalText, setModalText] = useState("");
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onOpenChange: onModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isPointOpen,
+    onOpen: onPointOpen,
+    onOpenChange: onPointChange,
+    onClose: onPointClose,
+  } = useDisclosure();
+  const {
+    isOpen: isPointDataOpen,
+    onOpen: onPointDataOpen,
+    onOpenChange: onPointDataChange,
+    onClose: onPointDataClose,
+  } = useDisclosure();
+
+  // Find the current user from the users array based on email
+  let currentUser = users.find((u) => u.email === user.email);
+
+  if (!currentUser) {
+    currentUser = user;
+  }
+
+  const totalWins =
+    currentUser?.BELO.pw + currentUser?.BELO.tw + currentUser?.BELO.zw;
+  const totalLosses =
+    currentUser?.BELO.pl + currentUser?.BELO.tl + currentUser?.BELO.zl;
 
   const totalGames = totalWins + totalLosses;
 
   const winRateTotal = useMemo(() => {
-    const totalWins = user.BELO.pw + user.BELO.tw + user.BELO.zw;
-    const totalGames = totalWins + (user.BELO.pl + user.BELO.tl + user.BELO.zl);
+    const totalWins =
+      currentUser?.BELO.pw + currentUser?.BELO.tw + currentUser?.BELO.zw;
+    const totalGames =
+      totalWins +
+      (currentUser?.BELO.pl + currentUser?.BELO.tl + currentUser?.BELO.zl);
     return (totalWins / totalGames) * 100;
-  }, [user.BELO]);
+  }, [currentUser?.BELO]);
 
   const winRateP = useMemo(() => {
-    return (user.BELO.pw / (user.BELO.pw + user.BELO.pl)) * 100;
-  }, [user.BELO.pw, user.BELO.pl]);
+    return (
+      (currentUser?.BELO.pw / (currentUser?.BELO.pw + currentUser?.BELO.pl)) *
+      100
+    );
+  }, [currentUser?.BELO.pw, currentUser?.BELO.pl]);
 
   const winRateT = useMemo(() => {
-    return (user.BELO.tw / (user.BELO.tw + user.BELO.tl)) * 100;
-  }, [user.BELO.tw, user.BELO.tl]);
+    return (
+      (currentUser?.BELO.tw / (currentUser?.BELO.tw + currentUser?.BELO.tl)) *
+      100
+    );
+  }, [currentUser?.BELO.tw, currentUser?.BELO.tl]);
 
   const winRateZ = useMemo(() => {
-    return (user.BELO.zw / (user.BELO.zw + user.BELO.zl)) * 100;
-  }, [user.BELO.zw, user.BELO.zl]);
+    return (
+      (currentUser?.BELO.zw / (currentUser?.BELO.zw + currentUser?.BELO.zl)) *
+      100
+    );
+  }, [currentUser?.BELO.zw, currentUser?.BELO.zl]);
 
   // 레벨과 경험치 백분율 계산
-  const level = Math.floor(user.point / 1000);
-  const expPercentage = (user.point % 1000) / 10;
+  const level = Math.floor(currentUser?.point / 1000);
+  const expPercentage = (currentUser?.point % 1000) / 10;
 
-  const myTeam = teams.find((team: Team) => team._id === user.team);
+  const myTeam = teams?.find((team: Team) => team._id === currentUser?.team);
 
   const winRateTeam = myTeam ? (myTeam.w / (myTeam.w + myTeam.l)) * 100 : 0;
   // myTeam이 undefined일 경우 승률을 0으로 설정
@@ -126,24 +204,45 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
   };
 
   // 선택한 팀에 따른 이미지 경로 결정
-  const imagePath = teamImagePaths[user.team] || "/Belogo.png";
+  const imagePath = teamImagePaths[currentUser?.team] || "/Belogo.png";
 
   let formatter = useDateFormatter({ dateStyle: "full" });
 
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   useEffect(() => {
-    // CalendarDate를 Date 객체로 변환
-    const newDate = new Date(
-      matchDateValue.year,
-      matchDateValue.month - 1,
-      matchDateValue.day
-    );
-    setMatchDate(newDate);
-  }, [matchDateValue]);
+    if (isOpen) {
+      setMatchDateValue(parseDate(new Date().toISOString().split("T")[0]));
+    }
+  }, [isOpen]);
 
-  const handleDateChange = (newDateValue: CalendarDate) => {
-    setMatchDateValue(newDateValue);
+  const handleDateChange = (
+    newDateValue: CalendarDate | CalendarDateTime | ZonedDateTime
+  ) => {
+    // newDateValue가 CalendarDate 타입인지 확인합니다.
+    if (newDateValue instanceof CalendarDate) {
+      setMatchDateValue(newDateValue);
+    }
+    // newDateValue가 CalendarDateTime 타입인지 확인합니다.
+    else if (newDateValue instanceof CalendarDateTime) {
+      setMatchDateValue(
+        new CalendarDate(
+          newDateValue.year,
+          newDateValue.month,
+          newDateValue.day
+        )
+      );
+    }
+    // newDateValue가 ZonedDateTime 타입인지 확인합니다.
+    else if (newDateValue instanceof ZonedDateTime) {
+      setMatchDateValue(
+        new CalendarDate(
+          newDateValue.year,
+          newDateValue.month,
+          newDateValue.day
+        )
+      );
+    }
   };
 
   const handleWinnerSelection = (nickname: string) => {
@@ -164,6 +263,14 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
     }
   };
 
+  const handleWinnerSelectionChange = (key: Key | null) => {
+    setWinnerNicknameKey(key as string);
+  };
+
+  const handleLoserSelectionChange = (key: Key | null) => {
+    setLoserNicknameKey(key as string);
+  };
+
   const swapUsers = () => {
     // 닉네임과 종족 정보를 교환
     const tempNickname = winnerNickname;
@@ -177,6 +284,9 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
     setLoserNickname(tempNickname);
     setLoserRace(tempRace);
     setLoserRaceKey(tempRaceKey);
+
+    setWinnerNicknameKey(loserNicknameKey);
+    setLoserNicknameKey(winnerNicknameKey);
   };
 
   const addMatch = async () => {
@@ -189,7 +299,16 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
       !selectedMap ||
       !matchDate
     ) {
-      alert("모든 필드를 채워주세요.");
+      setModalTitle("입력 오류");
+      setModalText("모든 필드를 채워주세요.");
+      onModalOpen();
+      return;
+    }
+
+    if (winnerNickname === loserNickname) {
+      setModalTitle("입력 오류");
+      setModalText("같은 상대끼리 전적을 등록 할 수 없습니다.");
+      onModalOpen();
       return;
     }
 
@@ -205,16 +324,49 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
 
     try {
       await createMatch(newMatch);
+      setModalTitle("등록 성공");
+      setModalText("경기 결과가 성공적으로 등록되었습니다.");
+      onModalOpen();
     } catch (error) {
-      alert("등록실패");
+      setModalTitle("등록 실패");
+      setModalText("등록에 실패했습니다.");
+      onModalOpen();
+    }
+  };
+
+  const sendPointData = async () => {
+    // 입력 값 검사
+    if (!point || !winnerNickname) {
+      setModalTitle("입력 오류");
+      setModalText("모든 필드를 채워주세요.");
+      onModalOpen();
+      return;
+    }
+
+    const newPointData = {
+      senduser: currentUser.nickname,
+      receiveuser: winnerNickname,
+      point,
+      message,
+    };
+
+    try {
+      await sendPoint(newPointData);
+      setModalTitle("포인트 전송 성공");
+      setModalText("성공적으로 포인트를 보냈습니다.");
+      onModalOpen();
+    } catch (error) {
+      setModalTitle("포인트 전송 실패");
+      setModalText("포인트 전송에 실패했습니다.");
+      onModalOpen();
     }
   };
 
   const resetData = () => {
     setWinnerNickname("");
     setLoserNickname("");
-    setWinnerRace("");
-    setLoserRace("");
+    setWinnerRace("z");
+    setLoserRace("z");
     setSelectedMap("");
     setMatchDateValue(parseDate("2024-04-04"));
     setMatchDate(new Date());
@@ -230,6 +382,17 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
     resetData();
     onOpenChange();
   };
+
+  const sendData = points.filter(
+    (item) => item.senduser === currentUser.nickname
+  );
+  const receiveData = points.filter(
+    (item) => item.receiveuser === currentUser.nickname
+  );
+
+  if (!currentUser) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -292,6 +455,29 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
                   value={expPercentage}
                   showValueLabel={true}
                 />
+                <div className="mt-2 flex items-center justify-center gap-2">
+                  <p className="font-bold text-md text-center">
+                    POINT {currentUser.point}
+                  </p>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="danger"
+                    startContent={
+                      <PointIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointOpen()}
+                  ></Button>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="primary"
+                    startContent={
+                      <ListIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointDataOpen()}
+                  ></Button>
+                </div>
               </div>
               <div className="flex justify-center">
                 <div className="flex my-4 w-[200px]">
@@ -412,6 +598,29 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
                   value={expPercentage}
                   showValueLabel={true}
                 />
+                <div className="mt-2 flex items-center justify-center gap-2">
+                  <p className="font-bold text-md text-center">
+                    POINT {currentUser.point}
+                  </p>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="danger"
+                    startContent={
+                      <PointIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointOpen()}
+                  ></Button>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="primary"
+                    startContent={
+                      <ListIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointDataOpen()}
+                  ></Button>
+                </div>
               </div>
               <div className="flex flex-col">
                 <div className="flex justify-center w-full">
@@ -441,29 +650,80 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
                     <p className="mx-4 font-bold">승점 {myTeam?.winpoint}</p>
                   </div>
                 </div>
-                <div className="flex flex-col mx-auto my-4">
-                  <p>Next Match</p>
-                  <div className="p-4">
-                    <Popover showArrow placement="bottom">
-                      <PopoverTrigger>
-                        <User
-                          as="button"
-                          name="갈락티코"
-                          description="1위 3승 1패"
-                          className="transition-transform"
-                          avatarProps={{
-                            src: "/grtc.jpg",
+                <div className="flex flex-col w-full gap-3 my-4">
+                  <Popover showArrow placement="top">
+                    <PopoverTrigger>
+                      <Button color="primary">내 리그정보</Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="p-1">
+                      <div className="flex my-4 ">
+                        <CircularProgress
+                          aria-label="Loading..."
+                          classNames={{
+                            svg: "w-20 h-20",
                           }}
+                          value={winRateTotal}
+                          color={winRateTotal >= 50 ? "success" : "danger"}
+                          showValueLabel={true}
                         />
-                      </PopoverTrigger>
-                      <PopoverContent className="p-1">
-                        <UserTwitterCard />
-                      </PopoverContent>
-                    </Popover>
-                  </div>
-                  <Tooltip showArrow={true} content="D-2">
-                    <Button>2023-07-04</Button>
-                  </Tooltip>
+                        <div>
+                          <p className="mx-2 font-bold text-xl">
+                            {totalWins}W {totalLosses}L
+                          </p>
+                          <p className="mx-2 font-bold text-2xl">
+                            {currentUser.tear} Tier
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex flex-col ml-4">
+                        <div className="flex my-2">
+                          <CircularProgress
+                            aria-label="Loading..."
+                            size="lg"
+                            value={winRateP}
+                            color={winRateP >= 50 ? "success" : "danger"}
+                            showValueLabel={true}
+                          />
+                          <p className="mx-4 font-bold">
+                            vs P <br /> {currentUser.BELO.pw}W{" "}
+                            {currentUser.BELO.pl}L
+                          </p>
+                        </div>
+                        <div className="flex my-2">
+                          <CircularProgress
+                            aria-label="Loading..."
+                            size="lg"
+                            value={winRateZ}
+                            color={winRateZ >= 50 ? "success" : "danger"}
+                            showValueLabel={true}
+                          />
+                          <p className="mx-4 font-bold">
+                            vs Z <br /> {currentUser.BELO.zw}W{" "}
+                            {currentUser.BELO.zl}L
+                          </p>
+                        </div>
+                        <div className="flex my-2">
+                          <CircularProgress
+                            aria-label="Loading..."
+                            size="lg"
+                            value={winRateT}
+                            color={winRateT >= 50 ? "success" : "danger"}
+                            showValueLabel={true}
+                          />
+                          <p className="mx-4 font-bold">
+                            vs T <br /> {currentUser.BELO.tw}W{" "}
+                            {currentUser.BELO.tl}L
+                          </p>
+                        </div>
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                  <Button
+                    color="primary"
+                    onPress={() => router.push("/PROLEAGUE/schedule")}
+                  >
+                    프로리그 일정
+                  </Button>
                 </div>
               </div>
             </CardBody>
@@ -621,6 +881,132 @@ const MobileUserTab = ({ user, teams, users }: UserTabProps) => {
           )}
         </ModalContent>
       </Modal>
+      <Modal
+        isOpen={isPointOpen}
+        onOpenChange={onPointChange}
+        placement="top-center"
+      >
+        <ModalContent>
+          {(onPointClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                포인트 전송
+              </ModalHeader>
+              <ModalBody>
+                <div className="flex flex-col gap-2 mx-4 justify-center items-center">
+                  <div className="flex w-full justify-center items-center gap-2">
+                    <Autocomplete
+                      label="클랜원"
+                      className=""
+                      value={winnerNickname}
+                      onInputChange={(value) => {
+                        if (value !== winnerNickname) {
+                          handleWinnerSelection(value);
+                        }
+                      }}
+                      selectedKey={winnerNicknameKey}
+                      onSelectionChange={handleWinnerSelectionChange}
+                    >
+                      {users.map((user) => (
+                        <AutocompleteItem
+                          key={String(user.name)}
+                          value={user.nickname}
+                        >
+                          {user.nickname}
+                        </AutocompleteItem>
+                      ))}
+                    </Autocomplete>
+                    <Input
+                      type="number"
+                      name="point"
+                      labelPlacement={"outside"}
+                      placeholder="보낼 포인트"
+                      value={point}
+                      className="py-4"
+                      size="lg"
+                      onChange={(e) => {
+                        setPoint(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full">
+                    <Input
+                      type="text"
+                      name="message"
+                      labelPlacement={"outside"}
+                      placeholder="보낼 메세지"
+                      value={message}
+                      className="py-4"
+                      size="lg"
+                      onChange={(e) => {
+                        setMessage(e.target.value);
+                      }}
+                    />
+                  </div>
+                  <div className="w-full px-4">
+                    <p className="font-bold">
+                      전송 전 포인트 : {currentUser.point}
+                    </p>
+                    <p className="font-bold">
+                      전송 후 포인트 : {currentUser.point - Number(point)}
+                    </p>
+                  </div>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button color="danger" variant="flat" onPress={onPointClose}>
+                  닫기
+                </Button>
+                <Button color="success" onPress={sendPointData}>
+                  보내기
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <Modal
+        isOpen={isPointDataOpen}
+        onOpenChange={onPointDataChange}
+        placement="top-center"
+      >
+        <ModalContent>
+          {(onPointDataClose) => (
+            <>
+              <ModalHeader className="flex flex-col gap-1">
+                포인트 내역 조회
+              </ModalHeader>
+              <ModalBody>
+                <div>
+                  <Tabs aria-label="Dynamic tabs">
+                    <Tab key={"send"} title={"포인트 전송내역"}>
+                      <PointTable data={sendData} />
+                    </Tab>
+                    <Tab key={"recieve"} title={"포인트 수신내역"}>
+                      <PointTable data={receiveData} />
+                    </Tab>
+                  </Tabs>
+                </div>
+              </ModalBody>
+              <ModalFooter>
+                <Button
+                  color="danger"
+                  variant="flat"
+                  onPress={onPointDataClose}
+                >
+                  닫기
+                </Button>
+              </ModalFooter>
+            </>
+          )}
+        </ModalContent>
+      </Modal>
+      <SubmitModal
+        title={modalTitle}
+        text={modalText}
+        isOpen={isModalOpen}
+        onClose={onModalClose}
+      />
     </>
   );
 };

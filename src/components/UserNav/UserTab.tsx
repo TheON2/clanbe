@@ -582,7 +582,7 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
               </div>
               <Divider />
               <div className="mt-4 mb-6">
-                <div className="flex items-center m-2 gap-4">
+                <div className="flex items-center m-2 gap-2 ">
                   {/* Avatar 위치를 조정합니다. */}
                   <Avatar
                     src={currentUser.avatar}
@@ -609,7 +609,31 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
                   value={expPercentage}
                   showValueLabel={true}
                 />
+                <div className="mt-2 flex items-center justify-center gap-2">
+                  <p className="font-bold text-md text-center">
+                    POINT {currentUser.point}
+                  </p>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="danger"
+                    startContent={
+                      <PointIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointOpen()}
+                  ></Button>
+                  <Button
+                    isIconOnly
+                    variant="light"
+                    color="primary"
+                    startContent={
+                      <ListIcon filled={"none"} height={24} width={24} />
+                    }
+                    onPress={() => onPointDataOpen()}
+                  ></Button>
+                </div>
               </div>
+
               <Image
                 alt="Card background"
                 src={myTeam?.avatar}
