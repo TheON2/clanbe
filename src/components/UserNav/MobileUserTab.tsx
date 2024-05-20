@@ -39,7 +39,7 @@ import {
 } from "@nextui-org/table";
 import { UserTwitterCard } from "../UserTwitterCard";
 import { User as MyUser } from "next-auth";
-import { Team } from "../../../types/types";
+import { Point, Team } from "../../../types/types";
 import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
 import { tabs } from "../../../public/data";
@@ -54,6 +54,7 @@ type UserTabProps = {
   user: MyUser;
   teams: Team[];
   users: MyUser[];
+  points: Point[];
 };
 
 const MobileUserTab = ({ user, teams, users }: UserTabProps) => {

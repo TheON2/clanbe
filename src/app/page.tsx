@@ -12,9 +12,11 @@ import { getAllPosts, PostData } from "@/service/posts";
 import { getSupports } from "@/service/supports";
 import { getEvent } from "@/service/schedule";
 import { Post } from "../../types/types";
+import { getPointData } from "@/service/point";
 
 export default async function HomePage() {
   const { teams, users } = await getNavData();
+  const { points } = await getPointData();
   const posts = await getAllPosts();
   const { events } = await getEvent();
   const { supports, allSupports } = await getSupports();
@@ -34,7 +36,7 @@ export default async function HomePage() {
       <Divider className="my-4" />
       <div className="flex flex-wrap gap-2 justify-center">
         <div className="block md:hidden w-full mx-4">
-          <MobileUserComponent teams={teams} users={users} />
+          <MobileUserComponent teams={teams} users={users} points={points} />
         </div>
         <Notice notices={filteredNotices} />
         <Upcoming events={events} />

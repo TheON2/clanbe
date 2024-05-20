@@ -18,7 +18,7 @@ import { Team } from "../../types/types";
 import UserNav from "./UserNav/UserNav";
 import { User as MyUser } from "next-auth";
 
-export default function MobileUserComponent({ teams, users }: any) {
+export default function MobileUserComponent({ teams, users, points }: any) {
   const router = useRouter();
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
@@ -38,7 +38,7 @@ export default function MobileUserComponent({ teams, users }: any) {
   }
 
   return user ? (
-    <UserNav user={user} teams={teams} users={users} />
+    <UserNav user={user} teams={teams} users={users} points={points} />
   ) : (
     // 유효하지 않은 user 객체의 경우 대체 UI 표시
     <Card className="p-4 flex flex-col items-center justify-center w-full h-32">

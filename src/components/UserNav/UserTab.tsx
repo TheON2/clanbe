@@ -47,7 +47,7 @@ import {
 } from "@internationalized/date";
 import { UserTwitterCard } from "../UserTwitterCard";
 import { User as MyUser } from "next-auth";
-import { Team } from "../../../types/types";
+import { Point, Team } from "../../../types/types";
 import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
 import { PointIcon } from "../../../public/point";
@@ -60,14 +60,40 @@ import { createMatch } from "@/service/match";
 import TextModal from "../TextModal"; // TextModal 컴포넌트를 가져옵니다.
 import SubmitModal from "../SubmitModal";
 import { sendPoint } from "@/service/point";
+import { formatDateOnly } from "@/utils/dateUtils";
 
 type UserTabProps = {
   user: MyUser;
   teams: Team[];
   users: MyUser[];
+  points: Point[];
 };
+function PointTable({ data }: { data: any[] }) {
+  return (
+    <Table aria-label="Example static collection table">
+      <TableHeader>
+        <TableColumn>SEND</TableColumn>
+        <TableColumn>RECEIVE</TableColumn>
+        <TableColumn>POINT</TableColumn>
+        <TableColumn>MESSAGE</TableColumn>
+        <TableColumn>CREATED AT</TableColumn>
+      </TableHeader>
+      <TableBody>
+        {data.map((item) => (
+          <TableRow key={item._id}>
+            <TableCell>{item.senduser}</TableCell>
+            <TableCell>{item.receiveuser}</TableCell>
+            <TableCell>{item.point}</TableCell>
+            <TableCell>{item.message}</TableCell>
+            <TableCell>{formatDateOnly(item.createdAt)}</TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+}
 
-const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
+const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
   const router = useRouter();
   const maps = [
     { id: "1", name: "폴리포이드" },
@@ -357,6 +383,13 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
     resetData();
     onOpenChange();
   };
+
+  const sendData = points.filter(
+    (item) => item.senduser === currentUser.nickname
+  );
+  const receiveData = points.filter(
+    (item) => item.receiveuser === currentUser.nickname
+  );
 
   if (!currentUser) {
     return <div>Loading...</div>;
@@ -929,8 +962,12 @@ const UserTab = ({ user: sessionUser, teams, users }: UserTabProps) => {
               <ModalBody>
                 <div>
                   <Tabs aria-label="Dynamic tabs">
-                    <Tab key={"send"} title={"포인트 전송내역"}></Tab>
-                    <Tab key={"recieve"} title={"포인트 수신내역"}></Tab>
+                    <Tab key={"send"} title={"포인트 전송내역"}>
+                      <PointTable data={sendData} />
+                    </Tab>
+                    <Tab key={"recieve"} title={"포인트 수신내역"}>
+                      <PointTable data={receiveData} />
+                    </Tab>
                   </Tabs>
                 </div>
               </ModalBody>
