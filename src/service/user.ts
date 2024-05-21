@@ -1,3 +1,5 @@
+'use server'
+
 import mongoose from "mongoose";
 import TeamModel from "@/models/team";
 import UserModel from "@/models/user";
@@ -39,6 +41,22 @@ export async function getUserProfile(slug: string) {
       cache: "no-store",
     }
   );
+  return await response.json();
+}
+
+export async function deleteUser(nickname: string) {
+   const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/user/delete`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nickname }),
+      cache: "no-store",
+    }
+  );
+  revalidateTag("user");
   return await response.json();
 }
 
