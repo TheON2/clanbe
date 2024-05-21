@@ -52,6 +52,7 @@ import { updateUserTeam } from "@/service/team";
 import SubmitModal from "./SubmitModal";
 import { formatDate, formatDateOnly } from "@/utils/dateUtils";
 import { deleteUser } from "@/service/user";
+import { updateUserRole } from "@/service/admin";
 
 interface Column {
   name: string;
@@ -104,6 +105,22 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
 
   const rowsPerPage = 4;
 
+  const guestCount = useMemo(
+    () => users.filter((user: any) => user.role === "Guest").length,
+    [users]
+  );
+
+  const fieldLabels: { [key: string]: string } = {
+    name: "이름",
+    nickname: "닉네임",
+    email: "이메일",
+    kakao: "카카오",
+    phone: "폰",
+    role: "역할",
+    point: "포인트",
+    createdAt: "가입일",
+  };
+
   const searchFields = ["name", "nickname", "email", "kakao", "phone", "role"];
   const sortFields = [
     "name",
@@ -136,14 +153,15 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
           phone: user.phone,
           birth: user.birth,
           avatar: user.avatar,
+          idData: user.idData,
         },
         role: user.role,
         point: user.point,
-        idData: user.idData,
-        createdAt: new Date(user.createdAt).toLocaleDateString(),
+        actions: "actions",
+        createdAt: new Date(user.createdAt),
       }));
 
-    data = data.sort((a, b) => {
+    data = data.sort((a: any, b: any) => {
       let aValue, bValue;
 
       // Check if sorting field is a property of 'user' object
@@ -172,7 +190,7 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
     });
 
     return data;
-  }, [search, searchField, sortField, sortOrder, users]);
+  }, [search, searchField, sortField, sortOrder, users, searchFields]);
 
   const pages = Math.ceil(filteredData.length / rowsPerPage);
   const items = useMemo(() => {
@@ -225,6 +243,26 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
                 <p className="font-bold text-md">
                   Birth {formatDateOnly(user.user.birth)}
                 </p>
+                <div>
+                  {" "}
+                  <Popover placement={"right"}>
+                    <PopoverTrigger>
+                      <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                        <EyeIcon />
+                      </span>
+                    </PopoverTrigger>
+                    <PopoverContent className="">
+                      <div>
+                        <Image
+                          src={user.user.idData || "/Belogo.png"}
+                          width={500}
+                          height={300}
+                          alt="ID"
+                        />
+                      </div>
+                    </PopoverContent>
+                  </Popover>
+                </div>
               </CardBody>
             </Card>
           </div>
@@ -268,23 +306,7 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
 
       case "actions":
         return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
-              <span
-                className="text-lg text-default-400 cursor-pointer active:opacity-50"
-                onClick={() => router.push(`/user/profile/${user.email}`)}
-              >
-                <EyeIcon />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete user">
-              <span
-                className="text-lg text-danger cursor-pointer active:opacity-50"
-                //onClick={() => handleDelete(user.nickname)}
-              >
-                <DeleteIcon />
-              </span>
-            </Tooltip>
+          <div className="flex items-center justify-center gap-2">
             <Tooltip content="Edit user">
               <Popover placement={"right"}>
                 <PopoverTrigger>
@@ -294,17 +316,46 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
                 </PopoverTrigger>
                 <PopoverContent className="">
                   <div className="flex flex-col gap-1">
-                    {teams.map((team: any) => (
-                      <Chip
-                        key={team._id}
-                        className="w-full text-sm text-center cursor-pointer"
-                        size="sm"
-                        color="primary"
-                        //onClick={() => handleUpdate(user.nickname, team._id)}
-                      >
-                        <div className="w-[70px]">{team.name}</div>
-                      </Chip>
-                    ))}
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Guest")
+                      }
+                    >
+                      <div className="w-[70px]">Guest</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Member")
+                      }
+                    >
+                      <div className="w-[70px]">Member</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Staff")
+                      }
+                    >
+                      <div className="w-[70px]">Staff</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">Master</div>
+                    </Chip>
                   </div>
                 </PopoverContent>
               </Popover>
@@ -339,15 +390,15 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
       width: 30,
     },
     {
-      name: "신분증",
-      uid: "idData",
+      name: "가입일",
+      uid: "createdAt",
       sortable: true,
       align: "center",
       width: 30,
     },
     {
-      name: "가입일",
-      uid: "createdAt",
+      name: "Action",
+      uid: "actions",
       sortable: true,
       align: "center",
       width: 30,
@@ -382,27 +433,6 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
     { name: "패", uid: "losses", sortable: true, align: "center", width: 30 },
   ];
 
-  const userData = useMemo(() => {
-    return users
-      .filter((user: any) => user.team)
-      .map((user: any) => ({
-        id: user._id,
-        user: {
-          nickname: user.nickname,
-          email: user.email,
-          name: user.name,
-          kakao: user.kakao,
-          phone: user.phone,
-          birth: user.birth,
-          avatar: user.avatar,
-        },
-        role: user.role,
-        point: user.point,
-        idData: user.idData,
-        createdAt: user.createdAt,
-      }));
-  }, [users]);
-
   const handleDelete = async (nickname: string) => {
     try {
       const response = await deleteUser(nickname);
@@ -418,6 +448,27 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
     }
   };
 
+  const handleUpdateRole = async (usernickname: string, role: string) => {
+    try {
+      const response = await updateUserRole(usernickname, role);
+      if (response) {
+        setModalMessage("성공적으로 유저역할을 변경했습니다.");
+      } else {
+        setModalMessage("유저정보 변경에 실패했습니다.");
+      }
+      setIsSubmit(true);
+    } catch (error) {
+      setModalMessage("유저 정보 변경 중 오류가 발생했습니다.");
+      setIsSubmit(true);
+    }
+  };
+
+  const handleGuestClick = () => {
+    setSearchField("role");
+    setSearch("Guest");
+    setPage(1);
+  };
+
   return (
     <>
       <div className="md:w-2/3 w-full mx-auto">
@@ -430,18 +481,25 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
         <p className="font-bold text-3xl">어드민 페이지</p>
         <div>
           <Card>
+            <div className="m-4 flex flex-col gap-2">
+              <p>가입대기유저 {guestCount} 명</p>
+              <Button className="w-[150px]" onClick={handleGuestClick}>
+                대기유저 확인하기
+              </Button>
+            </div>
             <CardBody>
               <Tabs aria-label="tabs">
                 <Tab key={"user"} title="유저" aria-label="usertab">
                   <div className="flex gap-4 mb-4">
                     <Select
+                      aria-label="select"
                       placeholder="검색 기준"
                       value={searchField}
                       onChange={(e) => setSearchField(e.target.value)}
                     >
                       {searchFields.map((field) => (
                         <SelectItem key={field} value={field}>
-                          {field}
+                          {fieldLabels[field]}
                         </SelectItem>
                       ))}
                     </Select>
@@ -455,16 +513,18 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
                     />
                     <Select
                       placeholder="필터 기준"
+                      aria-label="select"
                       value={sortField}
                       onChange={(e) => setSortField(e.target.value)}
                     >
                       {sortFields.map((field) => (
                         <SelectItem key={field} value={field}>
-                          {field}
+                          {fieldLabels[field]}
                         </SelectItem>
                       ))}
                     </Select>
                     <Select
+                      aria-label="select"
                       placeholder="필터 방법"
                       value={sortOrder}
                       onChange={(e) => setSortOrder(e.target.value)}

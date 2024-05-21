@@ -5,9 +5,8 @@ import bcrypt from "bcrypt";
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
 
-  console.log(body)
-  let { usernickname,teamid} = body;
-
+  console.log(body);
+  let { usernickname, teamid, role } = body;
 
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
@@ -15,8 +14,7 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const existingUser = await UserModel.findOne({ nickname: usernickname })
-
+    const existingUser = await UserModel.findOne({ nickname: usernickname });
 
     if (!existingUser) {
       return new Response(
@@ -27,16 +25,30 @@ export async function POST(req: Request, res: Response) {
       );
     }
 
-    
     //existingUser.password = hashedPassword;
     existingUser.nickname = usernickname;
-    existingUser.team = teamid;
+    if (teamid) {
+      existingUser.team = teamid;
+    }
+    if (role === "Guest") {
+      existingUser.role = role;
+      existingUser.grade = 0;
+    } else if (role === "Member") {
+      existingUser.role = role;
+      existingUser.grade = 1;
+    } else if (role === "Staff") {
+      existingUser.role = role;
+      existingUser.grade = 5;
+    }
 
     existingUser.save();
 
-    return new Response(JSON.stringify({ user:existingUser,message:"정보 업데이트 성공" }), {
-      status: 200,
-    });
+    return new Response(
+      JSON.stringify({ user: existingUser, message: "정보 업데이트 성공" }),
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     // 에러 처리 로직
     return new Response(JSON.stringify({ message: "조회 실패" }), {
