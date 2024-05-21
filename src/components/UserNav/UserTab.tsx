@@ -401,7 +401,11 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
         <Tab key={"BELO"} title={"BELO"}>
           <Card>
             <CardBody className="">
-              <Button size="sm" color="success">
+              <Button
+                size="sm"
+                color="success"
+                onPress={() => router.push("/ADMIN")}
+              >
                 어드민 페이지
               </Button>
               <div className="flex justify-between items-center">

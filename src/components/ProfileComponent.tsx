@@ -461,172 +461,175 @@ export default function ProfileComponent({ user, posts, comments }: any) {
                 </ButtonGroup>
               </div>
             </Tab>
-            {session && session.user && session.user.email === user.email && (
-              <Tab key="UPDATE" title="UPDATE" className="text-left">
-                <div className="mx-auto mt-4 md:w-1/2 flex flex-col items-center">
-                  <div className="flex items-center m-2 gap-4 mt-8">
-                    {/* Avatar 위치를 조정합니다. */}
-                    <Avatar
-                      src={signUpState.avatar}
-                      className="w-20 h-20 text-large"
-                    />
-                    <div className="flex flex-col">
-                      <p className="font-bold text-2xl">{user.nickname}</p>
-                      <p className="font-bold text-md text-blue">
-                        @{user.name}
-                      </p>
+            {session &&
+              session.user &&
+              (session.user.email === user.email ||
+                session.user.grade === 5) && (
+                <Tab key="UPDATE" title="UPDATE" className="text-left">
+                  <div className="mx-auto mt-4 md:w-1/2 flex flex-col items-center">
+                    <div className="flex items-center m-2 gap-4 mt-8">
+                      {/* Avatar 위치를 조정합니다. */}
+                      <Avatar
+                        src={signUpState.avatar}
+                        className="w-20 h-20 text-large"
+                      />
+                      <div className="flex flex-col">
+                        <p className="font-bold text-2xl">{user.nickname}</p>
+                        <p className="font-bold text-md text-blue">
+                          @{user.name}
+                        </p>
+                      </div>
                     </div>
+                    <input
+                      type="file"
+                      onChange={handleImageUpload}
+                      className="w-[200px]"
+                    />
+                    {!isEditPassword ? (
+                      <>
+                        <Input
+                          type="text"
+                          name="message"
+                          label="상태메세지"
+                          labelPlacement={"outside"}
+                          placeholder="상태메세지를 입력해주세요."
+                          value={signUpState.message}
+                          className="py-4 w-[250px]"
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.message.length >= 1}
+                          errorMessage={error.message}
+                          variant="bordered"
+                        />
+                        <Input
+                          type="text"
+                          name="nickname"
+                          label="닉네임"
+                          labelPlacement={"outside"}
+                          value={signUpState.nickname}
+                          placeholder="클랜닉네임을 입력해주세요. [2~16자]"
+                          className="py-4 w-[250px] "
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.nickname.length >= 1}
+                          errorMessage={error.nickname}
+                          variant="bordered"
+                        />
+                        <Input
+                          type="text"
+                          name="name"
+                          label="이름"
+                          labelPlacement={"outside"}
+                          placeholder="실제 성명을 입력해주세요."
+                          value={signUpState.name}
+                          className="py-4 w-[250px]"
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.name.length >= 1}
+                          errorMessage={error.name}
+                          variant="bordered"
+                        />
+                        <Input
+                          type="text"
+                          name="kakao"
+                          label="카톡아이디"
+                          labelPlacement={"outside"}
+                          placeholder="카카오톡 아이디를 입력해주세요."
+                          value={signUpState.kakao}
+                          className="py-4 w-[250px]"
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.kakao.length >= 1}
+                          errorMessage={error.kakao}
+                          variant="bordered"
+                        />
+                        <Input
+                          type="date"
+                          name="birth"
+                          label="생일"
+                          labelPlacement={"outside"}
+                          placeholder="Enter your email"
+                          value={signUpState.birth}
+                          className="py-4 w-[250px]"
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.birth.length !== 0}
+                          errorMessage={error.birth}
+                          variant="bordered"
+                        />
+                        <Button
+                          className="w-[200px] my-4"
+                          color="secondary"
+                          onPress={() => {
+                            setIsEditPassword(true);
+                          }}
+                        >
+                          비밀번호 변경
+                        </Button>
+                        <Button
+                          className="w-[200px] my-4"
+                          color="primary"
+                          onPress={updateProfile}
+                        >
+                          프로필 수정
+                        </Button>
+                      </>
+                    ) : (
+                      <>
+                        <Input
+                          type="password"
+                          name="password"
+                          label="비밀번호"
+                          labelPlacement={"outside"}
+                          value={signUpState.password}
+                          placeholder="비밀번호"
+                          className="py-4 w-[250px] "
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.password.length >= 1}
+                          errorMessage={error.password}
+                          variant="bordered"
+                        />
+                        <Input
+                          type="password"
+                          name="passwordConfirm"
+                          label="비밀번호 확인"
+                          labelPlacement={"outside"}
+                          placeholder="비밀번호 확인"
+                          value={signUpState.passwordConfirm}
+                          className="py-4 w-[250px]"
+                          size="lg"
+                          onChange={handleInputChange}
+                          isInvalid={error.passwordConfirm.length >= 1}
+                          errorMessage={error.passwordConfirm}
+                          variant="bordered"
+                        />
+                        <Button
+                          className="w-[200px] my-4"
+                          color="secondary"
+                          onPress={() => {
+                            setIsEditPassword(false);
+                            setSignUpState((prev) => ({
+                              ...prev,
+                              password: "",
+                              passwordConfirm: "",
+                            }));
+                          }}
+                        >
+                          프로필 수정
+                        </Button>
+                        <Button
+                          className="w-[200px] my-4"
+                          color="primary"
+                          onPress={updatePassword}
+                        >
+                          비밀번호 변경
+                        </Button>
+                      </>
+                    )}
                   </div>
-                  <input
-                    type="file"
-                    onChange={handleImageUpload}
-                    className="w-[200px]"
-                  />
-                  {!isEditPassword ? (
-                    <>
-                      <Input
-                        type="text"
-                        name="message"
-                        label="상태메세지"
-                        labelPlacement={"outside"}
-                        placeholder="상태메세지를 입력해주세요."
-                        value={signUpState.message}
-                        className="py-4 w-[250px]"
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.message.length >= 1}
-                        errorMessage={error.message}
-                        variant="bordered"
-                      />
-                      <Input
-                        type="text"
-                        name="nickname"
-                        label="닉네임"
-                        labelPlacement={"outside"}
-                        value={signUpState.nickname}
-                        placeholder="클랜닉네임을 입력해주세요. [2~16자]"
-                        className="py-4 w-[250px] "
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.nickname.length >= 1}
-                        errorMessage={error.nickname}
-                        variant="bordered"
-                      />
-                      <Input
-                        type="text"
-                        name="name"
-                        label="이름"
-                        labelPlacement={"outside"}
-                        placeholder="실제 성명을 입력해주세요."
-                        value={signUpState.name}
-                        className="py-4 w-[250px]"
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.name.length >= 1}
-                        errorMessage={error.name}
-                        variant="bordered"
-                      />
-                      <Input
-                        type="text"
-                        name="kakao"
-                        label="카톡아이디"
-                        labelPlacement={"outside"}
-                        placeholder="카카오톡 아이디를 입력해주세요."
-                        value={signUpState.kakao}
-                        className="py-4 w-[250px]"
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.kakao.length >= 1}
-                        errorMessage={error.kakao}
-                        variant="bordered"
-                      />
-                      <Input
-                        type="date"
-                        name="birth"
-                        label="생일"
-                        labelPlacement={"outside"}
-                        placeholder="Enter your email"
-                        value={signUpState.birth}
-                        className="py-4 w-[250px]"
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.birth.length !== 0}
-                        errorMessage={error.birth}
-                        variant="bordered"
-                      />
-                      <Button
-                        className="w-[200px] my-4"
-                        color="secondary"
-                        onPress={() => {
-                          setIsEditPassword(true);
-                        }}
-                      >
-                        비밀번호 변경
-                      </Button>
-                      <Button
-                        className="w-[200px] my-4"
-                        color="primary"
-                        onPress={updateProfile}
-                      >
-                        프로필 수정
-                      </Button>
-                    </>
-                  ) : (
-                    <>
-                      <Input
-                        type="password"
-                        name="password"
-                        label="비밀번호"
-                        labelPlacement={"outside"}
-                        value={signUpState.password}
-                        placeholder="비밀번호"
-                        className="py-4 w-[250px] "
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.password.length >= 1}
-                        errorMessage={error.password}
-                        variant="bordered"
-                      />
-                      <Input
-                        type="password"
-                        name="passwordConfirm"
-                        label="비밀번호 확인"
-                        labelPlacement={"outside"}
-                        placeholder="비밀번호 확인"
-                        value={signUpState.passwordConfirm}
-                        className="py-4 w-[250px]"
-                        size="lg"
-                        onChange={handleInputChange}
-                        isInvalid={error.passwordConfirm.length >= 1}
-                        errorMessage={error.passwordConfirm}
-                        variant="bordered"
-                      />
-                      <Button
-                        className="w-[200px] my-4"
-                        color="secondary"
-                        onPress={() => {
-                          setIsEditPassword(false);
-                          setSignUpState((prev) => ({
-                            ...prev,
-                            password: "",
-                            passwordConfirm: "",
-                          }));
-                        }}
-                      >
-                        프로필 수정
-                      </Button>
-                      <Button
-                        className="w-[200px] my-4"
-                        color="primary"
-                        onPress={updatePassword}
-                      >
-                        비밀번호 변경
-                      </Button>
-                    </>
-                  )}
-                </div>
-              </Tab>
-            )}
+                </Tab>
+              )}
             <Tab key="POSTS" title="POSTS" className="text-left ">
               작성글 : {posts.length} 개
               <div className="overflow-auto h-[800px]">

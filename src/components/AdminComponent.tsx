@@ -113,7 +113,17 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
                   </div>
                 </div>
               </CardHeader>
-
+              <div className="flex gap-2 justify-center">
+                <Button
+                  color="primary"
+                  onPress={() =>
+                    router.push(`/user/profile/${user.user.email}`)
+                  }
+                >
+                  수정
+                </Button>
+                <Button color="danger">삭제</Button>
+              </div>
               <CardBody>
                 <p>
                   email <br />
