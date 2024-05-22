@@ -382,52 +382,56 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
           대기유저 확인하기
         </Button>
       </div>
-      <div className="flex gap-4 mb-4">
-        <Select
-          aria-label="select"
-          placeholder="검색 기준"
-          value={searchField}
-          onChange={(e) => setSearchField(e.target.value)}
-        >
-          {searchFields.map((field) => (
-            <SelectItem key={field} value={field}>
-              {fieldLabels[field]}
+      <div className="flex flex-wrap gap-2 mb-4 p-2">
+        <div className="flex gap-2 w-full md:w-1/2">
+          <Select
+            aria-label="select"
+            placeholder="검색 기준"
+            value={searchField}
+            onChange={(e) => setSearchField(e.target.value)}
+          >
+            {searchFields.map((field) => (
+              <SelectItem key={field} value={field}>
+                {fieldLabels[field]}
+              </SelectItem>
+            ))}
+          </Select>
+          <Input
+            placeholder="검색어"
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setPage(1);
+            }}
+          />
+        </div>
+        <div className="flex gap-2 w-full md:w-1/2">
+          <Select
+            placeholder="필터 기준"
+            aria-label="select"
+            value={sortField}
+            onChange={(e) => setSortField(e.target.value)}
+          >
+            {sortFields.map((field) => (
+              <SelectItem key={field} value={field}>
+                {fieldLabels[field]}
+              </SelectItem>
+            ))}
+          </Select>
+          <Select
+            aria-label="select"
+            placeholder="필터 방법"
+            value={sortOrder}
+            onChange={(e) => setSortOrder(e.target.value)}
+          >
+            <SelectItem key="desc" value="desc">
+              내림차순
             </SelectItem>
-          ))}
-        </Select>
-        <Input
-          placeholder="검색어"
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value);
-            setPage(1);
-          }}
-        />
-        <Select
-          placeholder="필터 기준"
-          aria-label="select"
-          value={sortField}
-          onChange={(e) => setSortField(e.target.value)}
-        >
-          {sortFields.map((field) => (
-            <SelectItem key={field} value={field}>
-              {fieldLabels[field]}
+            <SelectItem key="asc" value="asc">
+              오름차순
             </SelectItem>
-          ))}
-        </Select>
-        <Select
-          aria-label="select"
-          placeholder="필터 방법"
-          value={sortOrder}
-          onChange={(e) => setSortOrder(e.target.value)}
-        >
-          <SelectItem key="desc" value="desc">
-            내림차순
-          </SelectItem>
-          <SelectItem key="asc" value="asc">
-            오름차순
-          </SelectItem>
-        </Select>
+          </Select>
+        </div>
       </div>
       <Table aria-label="usertable">
         <TableHeader columns={userColumns} aria-label="userheader">

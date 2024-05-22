@@ -12,8 +12,8 @@ import Link from "next/link";
 import { formatDate } from "@/utils/dateUtils";
 
 const PublicPosts = ({ posts }: any) => {
-  const labels = categoryLabels;
   const router = useRouter();
+  const labels = categoryLabels;
 
   const getCategoryPath = (category: string) => {
     switch (category) {

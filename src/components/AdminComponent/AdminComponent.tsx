@@ -14,6 +14,7 @@ import { useSession } from "next-auth/react";
 import SubmitModal from "../SubmitModal";
 import AdminUserTab from "./AdminUserTab";
 import AdminPointTab from "./AdminPointTab";
+import AdminPostTab from "./AdminPostTab";
 
 export default function AdminComponent({ teams, users, points, posts }: any) {
   const router = useRouter();
@@ -57,7 +58,7 @@ export default function AdminComponent({ teams, users, points, posts }: any) {
                   <AdminPointTab points={points} />
                 </Tab>
                 <Tab key={"post"} title="게시물">
-                  3
+                  <AdminPostTab posts={posts} />
                 </Tab>
               </Tabs>
             </CardBody>
