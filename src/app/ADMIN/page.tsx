@@ -1,7 +1,7 @@
 import { getPointData } from "@/service/point";
 import { getAllPosts } from "@/service/posts";
 import { getNavData } from "@/service/user";
-import AdminComponent from "@/components/AdminComponent";
+import AdminComponent from "@/components/AdminComponent/AdminComponent";
 
 export default async function ForAdminPage() {
   const { teams, users } = await getNavData();
