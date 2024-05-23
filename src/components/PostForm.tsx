@@ -222,7 +222,7 @@ export default function PostForm({
           )}
         </CardHeader>
         <CardBody className="overflow-visible py-2">
-          {category === "support" && supportData.type === 1 && (
+          {category === "support" && supportData?.type === 1 && (
             <Card className="mx-4 h-[100px] flex items-center justify-center">
               <p className="font-bold text-2xl">
                 {supportData.email}님께서 클랜을 위해
@@ -232,7 +232,7 @@ export default function PostForm({
               </p>
             </Card>
           )}
-          {category === "support" && supportData.type === 2 && (
+          {category === "support" && supportData?.type === 2 && (
             <Card className="mx-4 h-[100px] flex items-center justify-center">
               <p className="font-bold text-2xl">
                 {supportData.email}님께서 클랜활동을 위해
