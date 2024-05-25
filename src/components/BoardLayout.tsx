@@ -1,10 +1,10 @@
 "use client";
 
+import React, { useEffect, useState, useMemo } from "react";
 import {
   Avatar,
   Button,
   Card,
-  CardHeader,
   Divider,
   Pagination,
   Select,
@@ -14,24 +14,16 @@ import {
   ModalHeader,
   ModalBody,
   ModalFooter,
-  useDisclosure,
   Input,
+  useDisclosure,
 } from "@nextui-org/react";
-import React, { useEffect, useState } from "react";
-import {
-  aligns,
-  searchOption,
-  posts,
-  announce,
-  board,
-} from "../../public/data";
+import { useSession } from "next-auth/react";
+import { useMediaQuery } from "react-responsive";
+import { formatDate, formatRelativeDate } from "@/utils/dateUtils";
 import NoticeCardHeader from "./NoticeCardHeader";
 import PostCardComponent from "./PostCardComponent";
 import { Post } from "../../types/types";
-import { useMediaQuery } from "react-responsive";
 import { useRouter } from "next/navigation";
-import { formatDate, formatRelativeDate } from "@/utils/dateUtils";
-import { useSession } from "next-auth/react";
 
 type BoardLayoutProps = {
   boardTitle: string;
@@ -40,6 +32,14 @@ type BoardLayoutProps = {
   category: string;
 };
 
+const aligns = [
+  { value: "default", label: "기본" },
+  { value: "dateDesc", label: "날짜 내림차순" },
+  { value: "dateAsc", label: "날짜 오름차순" },
+  { value: "viewDesc", label: "조회수 내림차순" },
+  { value: "viewAsc", label: "조회수 오름차순" },
+];
+
 const BoardLayout: React.FC<BoardLayoutProps> = ({
   category,
   boardTitle,
@@ -47,81 +47,71 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
   posts,
 }) => {
   const router = useRouter();
-  const { isOpen, onOpen, onOpenChange } = useDisclosure();
-  const [currentPage, setCurrentPage] = useState(1);
-  const postsPerPage = 10;
-  const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
-  const user = session?.user;
-  
-
-  const [selectedSortKey, setSelectedSortKey] = useState("default");
-  const [sortedBoard, setSortedBoard] = useState([...posts]);
-
-  const aligns = [
-    { value: "default", label: "기본" },
-    { value: "dateDesc", label: "날짜 내림차순" },
-    { value: "dateAsc", label: "날짜 오름차순" },
-    { value: "viewDesc", label: "조회수 내림차순" },
-    { value: "viewAsc", label: "조회수 오름차순" },
-  ];
-
-  // 현재 페이지에 따라 보여줄 게시물 계산
-  const indexOfLastPost = currentPage * postsPerPage;
-  const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = sortedBoard.slice(indexOfFirstPost, indexOfLastPost);
-
-  // 페이지 변경 핸들러
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
-
   const isMobile = useMediaQuery({ maxWidth: 767 });
 
-  // 현재 게시물 렌더링
-  const getFormattedDate = (date: Date) => {
-    return isMobile ? formatRelativeDate(date) : formatDate(date);
-  };
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSortKey, setSelectedSortKey] = useState("default");
+  const [sortedPosts, setSortedPosts] = useState(posts);
+
+  const postsPerPage = 10;
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+
+  const currentPosts = useMemo(
+    () => sortedPosts.slice(indexOfFirstPost, indexOfLastPost),
+    [sortedPosts, indexOfFirstPost, indexOfLastPost]
+  );
+  const filteredAnnounce = useMemo(
+    () =>
+      announce
+        .filter(
+          (a) => a.noticed && a.category === category && a.category !== "notice"
+        )
+        .reverse(),
+    [announce, category]
+  );
+
+  useEffect(() => {
+    setSortedPosts(
+      [...posts].sort((a, b) => {
+        switch (selectedSortKey) {
+          case "dateDesc":
+            return (
+              new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            );
+          case "dateAsc":
+            return (
+              new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+            );
+          case "viewDesc":
+            return b.view - a.view;
+          case "viewAsc":
+            return a.view - b.view;
+          default:
+            return b._id.localeCompare(a._id);
+        }
+      })
+    );
+  }, [selectedSortKey, posts]);
+
+  const handlePageChange = (page: number) => setCurrentPage(page);
 
   const handleWritePost = () => {
-    if (!user) {
-      // 로그인 페이지로 리다이렉트
-      router.push("/AUTH/signin"); // 로그인 페이지 경로에 맞게 조정 필요
+    if (!isLoggedIn) {
+      router.push("/auth/signin");
     } else {
-      // 글쓰기 페이지로 이동
       router.push("/post/write");
     }
   };
 
-  useEffect(() => {
-    const sorted = [...posts].sort((a, b) => {
-      switch (selectedSortKey) {
-        case "default":
-          // MongoDB의 ObjectId를 기반으로 최신 순 정렬
-          return b._id.localeCompare(a._id);
-        case "dateDesc":
-          // 날짜를 기준으로 내림차순 정렬, Date 객체로 변환하여 비교
-          return (
-            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-          );
-        case "dateAsc":
-          // 날짜를 기준으로 오름차순 정렬, Date 객체로 변환하여 비교
-          return (
-            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-          );
-        case "viewDesc":
-          return b.view - a.view;
-        case "viewAsc":
-          return a.view - b.view;
-        default:
-          return 0;
-      }
-    });
-    setSortedBoard(sorted);
-  }, [selectedSortKey, posts]);
+  const formatDateBasedOnDevice = (date: Date) =>
+    isMobile ? formatRelativeDate(date) : formatDate(date);
 
   return (
-    <div className="py-20 w-full mx-auto ">
+    <div className="py-20 w-full mx-auto">
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20">{boardTitle}</a>
       <div className="flex justify-between items-center m-2">
         <Select
@@ -147,96 +137,53 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
           </Button>
         </div>
       </div>
-      <Modal isOpen={isOpen} onOpenChange={onOpenChange} placement="top-center">
+      <Modal isOpen={isOpen} onOpenChange={onClose} placement="top-center">
         <ModalContent>
-          {(onClose) => (
-            <>
-              <ModalHeader className="flex flex-col gap-1">
-                게시물 검색
-              </ModalHeader>
-              <ModalBody>
-                <Select
-                  isRequired
-                  label="검색 옵션"
-                  placeholder="기본"
-                  defaultSelectedKeys={["기본"]}
-                  className="w-full sm:w-[200px] py-2"
-                >
-                  {searchOption.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </Select>
-                <Input
-                  label="검색어"
-                  placeholder="검색어를 입력하세요"
-                  variant="bordered"
-                />
-              </ModalBody>
-              <ModalFooter>
-                <Button color="danger" variant="flat" onPress={onClose}>
-                  Close
-                </Button>
-                <Button color="primary" onPress={onClose}>
-                  Search
-                </Button>
-              </ModalFooter>
-            </>
-          )}
+          <ModalHeader className="flex flex-col gap-1">게시물 검색</ModalHeader>
+          <ModalBody>
+            <Input
+              label="검색어"
+              placeholder="검색어를 입력하세요"
+              variant="bordered"
+            />
+          </ModalBody>
+          <ModalFooter>
+            <Button color="danger" variant="flat" onPress={onClose}>
+              Close
+            </Button>
+            <Button color="primary" onPress={onClose}>
+              Search
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
       <Card className="w-full max-w-full sm:max-w-[1000px] lg:max-w-[1200px] xl:max-w-[1400px] py-4 mx-auto">
-        {[...announce]
-          .filter((a) => a.noticed && a.category === "notice")
-          .reverse()
-          .map((announce) => (
-            <NoticeCardHeader
-              key={announce._id}
-              announce={announce}
-              date={getFormattedDate(announce.createdAt)}
-            />
-          ))}
-        {[...announce]
-          .filter(
-            (a) =>
-              a.noticed && a.category === category && a.category !== "notice"
-          )
-          .reverse()
-          .map((announce) => (
-            <NoticeCardHeader
-              key={announce._id}
-              announce={announce}
-              date={getFormattedDate(announce.createdAt)}
-            />
-          ))}
+        {filteredAnnounce.map((announce) => (
+          <NoticeCardHeader
+            key={announce._id}
+            announce={announce}
+            date={formatDateBasedOnDevice(announce.createdAt)}
+          />
+        ))}
         <Divider />
-        {/* 현재 페이지의 게시물 렌더링 */}
-        {currentPosts
-          .filter(
-            (a) =>
-              (a.category === category || category === "allposts") &&
-              a.category !== "notice"
-          )
-          .map((post, index) => (
-            <PostCardComponent
-              key={index}
-              title={post.title}
-              author={post.author}
-              views={post.view}
-              date={getFormattedDate(post.createdAt)}
-              id={post._id}
-              category={post.category}
-            />
-          ))}
+        {currentPosts.map((post, index) => (
+          <PostCardComponent
+            key={index}
+            title={post.title}
+            author={post.author}
+            views={post.view}
+            date={formatDateBasedOnDevice(post.createdAt)}
+            id={post._id}
+            category={post.category}
+          />
+        ))}
       </Card>
       <div className="flex justify-center py-2">
         <Pagination
-          showControls
-          total={Math.ceil(sortedBoard.length / postsPerPage)} // 정렬된 게시물 배열의 길이 기준으로 총 페이지 수 계산
+          total={Math.ceil(sortedPosts.length / postsPerPage)}
           initialPage={1}
-          page={currentPage} // 현재 페이지 상태를 Pagination 컴포넌트에 명시적으로 전달
-          onChange={(page) => handlePageChange(page)} // 페이지 변경 시 handlePageChange 호출
+          page={currentPage}
+          onChange={handlePageChange}
         />
       </div>
     </div>

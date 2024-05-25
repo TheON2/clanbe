@@ -1782,13 +1782,13 @@ export const headerPROLEAGUE = {
       icon: "server",
       href: "/PROLEAGUE/team",
     },
-    {
-      title: "프로리그 드래프트",
-      description:
-        "프로리그 진행을 위한 드래프트 기능을 담당하는 페이지 입니다.",
-      icon: "flash",
-      href: "/PROLEAGUE/draft",
-    },
+    // {
+    //   title: "프로리그 드래프트",
+    //   description:
+    //     "프로리그 진행을 위한 드래프트 기능을 담당하는 페이지 입니다.",
+    //   icon: "flash",
+    //   href: "/PROLEAGUE/draft",
+    // },
   ],
 };
 

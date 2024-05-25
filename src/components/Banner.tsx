@@ -33,17 +33,13 @@ const Banner: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      // 'md' breakpoint for Tailwind CSS is typically 768px
       setIsMobile(window.innerWidth < 768);
     };
 
-    // Set up event listener for window resize
     window.addEventListener("resize", handleResize);
 
-    // Call the handler right away so state gets updated with initial window size
     handleResize();
 
-    // Remove event listener on cleanup
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   return (

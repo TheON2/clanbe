@@ -1,3 +1,9 @@
+import { SVGProps } from "react";
+
+export type IconSvgProps = SVGProps<SVGSVGElement> & {
+  size?: number;
+};
+
 // TeamModel의 타입 정의
 export type Team = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)
@@ -10,7 +16,7 @@ export type Team = {
   winpoint: number;
   leader: string;
   subleader: string;
-  member:string[];
+  member: string[];
 };
 
 export type EventSet = {
@@ -20,7 +26,7 @@ export type EventSet = {
   map: string;
   tier: string;
   result: number;
-}
+};
 
 export type Point = {
   _id?: string;
@@ -32,7 +38,7 @@ export type Point = {
   rbeforepoint: number;
   rafterpoint: number;
   message: string;
-}
+};
 
 export type LeagueEvent = {
   _id?: string;
@@ -40,7 +46,7 @@ export type LeagueEvent = {
   awayId: string;
   date: string;
   sets: EventSet[];
-}
+};
 
 export type SupportAmount = {
   _id?: string;
@@ -49,7 +55,7 @@ export type SupportAmount = {
   email: string;
   postid: string;
   createdAt: Date;
-}
+};
 
 export type Support = {
   amount: number;
@@ -61,9 +67,9 @@ export type Support = {
     avatar: string;
     email: string;
     name: string;
-  }
+  };
   type?: number;
-}
+};
 
 export type Match = {
   _id?: string;
@@ -74,13 +80,13 @@ export type Match = {
   lrace: string;
   map: string;
   date: Date;
-}
+};
 
 export type ViewDate = {
   _id?: string;
   userid: string;
   postid: string;
-}
+};
 
 export type EventType = {
   id?: string;
@@ -88,7 +94,7 @@ export type EventType = {
   date: string;
   description: string;
   author: string;
-}
+};
 
 // UserModel의 타입 정의
 export type User = {
@@ -123,7 +129,7 @@ export type User = {
     tl: number;
     zw: number;
     zl: number;
-  }
+  };
   team: string;
   message: string;
   idData?: string;

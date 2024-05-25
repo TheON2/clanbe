@@ -47,7 +47,6 @@ import {
 } from "@internationalized/date";
 import { UserTwitterCard } from "../UserTwitterCard";
 import { User as MyUser } from "next-auth";
-import { Point, Team } from "../../../types/types";
 import { UserSettingIcon } from "../../../public/UserSettingIcon";
 import { LogoutIcon } from "../../../public/logout";
 import { PointIcon } from "../../../public/point";
@@ -61,6 +60,7 @@ import TextModal from "../TextModal"; // TextModal 컴포넌트를 가져옵니�
 import SubmitModal from "../SubmitModal";
 import { sendPoint } from "@/service/point";
 import { formatDateOnly } from "@/utils/dateUtils";
+import { Team, Point } from "../../../types/types";
 
 type UserTabProps = {
   user: MyUser;
@@ -401,13 +401,18 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
         <Tab key={"BELO"} title={"BELO"}>
           <Card>
             <CardBody className="">
-              <Button
-                size="sm"
-                color="success"
-                onPress={() => router.push("/ADMIN")}
-              >
-                어드민 페이지
-              </Button>
+              {sessionUser.grade === 5 && (
+                <>
+                  <Button
+                    size="sm"
+                    color="success"
+                    onPress={() => router.push("/ADMIN")}
+                  >
+                    어드민 페이지
+                  </Button>
+                </>
+              )}
+
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">
