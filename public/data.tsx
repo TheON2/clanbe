@@ -1609,6 +1609,12 @@ export const headerCLANBE = {
       href: "/CLANBE/rules",
     },
     {
+      title: "티어배정",
+      description: "티어배정신청 및 티어배정결과를 확인하는 페이지",
+      icon: "scale",
+      href: "/CLANBE/tear",
+    },
+    {
       title: "클랜 후원",
       description: "클랜의 활동에 필요한 후원자금에 관련된 게시판 입니다.",
       icon: "user",
@@ -1687,9 +1693,10 @@ export const headerLEAGUE = {
   buttonTitle: "리그",
   menuItems: [
     {
-      title: "티어배정",
-      description: "티어배정신청 및 티어배정결과를 확인하는 페이지",
-      icon: "scale",
+      title: "VOD 다시보기",
+      description:
+        "프로리그 / 외부경기 / 이벤트 등의 경기를 다시보기 할 수 있습니다.",
+      icon: "server",
       href: "/LEAGUE/tear",
     },
     {
@@ -1733,12 +1740,6 @@ export const headerPOINT = {
       description: "더미임",
       icon: "flash",
       href: "/POINT/ranking",
-    },
-    {
-      title: "아이콘",
-      description: "더미임",
-      icon: "server",
-      href: "/POINT/icon",
     },
     {
       title: "가위바위보",

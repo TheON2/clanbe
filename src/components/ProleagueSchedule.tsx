@@ -9,7 +9,6 @@ import listPlugin from "@fullcalendar/list";
 import koLocale from "@fullcalendar/core/locales/ko";
 import { EventClickArg, EventDropArg } from "@fullcalendar/core";
 import { EventType, LeagueEvent } from "../../types/types";
-import { User } from "next-auth";
 import {
   Table,
   TableHeader,
@@ -17,46 +16,26 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  Pagination,
-  Input,
-  Select,
-  SelectItem,
   Card,
   CardHeader,
   CardBody,
   CardFooter,
   CircularProgress,
-  Divider,
-  Switch,
   Button,
   User as UiUser,
-  Chip,
-  Tooltip,
-  ChipProps,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  DatePicker,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../types/types";
-import ProfileCard from "./ProfileCard";
 import ProleagueProfileCard from "./ProleagueProfileCard";
 import ProleagueAvatarCard from "./ProleagueAvatarCard";
 
 import { EditIcon } from "../../public/EditIcon";
-import { EyeIcon } from "../../public/EyeIcon";
 import { DeleteIcon } from "../../public/DeleteIcon";
-import { updateUserTeam } from "@/service/team";
 import SubmitModal from "./SubmitModal";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import ProleagueCreateModal from "./ProleagueCreateModal";
-import ProleagueUpdateModal from "./ProleagueUpdateModal";
 import { deleteLeagueEvent } from "@/service/leagueevent";
-import LeagueEventModel from "@/models/leagueevent";
 
 interface DateClickArguments {
   dateStr: string;
@@ -522,7 +501,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
         </CardBody>
       </Card>
       {/* 프로리그 순위카드 */}
-      <Card className="m-2">
+      {/* <Card className="m-2">
         <CardHeader>
           <p className="font-bold text-3xl ml-2">프로리그 선수 랭킹</p>
         </CardHeader>
@@ -538,7 +517,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                   </p>
                   <CardBody>
                     <div>
-                      {/* 첫 번째 선수를 헤더로 표시 */}
                       <ProleagueProfileCard
                         userData={
                           index === 0
@@ -552,7 +530,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                       />
                     </div>
                     <div className="w-full flex flex-col gap-2 mt-2">
-                      {/* 2, 3, 4, 5위 선수를 바디로 표시 */}
                       {index === 0 &&
                         topWins
                           .slice(1)
@@ -596,12 +573,14 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
             ))}
           </div>
         </CardBody>
-      </Card>
+      </Card> */}
       <Card className="w-full flex justify-center items-center">
         <CardHeader className="">
           <div className="flex flex-col w-full justify-center items-center gap-2">
             <div>
-              <Button onPress={() => setIsCreate(true)}>리그정보 등록</Button>
+              {userGrade > 3 && (
+                <Button onPress={() => setIsCreate(true)}>리그정보 등록</Button>
+              )}
             </div>
             <div>
               <FullCalendar
@@ -637,20 +616,22 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
 
               return (
                 <div key={index} className="w-full mb-4 p-4 border rounded-lg">
-                  <div className="flex gap-3 justify-end mb-4">
-                    <Button
-                      color="success"
-                      isIconOnly
-                      onClick={() => handleEditClick(match)}
-                      startContent={<EditIcon fill="currentColor" />}
-                    />
-                    <Button
-                      color="danger"
-                      isIconOnly
-                      onClick={() => handleDeleteClick(match._id)}
-                      startContent={<DeleteIcon fill="currentColor" />}
-                    />
-                  </div>
+                  {userGrade > 3 && (
+                    <div className="flex gap-3 justify-end mb-4">
+                      <Button
+                        color="success"
+                        isIconOnly
+                        onClick={() => handleEditClick(match)}
+                        startContent={<EditIcon fill="currentColor" />}
+                      />
+                      <Button
+                        color="danger"
+                        isIconOnly
+                        onClick={() => handleDeleteClick(match._id)}
+                        startContent={<DeleteIcon fill="currentColor" />}
+                      />
+                    </div>
+                  )}
                   <div className="flex justify-center items-center mb-2 gap-4">
                     <div className="flex flex-col items-center">
                       <Image

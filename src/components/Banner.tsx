@@ -1,13 +1,6 @@
 "use client";
 
-import {
-  Avatar,
-  Card,
-  CardBody,
-  CardHeader,
-  Image,
-  Link,
-} from "@nextui-org/react";
+import { Card, CardHeader, Image, Link } from "@nextui-org/react";
 import NextCarousel from "./NextCarousel";
 import styles from "../styles/style.module.css";
 import { useEffect, useState } from "react";

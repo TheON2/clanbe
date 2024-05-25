@@ -404,6 +404,17 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
         <Tab key={"BELO"} title={"BELO"} className={styles.tab}>
           <Card>
             <CardBody className="w-full">
+              {user.grade === 5 && (
+                <>
+                  <Button
+                    size="sm"
+                    color="success"
+                    onPress={() => router.push("/ADMIN")}
+                  >
+                    어드민 페이지
+                  </Button>
+                </>
+              )}
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">
