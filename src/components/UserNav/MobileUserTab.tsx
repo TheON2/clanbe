@@ -11,10 +11,8 @@ import {
   Popover,
   PopoverTrigger,
   PopoverContent,
-  Tooltip,
   Tabs,
   Tab,
-  User,
   Modal,
   ModalContent,
   ModalHeader,
@@ -409,7 +407,7 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
                   <Button
                     size="sm"
                     color="success"
-                    onPress={() => router.push("/ADMIN")}
+                    onPress={() => router.push("/admin")}
                   >
                     어드민 페이지
                   </Button>
@@ -445,7 +443,6 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
               <Divider />
               <div className="mt-4 mb-6">
                 <div className="flex items-center justify-center m-2 gap-4">
-                  {/* Avatar 위치를 조정합니다. */}
                   <Avatar src={user.avatar} className="w-20 h-20 text-large" />
                   <div className="flex flex-col">
                     <p className="font-bold text-2xl">{user.nickname}</p>
@@ -468,7 +465,9 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
                 />
                 <div className="mt-2 flex items-center justify-center gap-2">
                   <p className="font-bold text-md text-center">
-                    POINT {currentUser.point}
+                    POINT
+                    <br />
+                    {currentUser.point}
                   </p>
                   <Button
                     isIconOnly
@@ -490,7 +489,7 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
                   ></Button>
                 </div>
               </div>
-              <div className="flex justify-center">
+              <div className="flex flex-col justify-center items-center">
                 <div className="flex my-4 w-[200px]">
                   <CircularProgress
                     aria-label="Loading..."
@@ -731,7 +730,7 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
                   </Popover>
                   <Button
                     color="primary"
-                    onPress={() => router.push("/PROLEAGUE/schedule")}
+                    onPress={() => router.push("/proleague/schedule")}
                   >
                     프로리그 일정
                   </Button>

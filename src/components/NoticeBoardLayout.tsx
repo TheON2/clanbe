@@ -1,11 +1,8 @@
 "use client";
 
 import {
-  Avatar,
   Button,
   Card,
-  CardHeader,
-  Divider,
   Pagination,
   Select,
   SelectItem,
@@ -18,14 +15,7 @@ import {
   Input,
 } from "@nextui-org/react";
 import React, { useEffect, useState } from "react";
-import {
-  aligns,
-  searchOption,
-  posts,
-  announce,
-  board,
-} from "../../public/data";
-import NoticeCardHeader from "./NoticeCardHeader";
+import { searchOption } from "../../public/data";
 import PostCardComponent from "./PostCardComponent";
 import { Post } from "../../types/types";
 import { useMediaQuery } from "react-responsive";
@@ -83,7 +73,7 @@ const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
   const handleWritePost = () => {
     if (!user) {
       // 로그인 페이지로 리다이렉트
-      router.push("/AUTH/signin"); // 로그인 페이지 경로에 맞게 조정 필요
+      router.push("/auth/signin"); // 로그인 페이지 경로에 맞게 조정 필요
     } else {
       // 글쓰기 페이지로 이동
       router.push("/post/write");
@@ -201,10 +191,10 @@ const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
       <div className="flex justify-center py-2">
         <Pagination
           showControls
-          total={Math.ceil(sortedBoard.length / postsPerPage)} // 정렬된 게시물 배열의 길이 기준으로 총 페이지 수 계산
+          total={Math.ceil(sortedBoard.length / postsPerPage)}
           initialPage={1}
-          page={currentPage} // 현재 페이지 상태를 Pagination 컴포넌트에 명시적으로 전달
-          onChange={(page) => handlePageChange(page)} // 페이지 변경 시 handlePageChange 호출
+          page={currentPage}
+          onChange={(page) => handlePageChange(page)}
         />
       </div>
     </div>

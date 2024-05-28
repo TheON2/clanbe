@@ -5,55 +5,17 @@ import {
   Avatar,
   Button,
   Card,
-  CardBody,
-  CircularProgress,
   Divider,
-  Image,
-  Progress,
-  Popover,
-  PopoverTrigger,
-  PopoverContent,
-  Tooltip,
   Tabs,
   Tab,
-  User,
-  Modal,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
-  Select,
-  SelectItem,
   Input,
-  Autocomplete,
-  AutocompleteItem,
-  DatePicker,
   ButtonGroup,
-  tabs,
 } from "@nextui-org/react";
 
-import {
-  Table,
-  TableHeader,
-  TableBody,
-  TableColumn,
-  TableRow,
-  TableCell,
-} from "@nextui-org/table";
-
-import {
-  DateValue,
-  parseDate,
-  getLocalTimeZone,
-  CalendarDate,
-} from "@internationalized/date";
-import { User as MyUser } from "next-auth";
-import { signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import PostCardComponent from "./PostCardComponent";
-import { formatDateOnly, formatRelativeDate } from "@/utils/dateUtils";
-import CommentCard from "./CommentCard/CommentCard";
+import { formatRelativeDate } from "@/utils/dateUtils";
 import PostCommentCard from "./CommentCard/ProfileCommentCard";
 import { Post } from "../../types/types";
 import {
@@ -322,7 +284,7 @@ export default function ProfileComponent({ user, posts, comments }: any) {
     if (status === "unauthenticated") {
       // 로그인 되지 않았다면 로그인 페이지로 리다이렉트
       alert("로그인 후 이용가능합니다.");
-      router.push("/AUTH/signin");
+      router.push("/auth/signin");
     }
   }, [router, status]);
 

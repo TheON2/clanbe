@@ -6,8 +6,50 @@
 html,
 body {
   height: 100vh;
-  margin-left: 0;
-  margin-right: 0;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+.header,
+.footer {
+  width: 100%;
+}
+
+.main-content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+@media (min-width: 768px) {
+  .main-content {
+    flex-direction: row;
+  }
+}
+
+.tap-nav {
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .tap-nav {
+    width: 25%;
+  }
+}
+
+.content {
+  flex: 1;
 }
 
 .ckeditor-container .ck-editor__editable {

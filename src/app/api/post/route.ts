@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
 import { revalidateTag } from "next/cache";
+import UserModel from "@/models/user";
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
@@ -24,8 +25,10 @@ export async function POST(req: Request, res: Response) {
       _id,
       featured,
       thumbnail,
-      noticed
+      noticed,
     } = post;
+
+    const user = await UserModel.findOne({ email: author });
 
     return new Response(
       JSON.stringify({
@@ -36,6 +39,7 @@ export async function POST(req: Request, res: Response) {
         featured,
         fileUrl,
         author,
+        authorNickName: user ? user.nickname : null,
         thumbnail,
         noticed,
         postId: _id.toString(),

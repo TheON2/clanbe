@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
-import { signIn, useSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import {
   Button,
   Card,
@@ -14,10 +13,7 @@ import {
 } from "@nextui-org/react";
 
 export default function SignInPage() {
-  const dispatch = useDispatch();
-  const { data: session, status } = useSession();
   const router = useRouter();
-  const placements = ["inside", "outside", "outside-left"];
   const validateEmail = (email: string) => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     return emailRegex.test(email);
@@ -46,7 +42,8 @@ export default function SignInPage() {
     }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e: any) => {
+    e.preventDefault(); // 기본 제출 동작 막기
     try {
       const result = await signIn("credentials", {
         redirect: false,
@@ -100,7 +97,10 @@ export default function SignInPage() {
           <div className="text-bold text-xl">로그인</div>
         </CardHeader>
         <Divider />
-        <div className="flex flex-col gap-4 px-4 items-center text-center">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-4 px-4 items-center text-center"
+        >
           <div className="w-4/5">
             <Input
               type="email"
@@ -114,6 +114,7 @@ export default function SignInPage() {
               onChange={handleInputChange}
               isInvalid={error.email.length >= 1}
               errorMessage={error.email}
+              autoComplete="email"
             />
             <Input
               type="password"
@@ -127,11 +128,11 @@ export default function SignInPage() {
               onChange={handleInputChange}
               isInvalid={error.password.length >= 1}
               errorMessage={error.password}
+              autoComplete="current-password"
             />
-
             <div className="flex justify-center gap-4 p-4">
               <Button
-                onClick={handleSubmit}
+                type="submit"
                 disabled={!canSubmit()}
                 color="success"
                 className={`min-w-[250px] ${
@@ -143,12 +144,12 @@ export default function SignInPage() {
                 로그인
               </Button>
             </div>
-            <Link href="/AUTH/signup">
+            <Link href="/auth/signup">
               <p className="pb-4">회원가입 </p>
             </Link>
             <p className="pb-4">아이디를 잃어버리셨나요? 아이디찾기</p>
           </div>
-        </div>
+        </form>
       </Card>
     </div>
   );

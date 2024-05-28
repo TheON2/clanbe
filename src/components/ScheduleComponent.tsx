@@ -381,7 +381,7 @@ export default function ScheduleComponent({ events }: ScheduleComponentProps) {
                           ))}
                         </TableBody>
                       </Table>
-                      <Link href="/PROLEAGUE/schedule">자세히 보기</Link>
+                      <Link href="/proleague/schedule">자세히 보기</Link>
                     </div>
                   </>
                 )}

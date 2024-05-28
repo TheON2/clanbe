@@ -68,7 +68,8 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
     () =>
       announce
         .filter(
-          (a) => a.noticed && a.category === category && a.category !== "notice"
+          (a) =>
+            a.noticed && (a.category === category || a.category === "notice")
         )
         .reverse(),
     [announce, category]
@@ -109,6 +110,8 @@ const BoardLayout: React.FC<BoardLayoutProps> = ({
 
   const formatDateBasedOnDevice = (date: Date) =>
     isMobile ? formatRelativeDate(date) : formatDate(date);
+
+  console.log(filteredAnnounce);
 
   return (
     <div className="py-20 w-full mx-auto">

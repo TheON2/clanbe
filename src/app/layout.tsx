@@ -26,27 +26,22 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html
-      lang="en"
-      className={`w-full flex justify-center items-center ${sans.className}`}
-    >
+    <html lang="en" className={sans.className}>
       <Head>
         <title>CLANBE</title>
         <meta
           name="viewport"
-          content="width=device-width, initial-scale=1 user-scalable=yes"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
       </Head>
-      <body className="flex flex-col w-full">
+      <body className="flex flex-col min-h-screen">
         <Providers>
           <SpeedInsights />
-          <div className="mx-auto max-w-7xl">
+          <div className="flex flex-col w-full max-w-7xl mx-auto px-4">
             <Header />
-            <div className="flex flex-col-reverse md:flex-row items-start">
+            <div className="flex flex-col-reverse md:flex-row items-start w-full">
               <TapNav />
-              <main className="flex flex-col md:flex-row items-center w-full">
-                {children}
-              </main>
+              <main className="flex-1 w-full">{children}</main>
             </div>
             <Footer />
           </div>

@@ -19,29 +19,29 @@ const Notice = ({ notices }: any) => {
   const getCategoryPath = (category: string) => {
     switch (category) {
       case "공지사항":
-        return "/CLANBE/notices";
+        return "/clanbe/notices";
       case "클랜 후원":
-        return "/CLANBE/support";
+        return "/clanbe/support";
       case "자유게시판":
-        return "/COMMUNITY/forum";
+        return "/community/forum";
       case "가입인사":
-        return "/COMMUNITY/introduce";
+        return "/community/introduce";
       case "건의사항":
-        return "/COMMUNITY/feedback";
+        return "/community/feedback";
       case "전략전술":
-        return "/COMMUNITY/tactics";
+        return "/community/tactics";
       case "출석체크":
-        return "/COMMUNITY/dailycheckin";
+        return "/community/dailycheckin";
       case "랭킹전":
-        return "/LEAGUE/ranking";
+        return "/league/ranking";
       case "이벤트":
-        return "/LEAGUE/event";
+        return "/league/event";
       case "외부리그":
-        return "/LEAGUE/opponent";
+        return "/league/opponent";
       case "끝장전":
-        return "/LEAGUE/versus";
+        return "/league/versus";
       case "프로리그":
-        return "/PROLEAGUE/notice";
+        return "/proleague/notice";
       default:
         return "/"; // 기본 경로
     }
@@ -57,7 +57,7 @@ const Notice = ({ notices }: any) => {
       <CardHeader className="flex gap-3">
         <Image alt="nextui logo" height={60} src="/Belogo.png" width={60} />
         <div className="flex flex-col">
-          <Link href={"/CLANBE/notices"}>
+          <Link href={"/clanbe/notices"}>
             <p className="text-lg font-bold hover:text-blue-default cursor-pointer">
               공지 사항
             </p>

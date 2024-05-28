@@ -1,12 +1,8 @@
 "use server";
 
-import { NextApiRequest, NextApiResponse } from "next";
-import { uploadPostData } from "@/service/posts";
-import { MongoClient } from "mongodb";
-import { NextResponse } from "next/server";
 import mongoose from "mongoose";
 import PostModel from "@/models/post";
-import { revalidatePath, revalidateTag } from "next/cache";
+import UserModel from "@/models/user"; // 유저 모델 가져오기
 
 export async function POST(req: Request, res: Response) {
   const body = await req.json();
@@ -37,12 +33,19 @@ export async function POST(req: Request, res: Response) {
       });
     }
 
-    const transformedPosts = posts.map((post) => {
-      return {
-        ...post.toObject(),
-        _id: post._id.toString(), // ObjectId를 문자열로 변환
-      };
-    });
+    const transformedPosts = await Promise.all(
+      posts.map(async (post) => {
+        const postObject = post.toObject();
+        const author = await UserModel.findOne({ email: postObject.author });
+        return {
+          ...postObject,
+          _id: post._id.toString(), // ObjectId를 문자열로 변환
+          authorNickName: author ? author.nickname : null,
+          authorAvatar: author ? author.avatar : null,
+        };
+      })
+    );
+
     return new Response(JSON.stringify({ data: transformedPosts }), {
       status: 200,
       headers: {

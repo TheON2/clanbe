@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  Avatar,
   Button,
   ButtonGroup,
   Card,
@@ -13,11 +12,10 @@ import {
 } from "@nextui-org/react";
 import Image from "next/image";
 import { useState } from "react";
-import { CheckBoxInterface, Signup } from "../../../../types/types";
+import { Signup } from "../../../../types/types";
 import Link from "next/link";
 
 export default function SignUpPage() {
-  const placements = ["inside", "outside", "outside-left"];
   const validateEmail = (email: string) => {
     const emailRegex = /^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/;
     return emailRegex.test(email);
@@ -377,7 +375,7 @@ export default function SignUpPage() {
                 회원가입
               </Button>
             </div>
-            <Link href={"/AUTH/signin"}>
+            <Link href={"/auth/signin"}>
               <p className="pb-4">이미 아이디가 있으신가요? 로그인</p>
             </Link>
           </div>

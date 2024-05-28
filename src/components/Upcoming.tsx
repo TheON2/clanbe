@@ -29,7 +29,6 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import listPlugin from "@fullcalendar/list";
 import koLocale from "@fullcalendar/core/locales/ko";
 import styles from "../styles/style.module.css";
-import SubmitModal from "./SubmitModal";
 import { DayHeaderContentArg, EventClickArg } from "@fullcalendar/core";
 
 const renderEventContent = (eventInfo: any) => {
@@ -57,7 +56,6 @@ const renderEventContent = (eventInfo: any) => {
 };
 
 const renderDayHeaderContent = (headerInfo: DayHeaderContentArg) => {
-  console.log(headerInfo);
   return (
     <div className="flex items-center justify-center text-center h-[10px]">
       <p className="text-xs text-black">
@@ -71,11 +69,8 @@ const Upcoming = ({ events }: any) => {
   const { isOpen, onOpen, onClose, onOpenChange } = useDisclosure();
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
-  const [eventId, setEventId] = useState("");
   const [eventType, setEventType] = useState("general");
   const [eventSets, setEventSets] = useState([]);
-  const [homeTeamName, setHomeTeamName] = useState("");
-  const [awayTeamName, setAwayTeamName] = useState("");
 
   const handleEventClick = (arg: EventClickArg) => {
     const { event } = arg;
@@ -83,16 +78,11 @@ const Upcoming = ({ events }: any) => {
 
     setEventName(event.title);
     setEventDescription(event.extendedProps?.description ?? "");
-    setEventId(event.id);
 
     if (event.extendedProps.type === "league") {
       setEventSets(event.extendedProps.sets);
-      setHomeTeamName(event.extendedProps.homeTeamName);
-      setAwayTeamName(event.extendedProps.awayTeamName);
     } else {
       setEventSets([]);
-      setHomeTeamName("");
-      setAwayTeamName("");
     }
 
     onOpen();
@@ -103,7 +93,7 @@ const Upcoming = ({ events }: any) => {
       <CardHeader className="flex gap-3">
         <Image alt="nextui logo" height={60} src="/Belogo.png" width={60} />
         <div className="flex flex-col">
-          <Link href={"/CLANBE/schedule"}>
+          <Link href={"/clanbe/schedule"}>
             <p className="text-lg font-bold hover:text-blue-default cursor-pointer">
               클랜 일정
             </p>
@@ -183,7 +173,7 @@ const Upcoming = ({ events }: any) => {
                       ))}
                     </TableBody>
                   </Table>
-                  <Link href="/PROLEAGUE/schedule">자세히 보기</Link>
+                  <Link href="/proleague/schedule">자세히 보기</Link>
                 </div>
               </>
             )}

@@ -3,6 +3,7 @@
 import { Card, CardHeader, Image, Link } from "@nextui-org/react";
 import NextCarousel from "./NextCarousel";
 import styles from "../styles/style.module.css";
+import { useMediaQuery } from "react-responsive";
 import { useEffect, useState } from "react";
 
 export interface CarouselItemProps {
@@ -22,21 +23,15 @@ const bannerItems = [
 ];
 
 const Banner: React.FC = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    handleResize();
-
-    return () => window.removeEventListener("resize", handleResize);
+    setHydrated(true);
   }, []);
+
   return (
-    <div className="flex flex-col items-center justify-center gap-2">
+    <div className="flex flex-col items-center justify-center gap-2 w-full">
       <NextCarousel
         images={true}
         items={bannerItems}
@@ -47,9 +42,9 @@ const Banner: React.FC = () => {
         <div
           className={`w-full md:w-1/2 h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
         >
-          <Card>
+          <Card className="w-full">
             <div className="flex flex-wrap items-center justify-between w-full p-2">
-              <div className="flex items-center gap-2 md:w-2/5 w-3/5">
+              <div className="flex items-center gap-2 w-3/5 md:w-2/5">
                 <div className="w-24 h-24 rounded-full flex justify-center items-center">
                   <Image
                     alt="nextui logo"
@@ -63,20 +58,22 @@ const Banner: React.FC = () => {
                   <p className="font-bold text-md">스트리머</p>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center md:w-3/5 w-2/5">
+              <div className="flex flex-col justify-center items-center w-2/5 md:w-3/5">
                 <p className="font-bold text-xl">방송국 주소</p>
-                <Link
-                  className="font-bold text-sm cursor-pointer"
-                  href="https://bj.afreecatv.com/ksmo54"
-                >
-                  {isMobile ? "바로가기" : "https://bj.afreecatv.com/ksmo54"}
-                </Link>
+                {hydrated && (
+                  <Link
+                    className="font-bold text-sm cursor-pointer"
+                    href="https://bj.afreecatv.com/ksmo54"
+                  >
+                    {isMobile ? "바로가기" : "https://bj.afreecatv.com/ksmo54"}
+                  </Link>
+                )}
               </div>
             </div>
           </Card>
-          <Card>
+          <Card className="w-full">
             <div className="flex flex-wrap items-center justify-between w-full p-2">
-              <div className="flex items-center gap-2 md:w-2/5 w-3/5">
+              <div className="flex items-center gap-2 w-3/5 md:w-2/5">
                 <div className="w-24 h-24 rounded-full flex justify-center items-center">
                   <Image
                     alt="nextui logo"
@@ -90,22 +87,24 @@ const Banner: React.FC = () => {
                   <p className="font-bold text-md">해설BJ</p>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center md:w-3/5 w-2/5">
+              <div className="flex flex-col justify-center items-center w-2/5 md:w-3/5">
                 <p className="font-bold text-xl">방송국 주소</p>
-                <Link
-                  className="font-bold text-sm cursor-pointer"
-                  href="https://bj.afreecatv.com/ehdnjs1111"
-                >
-                  {isMobile
-                    ? "바로가기"
-                    : "https://bj.afreecatv.com/ehdnjs1111"}
-                </Link>
+                {hydrated && (
+                  <Link
+                    className="font-bold text-sm cursor-pointer"
+                    href="https://bj.afreecatv.com/ehdnjs1111"
+                  >
+                    {isMobile
+                      ? "바로가기"
+                      : "https://bj.afreecatv.com/ehdnjs1111"}
+                  </Link>
+                )}
               </div>
             </div>
           </Card>
-          <Card>
+          <Card className="w-full">
             <div className="flex flex-wrap items-center justify-between w-full p-2">
-              <div className="flex items-center gap-2 md:w-2/5 w-3/5">
+              <div className="flex items-center gap-2 w-3/5 md:w-2/5">
                 <div className="w-24 h-24 rounded-full flex justify-center items-center">
                   <Image
                     alt="nextui logo"
@@ -119,20 +118,22 @@ const Banner: React.FC = () => {
                   <p className="font-bold text-md">해설BJ</p>
                 </div>
               </div>
-              <div className="flex flex-col justify-center items-center md:w-3/5 w-2/5">
+              <div className="flex flex-col justify-center items-center w-2/5 md:w-3/5">
                 <p className="font-bold text-xl">방송국 주소</p>
-                <Link
-                  className="font-bold text-sm cursor-pointer"
-                  href="https://bj.afreecatv.com/lycosc"
-                >
-                  {isMobile ? "바로가기" : "https://bj.afreecatv.com/lycosc"}
-                </Link>
+                {hydrated && (
+                  <Link
+                    className="font-bold text-sm cursor-pointer"
+                    href="https://bj.afreecatv.com/lycosc"
+                  >
+                    {isMobile ? "바로가기" : "https://bj.afreecatv.com/lycosc"}
+                  </Link>
+                )}
               </div>
             </div>
           </Card>
         </div>
 
-        <div
+        {/* <div
           className={`w-full md:w-1/2 h-[350px] ${styles.customCard} flex flex-col gap-2 items-center justify-center`}
         >
           <Card className="w-full h-[350px] flex items-center justify-center">
@@ -141,7 +142,7 @@ const Banner: React.FC = () => {
               <div>
                 <iframe
                   id="afreecatv_player_video"
-                  width="350"
+                  width="100%"
                   height="200"
                   src="https://vod.afreecatv.com/player/123390443/embed?autoPlay=false&mutePlay=true"
                   allowFullScreen={true}
@@ -150,9 +151,10 @@ const Banner: React.FC = () => {
               </div>
             </div>
           </Card>
-        </div>
+        </div> */}
       </div>
     </div>
   );
 };
+
 export default Banner;

@@ -30,7 +30,6 @@ import {
 } from "../../../public/data";
 import { HeaderEnd } from "./HeaderEnd";
 import { useRouter } from "next/navigation";
-import UserNav2 from "../UserNav2";
 
 export default function HeaderComponent(categoryData: any) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -42,20 +41,16 @@ export default function HeaderComponent(categoryData: any) {
   };
 
   return (
-    <Navbar
-      onMenuOpenChange={setIsMenuOpen}
-      maxWidth="full"
-      className="w-full overflow-hidden"
-    >
+    <Navbar onMenuOpenChange={setIsMenuOpen} maxWidth="full" className="w-full">
       <NavbarContent>
         <NavbarMenuToggle
           aria-label={isMenuOpen ? "Close menu" : "Open menu"}
-          className="sm:hidden"
+          className="md:hidden"
           onClick={() => setIsMenuOpen(!isMenuOpen)}
         />
         <HeaderLogo />
       </NavbarContent>
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden md:flex gap-4" justify="center">
         <HeaderDropdown
           buttonTitle={headerCLANBE.buttonTitle}
           menuItems={headerCLANBE.menuItems}
@@ -81,10 +76,10 @@ export default function HeaderComponent(categoryData: any) {
           menuItems={headerPOINT.menuItems}
         />
       </NavbarContent>
-      <NavbarContent>
+      {/* <NavbarContent>
         <HeaderEnd />
-      </NavbarContent>
-      <NavbarMenu className="w-2/3">
+      </NavbarContent> */}
+      <NavbarMenu className="w-2/3 flex items-center">
         <Accordion variant="splitted">
           {[
             headerCLANBE,

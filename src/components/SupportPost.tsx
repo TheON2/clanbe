@@ -61,21 +61,21 @@ const SupportPost = ({ supports, allSupports }: any) => {
   if (receivedSupports.length === 0 || receivedAllSupports.length === 0)
     return null;
 
-  console.log(supports);
-
   return (
     <Card className={`w-full max-h-[600px] lg:w-1/2 ${styles.customCard}`}>
-      <CardHeader className="flex gap-3">
-        <Image alt="nextui logo" height={100} src="/Belogo.png" width={100} />
+      <CardHeader className="flex flex-wrap gap-3">
+        <Image alt="nextui logo" height={60} src="/Belogo.png" width={60} />
         <div className="flex flex-col">
-          <Link href={"/CLANBE/notices"}>
+          <Link href={"/clanbe/notices"}>
             <p className="text-lg font-bold hover:text-blue-default cursor-pointer">
               클랜 후원
             </p>
           </Link>
           <p className="text-small text-default-500">운영금액 및 감사한분들</p>
         </div>
-        <Divider orientation="vertical" />
+      </CardHeader>
+      <Divider />
+      <CardBody>
         <div className="flex items-center m-2 gap-4">
           <div className="flex flex-col">
             <p className="font-bold text-xl">
@@ -87,9 +87,6 @@ const SupportPost = ({ supports, allSupports }: any) => {
             {/* <p className="font-bold text-md text-blue">이달의 사용 60,000원</p> */}
           </div>
         </div>
-      </CardHeader>
-      <Divider />
-      <CardBody>
         <Tabs aria-label="Options">
           <Tab key="option1" title="누적금액">
             {supports.map((support: Support, index: number) => (

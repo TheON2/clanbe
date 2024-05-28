@@ -28,7 +28,7 @@ export default function MobileUserComponent({ teams, users, points }: any) {
     return (
       <Card className="p-4 flex flex-col items-center justify-center w-full h-32">
         <p>로그인을 해주세요.</p>
-        <Link href="/AUTH/signin">
+        <Link href="/auth/signin">
           <Button color="primary" size="sm">
             로그인
           </Button>
@@ -43,7 +43,7 @@ export default function MobileUserComponent({ teams, users, points }: any) {
     // 유효하지 않은 user 객체의 경우 대체 UI 표시
     <Card className="p-4 flex flex-col items-center justify-center w-full h-32">
       <p>로그인을 해주세요.</p>
-      <Link href="/AUTH/signin">
+      <Link href="/auth/signin">
         <Button color="primary" size="sm">
           로그인
         </Button>

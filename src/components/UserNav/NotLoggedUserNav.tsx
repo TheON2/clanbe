@@ -3,17 +3,17 @@
 import { Button, Card, CardBody } from "@nextui-org/react";
 import Link from "next/link";
 
-const UserNav2 = () => {
+const NotLoggedUserNav = () => {
   return (
     <Card className="mb-4">
       <CardBody>
         <div className="flex flex-col justify-center gap-4">
-          <Link href="/AUTH/signin" passHref>
+          <Link href="/auth/signin" passHref>
             <Button color="primary" className="w-full">
               로그인
             </Button>
           </Link>
-          <Link href="/AUTH/signup" passHref>
+          <Link href="/auth/signup" passHref>
             <Button color="primary" className="w-full">
               회원가입
             </Button>
@@ -24,4 +24,4 @@ const UserNav2 = () => {
   );
 };
 
-export default UserNav2;
+export default NotLoggedUserNav;

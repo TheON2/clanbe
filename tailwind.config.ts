@@ -12,22 +12,22 @@ const config: Config = {
     extend: {
       colors: {
         blue: {
-          light: '#85d7ff',
-          default: '#1fb6ff',
-          dark: '#009eeb',
+          light: "#85d7ff",
+          default: "#1fb6ff",
+          dark: "#009eeb",
         },
         pink: {
-          light: '#ff7ce5',
-          default: '#ff49db',
-          dark: '#ff16d1',
+          light: "#ff7ce5",
+          default: "#ff49db",
+          dark: "#ff16d1",
         },
         gray: {
-          deep:'#111827',
-          darkest: '#1f2d3d',
-          dark: '#3c4858',
-          default: '#c0ccda',
-          light: '#e0e6ed',
-          lightest: '#f9fafc',
+          deep: "#111827",
+          darkest: "#1f2d3d",
+          dark: "#3c4858",
+          default: "#c0ccda",
+          light: "#e0e6ed",
+          lightest: "#f9fafc",
         },
       },
       backgroundImage: {
@@ -35,9 +35,11 @@ const config: Config = {
         "gradient-conic":
           "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
-      screens: { 
+      screens: {
+        xs: "400px",
+        md: "900px",
         lg: "1300px",
-        custom: '1000px',
+        custom: "1000px",
       },
     },
   },

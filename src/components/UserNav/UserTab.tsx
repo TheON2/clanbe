@@ -400,13 +400,13 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
       <Tabs aria-label="Dynamic tabs" items={tabs}>
         <Tab key={"BELO"} title={"BELO"}>
           <Card>
-            <CardBody className="">
+            <CardBody className="flex items-center justify-center ">
               {sessionUser.grade === 5 && (
                 <>
                   <Button
                     size="sm"
                     color="success"
-                    onPress={() => router.push("/ADMIN")}
+                    onPress={() => router.push("/admin")}
                   >
                     어드민 페이지
                   </Button>
@@ -744,7 +744,7 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
                 </Popover>
                 <Button
                   color="primary"
-                  onPress={() => router.push("/PROLEAGUE/schedule")}
+                  onPress={() => router.push("/proleague/schedule")}
                 >
                   프로리그 일정
                 </Button>

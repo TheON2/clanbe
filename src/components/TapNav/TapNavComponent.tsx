@@ -24,7 +24,7 @@ import { tabs } from "../../../public/data";
 import { Point, Team } from "../../../types/types";
 import { ThemeSwitcher } from "../ThemeSwitcher";
 import { useSession } from "next-auth/react";
-import UserNav2 from "../UserNav2";
+import NotLoggedUserNav from "../UserNav/NotLoggedUserNav";
 import { useRouter } from "next/navigation";
 import UserNav from "../UserNav/UserNav";
 import { User as MyUser } from "next-auth";
@@ -42,11 +42,11 @@ const TapNavComponent = ({ teams, users, points }: TapNavProps) => {
   const router = useRouter(); // useRouter 훅을 사용하여 라우터 인스턴스를 가져옵니다.
 
   return (
-    <div className="hidden md:block mx-4 sticky top-20 w-[280px] ">
+    <div className="hidden md:block mx-4 sticky top-20 w-[220px] ">
       {isLoggedIn && user ? (
         <UserNav user={user} teams={teams} users={users} points={points} />
       ) : (
-        <UserNav2 />
+        <NotLoggedUserNav />
       )}
       <ThemeSwitcher />
     </div>

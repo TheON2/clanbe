@@ -1,7 +1,7 @@
 import BoardLayout from "@/components/BoardLayout";
 
 export default async function AllPostPage() {
-  const category = "allposts"
+  const category = "allposts";
   // 응답을 JSON으로 변환
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
     method: "POST",
