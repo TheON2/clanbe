@@ -7,6 +7,8 @@ interface PostCardComponentProps {
   id: string;
   title: string;
   author: string;
+  authorNickName: string;
+  authorAvatar: string;
   views: number;
   date: string;
   category: string;
@@ -19,39 +21,41 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
   views,
   date,
   category,
+  authorAvatar,
+  authorNickName,
 }) => {
   const labels = categoryLabels;
 
-    const getCategoryPath = (category: string) => {
-      switch (category) {
-        case "공지사항":
-          return "/clanbe/notices";
-        case "클랜 후원":
-          return "/clanbe/support";
-        case "자유게시판":
-          return "/community/forum";
-        case "가입인사":
-          return "/community/introduce";
-        case "건의사항":
-          return "/community/feedback";
-        case "전략전술":
-          return "/community/tactics";
-        case "출석체크":
-          return "/community/dailycheckin";
-        case "랭킹전":
-          return "/league/ranking";
-        case "이벤트":
-          return "/league/event";
-        case "외부리그":
-          return "/league/opponent";
-        case "끝장전":
-          return "/league/versus";
-        case "프로리그":
-          return "/proleague/notice";
-        default:
-          return "/"; // 기본 경로
-      }
-    };
+  const getCategoryPath = (category: string) => {
+    switch (category) {
+      case "공지사항":
+        return "/clanbe/notices";
+      case "클랜 후원":
+        return "/clanbe/support";
+      case "자유게시판":
+        return "/community/forum";
+      case "가입인사":
+        return "/community/introduce";
+      case "건의사항":
+        return "/community/feedback";
+      case "전략전술":
+        return "/community/tactics";
+      case "출석체크":
+        return "/community/dailycheckin";
+      case "랭킹전":
+        return "/league/ranking";
+      case "이벤트":
+        return "/league/event";
+      case "외부리그":
+        return "/league/opponent";
+      case "끝장전":
+        return "/league/versus";
+      case "프로리그":
+        return "/proleague/notice";
+      default:
+        return "/"; // 기본 경로
+    }
+  };
   const router = useRouter();
   return (
     <div className="flex flex-col px-4 py-2 gap-4">
@@ -79,13 +83,8 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
       </div>
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">
-          <Avatar
-            size="sm"
-            isBordered
-            color="success"
-            src="https://i.pravatar.cc/150?u=a04258114e29026302d"
-          />
-          <span>{author}</span>
+          <Avatar size="sm" isBordered color="success" src={authorAvatar} />
+          <span>{authorNickName}</span>
         </div>
         <div className="flex-none ml-auto mr-2" style={{ width: "auto" }}>
           조회 수 {views}

@@ -109,6 +109,9 @@ const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
     setSortedBoard(sorted);
   }, [selectedSortKey, posts]);
 
+  const formatDateBasedOnDevice = (date: Date) =>
+    isMobile ? formatRelativeDate(date) : formatDate(date);
+
   return (
     <div className="py-20 w-full mx-auto ">
       <a className="font-bold text-xl sm:text-3xl px-4 mb-20">{boardTitle}</a>
@@ -181,8 +184,10 @@ const NoticeBoardLayout: React.FC<BoardLayoutProps> = ({
             key={index}
             title={post.title}
             author={post.author}
+            authorNickName={post.authorNickName as string}
+            authorAvatar={post.authorAvatar as string}
             views={post.view}
-            date={getFormattedDate(post.createdAt)}
+            date={formatDateBasedOnDevice(post.createdAt)}
             id={post._id}
             category={post.category}
           />

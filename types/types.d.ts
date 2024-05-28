@@ -170,6 +170,8 @@ export type Post = {
   updatedAt: Date;
   view: number;
   comments: Comment[];
+  authorNickName?: string;
+  authorAvatar?: string;
 };
 
 export type Reply = {
