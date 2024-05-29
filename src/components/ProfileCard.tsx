@@ -42,10 +42,10 @@ export default function ProfileCard({ userData }: ProfileCardProps) {
       </Card>
       <Card className="block md:hidden m-8 w-full flex items-center">
         <User
-          name="Jane Doe"
-          description="Product Designer"
+          name={userData.nickname}
+          description={userData.role}
           avatarProps={{
-            src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+            src: userData.avatar,
           }}
           className="mt-4"
         />

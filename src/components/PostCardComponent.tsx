@@ -73,7 +73,7 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
           {labels[category]}
         </Button>
         <div
-          className="font-bold text-xl hover:text-blue-default cursor-pointer"
+          className="font-bold md:text-xl text-sm hover:text-blue-default cursor-pointer"
           onClick={() => {
             router.push(`/post/read/${id}/${category}`);
           }}

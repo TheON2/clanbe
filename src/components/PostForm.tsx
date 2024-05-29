@@ -15,6 +15,7 @@ import {
   Link as MyLink,
   Divider,
   Button,
+  Tooltip,
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import CommentCard from "./CommentCard/CommentCard";
@@ -25,6 +26,7 @@ import ProfileCard from "./ProfileCard";
 import { useSession } from "next-auth/react";
 import ReplyComponent from "./ReplyComponent";
 import { formatDate } from "@/utils/dateUtils";
+import { EditIcon } from "../../public/EditIcon";
 
 type PostFormProps = {
   post: {
@@ -187,11 +189,11 @@ export default function PostForm({
   return (
     <div>
       <Card className="py-4 m-4">
-        <CardHeader className="m-4 pb-0 pt-2 px-4 flex justify-between items-center">
+        <CardHeader className="m-4 pb-0 pt-2 px-4 flex items-center">
           <div>
-            <h1 className="text-4xl font-bold">{title}</h1>
+            <h1 className="md:text-4xl font-bold">{title}</h1>
             <p className="pt-4 pb-4">{formatDate(post.createdAt)}</p>
-            <div className="flex gap-4 mt-2">
+            <div className="flex gap-2">
               <Button
                 className="h-[30px] m-2 mr-4"
                 radius="full"
@@ -204,22 +206,31 @@ export default function PostForm({
               >
                 {categoryLabels[category]}
               </Button>
+              {user?.email === post.author && (
+                <div className="flex gap-2">
+                  <Link href={`/post/update/${_id}`}>
+                    <Tooltip content="Update Post">
+                      <span
+                        className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                        onClick={() =>
+                          router.push(`/user/profile/${user.email}`)
+                        }
+                      >
+                        <EditIcon />
+                      </span>
+                    </Tooltip>
+                  </Link>
+                  <Link href={``}>
+                    <TextModal
+                      title={"삭제"}
+                      text={"삭제 하시겠습니까?"}
+                      action={triggerDelete}
+                    ></TextModal>
+                  </Link>
+                </div>
+              )}
             </div>
           </div>
-          {user?.email === post.author && (
-            <div className="flex gap-2 mr-8">
-              <Link href={`/post/update/${_id}`}>
-                <h1>수정</h1>
-              </Link>
-              <Link href={``}>
-                <TextModal
-                  title={"삭제"}
-                  text={"삭제 하시겠습니까?"}
-                  action={triggerDelete}
-                ></TextModal>
-              </Link>
-            </div>
-          )}
         </CardHeader>
         <CardBody className="overflow-visible py-2">
           {category === "support" && supportData?.type === 1 && (
