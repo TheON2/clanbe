@@ -188,6 +188,48 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
     );
   }, [currentUser?.BELO.zw, currentUser?.BELO.zl]);
 
+  const totalWinsLeague =
+    currentUser?.league.pw + currentUser?.league.tw + currentUser?.league.zw;
+  const totalLossesLeague =
+    currentUser?.league.pl + currentUser?.league.tl + currentUser?.league.zl;
+
+  const totalGamesLeague = totalWinsLeague + totalLossesLeague;
+
+  const winRateTotalLeague = useMemo(() => {
+    const totalWins =
+      currentUser?.league.pw + currentUser?.league.tw + currentUser?.league.zw;
+    const totalGames =
+      totalWins +
+      (currentUser?.league.pl +
+        currentUser?.league.tl +
+        currentUser?.league.zl);
+    return (totalWins / totalGames) * 100;
+  }, [currentUser?.league]);
+
+  const winRatePLeague = useMemo(() => {
+    return (
+      (currentUser?.league.pw /
+        (currentUser?.league.pw + currentUser?.league.pl)) *
+      100
+    );
+  }, [currentUser?.league.pw, currentUser?.league.pl]);
+
+  const winRateTLeague = useMemo(() => {
+    return (
+      (currentUser?.league.tw /
+        (currentUser?.league.tw + currentUser?.league.tl)) *
+      100
+    );
+  }, [currentUser?.league.tw, currentUser?.league.tl]);
+
+  const winRateZLeague = useMemo(() => {
+    return (
+      (currentUser?.league.zw /
+        (currentUser?.league.zw + currentUser?.league.zl)) *
+      100
+    );
+  }, [currentUser?.league.zw, currentUser?.league.zl]);
+
   // 레벨과 경험치 백분율 계산
   const level = Math.floor(currentUser?.point / 1000);
   const expPercentage = (currentUser?.point % 1000) / 10;
@@ -556,6 +598,12 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
                 <Button color="primary" onPress={onOpen}>
                   BELO 등록
                 </Button>
+                <Button
+                  color="primary"
+                  onPress={() => router.push("/belo/history")}
+                >
+                  BELO 전적
+                </Button>
               </div>
             </CardBody>
           </Card>
@@ -686,13 +734,13 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
                         classNames={{
                           svg: "w-20 h-20",
                         }}
-                        value={winRateTotal}
-                        color={winRateTotal >= 50 ? "success" : "danger"}
+                        value={winRateTotalLeague}
+                        color={winRateTotalLeague >= 50 ? "success" : "danger"}
                         showValueLabel={true}
                       />
                       <div>
                         <p className="mx-2 font-bold text-xl">
-                          {totalWins}W {totalLosses}L
+                          {totalWinsLeague}W {totalLossesLeague}L
                         </p>
                         <p className="mx-2 font-bold text-2xl">
                           {currentUser.tear} Tier
@@ -704,39 +752,39 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
                         <CircularProgress
                           aria-label="Loading..."
                           size="lg"
-                          value={winRateP}
-                          color={winRateP >= 50 ? "success" : "danger"}
+                          value={winRatePLeague}
+                          color={winRatePLeague >= 50 ? "success" : "danger"}
                           showValueLabel={true}
                         />
                         <p className="mx-4 font-bold">
-                          vs P <br /> {currentUser.BELO.pw}W{" "}
-                          {currentUser.BELO.pl}L
+                          vs P <br /> {currentUser.league.pw}W{" "}
+                          {currentUser.league.pl}L
                         </p>
                       </div>
                       <div className="flex my-2">
                         <CircularProgress
                           aria-label="Loading..."
                           size="lg"
-                          value={winRateZ}
-                          color={winRateZ >= 50 ? "success" : "danger"}
+                          value={winRateZLeague}
+                          color={winRateZLeague >= 50 ? "success" : "danger"}
                           showValueLabel={true}
                         />
                         <p className="mx-4 font-bold">
-                          vs Z <br /> {currentUser.BELO.zw}W{" "}
-                          {currentUser.BELO.zl}L
+                          vs Z <br /> {currentUser.league.zw}W{" "}
+                          {currentUser.league.zl}L
                         </p>
                       </div>
                       <div className="flex my-2">
                         <CircularProgress
                           aria-label="Loading..."
                           size="lg"
-                          value={winRateT}
-                          color={winRateT >= 50 ? "success" : "danger"}
+                          value={winRateTLeague}
+                          color={winRateTLeague >= 50 ? "success" : "danger"}
                           showValueLabel={true}
                         />
                         <p className="mx-4 font-bold">
-                          vs T <br /> {currentUser.BELO.tw}W{" "}
-                          {currentUser.BELO.tl}L
+                          vs T <br /> {currentUser.league.tw}W{" "}
+                          {currentUser.league.tl}L
                         </p>
                       </div>
                     </div>
