@@ -28,7 +28,7 @@ const CKEditorContent: React.FC<CKEditorContentProps> = ({ contentUrl }) => {
   }, [contentUrl]);
   return (
     <div
-      className="ck-content md:text-sm text-xs p-4 min-h-[400px]"
+      className="ck-content md:text-sm text-xs p-4 min-h-[400px] iframe-container"
       dangerouslySetInnerHTML={{ __html: content }}
     />
   );
