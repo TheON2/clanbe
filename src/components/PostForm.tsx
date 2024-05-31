@@ -179,6 +179,10 @@ export default function PostForm({
     }
   }, []); // status와 user를 종속성 배열에 추가
 
+  // useEffect(() => {
+  //   window.scrollTo(0, 0);
+  // }, [router]);
+
   if (!post) {
     // Optionally, return a loading spinner here
     return <div>Loading...</div>;

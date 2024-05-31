@@ -67,7 +67,7 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
           variant="ghost"
           onClick={() => {
             const path = getCategoryPath(categoryLabels[category]);
-            router.push(`${path}`);
+            window.location.href = `${path}`;
           }}
         >
           {labels[category]}
