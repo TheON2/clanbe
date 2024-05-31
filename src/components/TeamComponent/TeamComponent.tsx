@@ -1,83 +1,51 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { User } from "next-auth";
-import {
-  Table,
-  TableHeader,
-  TableColumn,
-  TableBody,
-  TableRow,
-  TableCell,
-  Pagination,
-  Input,
-  Select,
-  SelectItem,
-  Card,
-  CardHeader,
-  CardBody,
-  CardFooter,
-  CircularProgress,
-  Divider,
-  Switch,
-  Button,
-} from "@nextui-org/react";
-import Image from "next/image";
-import { Team } from "../../../types/types";
-import ProfileCard from "../ProfileCard";
-import ProleagueProfileCard from "../ProleagueProfileCard";
-import ProleagueAvatarCard from "../ProleagueAvatarCard";
+import { useState } from "react";
+import { Button } from "@nextui-org/react";
 import TeamPage from "./TeamPage";
 import AdminPage from "./AdminPage";
+import { useSession } from "next-auth/react";
 
-interface UserItem {
-  nickname: string;
-  tier: string;
-  race: string;
-  wins: number;
-  losses: number;
-  belo: number;
-  [key: string]: string | number; // 인덱스 시그니처 추가
+interface TeamComponentProps {
+  teams: any;
+  users: any;
 }
 
-const TeamComponent = ({ teams, users }: any) => {
+const TeamComponent: React.FC<TeamComponentProps> = ({ teams, users }) => {
   const [isSelected, setIsSelected] = useState(false);
+  const { data: session, status } = useSession();
 
   return (
     <div className="w-full">
       <div className="m-2">
-        {!isSelected ? (
+        {session && session.user && session.user.grade >= 4 && (
           <>
-            <Button
-              color="primary"
-              onClick={() => {
-                setIsSelected(true);
-              }}
-            >
-              관리자 페이지
-            </Button>
-          </>
-        ) : (
-          <>
-            <Button
-              color="primary"
-              onClick={() => {
-                setIsSelected(false);
-              }}
-            >
-              일반 페이지
-            </Button>
+            {!isSelected ? (
+              <Button
+                color="primary"
+                onClick={() => {
+                  setIsSelected(true);
+                }}
+              >
+                관리자 페이지
+              </Button>
+            ) : (
+              <Button
+                color="primary"
+                onClick={() => {
+                  setIsSelected(false);
+                }}
+              >
+                일반 페이지
+              </Button>
+            )}
           </>
         )}
       </div>
       {!isSelected ? (
-        <>
-          <TeamPage teams={teams} users={users} />
-        </>
+        <TeamPage teams={teams} users={users} />
       ) : (
-        <>
-          <AdminPage teams={teams} users={users} />
-        </>
+        <AdminPage teams={teams} users={users} />
       )}
     </div>
   );

@@ -91,11 +91,11 @@ const SupportPost = ({ supports, allSupports }: any) => {
           <Tab key="option1" title="누적금액">
             {supports.map((support: Support, index: number) => (
               <Card key={support._id} className="my-2 pl-2 pt-2">
-                <div className="flex items-center mb-4">
-                  <div className="font-bold text-2xl pl-4 w-1/5">
+                <div className="flex flex-col items-center mb-4 w-full">
+                  <div className="font-bold md:text-2xl pl-4 md:w-1/5">
                     {index + 1}
                   </div>
-                  <div className="flex items-center gap-4 w-2/5">
+                  <div className="flex items-center gap-4 md:w-2/5">
                     <Avatar
                       src={support.user?.avatar || "/default-avatar.png"} // 기본 아바타 이미지 추가
                       className="w-12 h-12 text-large"

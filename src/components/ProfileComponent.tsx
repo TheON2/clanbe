@@ -604,6 +604,8 @@ export default function ProfileComponent({ user, posts, comments }: any) {
                     date={formatRelativeDate(post.createdAt)}
                     id={post._id}
                     category={post.category}
+                    authorNickName={post.authorNickName as string}
+                    authorAvatar={post.authorAvatar as string}
                   />
                 ))}
               </div>

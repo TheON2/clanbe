@@ -144,6 +144,9 @@ export type Category = {
     href: string;
   }[];
 };
+export type CategoryLabels = {
+  [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
+};
 
 export type CategoryData = {
   category: Category[];
@@ -173,6 +176,31 @@ export type Post = {
   authorNickName?: string;
   authorAvatar?: string;
 };
+
+export interface UserItem {
+  nickname: string;
+  tier: string;
+  race: string;
+  wins: number;
+  losses: number;
+  belo: number;
+  [key: string]: string | number; // 인덱스 시그니처 추가
+}
+
+export interface Column {
+  name: string;
+  uid: string;
+  sortable: boolean;
+  align?: "center" | "start" | "end";
+  width?: number;
+  color?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger";
+}
 
 export type Reply = {
   _id: string;

@@ -2,6 +2,17 @@ type CategoryLabels = {
   [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
 };
 
+export const tierColorMap: Record<string, string> = {
+  "S+": "bg-green-100",
+  S: "bg-green-200",
+  "A+": "bg-blue-100",
+  A: "bg-blue-200",
+  "B+": "bg-yellow-100",
+  B: "bg-yellow-200",
+  C: "bg-red-100",
+  D: "bg-red-200",
+};
+
 export const categoryLabels: CategoryLabels = {
   forum: "자유게시판",
   support: "클랜 후원",
@@ -1653,12 +1664,12 @@ export const headerCOMMUNITY = {
       icon: "server",
       href: "/community/tactics",
     },
-    {
-      title: "출석체크",
-      description: "출석체크를 위한 게시판입니다.",
-      icon: "user",
-      href: "/community/dailycheckin",
-    },
+    // {
+    //   title: "출석체크",
+    //   description: "출석체크를 위한 게시판입니다.",
+    //   icon: "user",
+    //   href: "/community/dailycheckin",
+    // },
   ],
 };
 
@@ -1694,29 +1705,29 @@ export const headerLEAGUE = {
       description:
         "프로리그 / 외부경기 / 이벤트 등의 경기를 다시보기 할 수 있습니다.",
       icon: "server",
-      href: "/league/tear",
+      href: "/league/vod",
     },
     {
       title: "랭킹전",
-      description: "더미임",
+      description: "클랜 내부 랭킹전 기록을 등록/열람 할 수 있습니다.",
       icon: "scale",
       href: "/league/ranking",
     },
     {
       title: "EVENT",
-      description: "더미임",
+      description: "클랜 내부 이벤트 게시물을 확인 할 수 있습니다.",
       icon: "flash",
       href: "/league/event",
     },
     {
       title: "외부리그",
-      description: "더미임",
+      description: "클랜 외부 리그 경기기록을 확인 할 수 있습니다.",
       icon: "server",
       href: "/league/opponent",
     },
     {
       title: "끝장전",
-      description: "더미임",
+      description: "클랜 내부 끝장전 기록을 등록/열람 할 수 있습니다.",
       icon: "server",
       href: "/league/versus",
     },

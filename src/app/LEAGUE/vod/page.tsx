@@ -1,7 +1,7 @@
 import BoardLayout from "@/components/BoardLayout";
 
-export default async function EventPage() {
-  const category = "event";
+export default async function Page() {
+  const category = "vod";
   // API 호출을 통해 포스트 데이터를 가져옴
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/posts`, {
     method: "POST",
@@ -18,7 +18,7 @@ export default async function EventPage() {
 
   return (
     <BoardLayout
-      boardTitle={"이벤트"}
+      boardTitle={"VOD 다시보기"}
       announce={posts.data}
       posts={posts.data}
       category={category}
