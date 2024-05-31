@@ -89,14 +89,18 @@ const PublicPosts = ({ posts }: any) => {
               </Button>
             </div>
             <div className="flex-auto truncate overflow-hidden">
-              <Link href={`/post/read/${board._id}/${board.category}`}>
+              <div
+                onClick={() => {
+                  window.location.href = `/post/read/${board._id}/${board.category}`;
+                }}
+              >
                 <p className="hidden md:block truncate text-sm md:text-md hover:text-blue-500 cursor-pointer">
                   {board.title}
                 </p>
                 <p className="block md:hidden truncate text-sm md:text-md hover:text-blue-500 cursor-pointer">
                   {formatTitle(board.title)}
                 </p>
-              </Link>
+              </div>
             </div>
             <div className="">
               <p className="hidden md:block ml-auto text-xs whitespace-nowrap">

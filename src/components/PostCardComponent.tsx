@@ -75,7 +75,7 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
         <div
           className="font-bold md:text-xl text-sm hover:text-blue-default cursor-pointer"
           onClick={() => {
-            router.push(`/post/read/${id}/${category}`);
+            window.location.href = `/post/read/${id}/${category}`;
           }}
         >
           {title}

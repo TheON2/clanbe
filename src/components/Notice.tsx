@@ -84,14 +84,22 @@ const Notice = ({ notices }: any) => {
               </Button>
             </div>
             <div className="flex-auto truncate overflow-hidden">
-              <Link href={`/post/read/${notice._id}/${notice.category}`}>
-                <p className="hidden md:block truncate text-sm md:text-md hover:text-blue-500 cursor-pointer">
-                  {notice.title}
-                </p>
-                <p className="block md:hidden truncate text-sm md:text-md hover:text-blue-500 cursor-pointer">
-                  {formatTitle(notice.title)}
-                </p>
-              </Link>
+              <div
+                className="hidden md:block truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
+                onClick={() => {
+                  window.location.href = `/post/read/${notice._id}/${notice.category}`;
+                }}
+              >
+                {notice.title}
+              </div>
+              <div
+                className="block md:hidden truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
+                onClick={() => {
+                  window.location.href = `/post/read/${notice._id}/${notice.category}`;
+                }}
+              >
+                {formatTitle(notice.title)}
+              </div>
             </div>
             <div className="">
               <p className="hidden md:block ml-auto text-xs whitespace-nowrap">
