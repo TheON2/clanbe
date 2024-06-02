@@ -27,9 +27,9 @@ export async function POST(req: Request, res: Response) {
 
     //existingUser.password = hashedPassword;
     existingUser.nickname = usernickname;
-    if (teamid) {
-      existingUser.team = teamid;
-    }
+    // if (teamid) {
+    //   existingUser.team = teamid;
+    // }
     if (role === "Guest") {
       existingUser.role = role;
       existingUser.grade = 0;
@@ -39,6 +39,8 @@ export async function POST(req: Request, res: Response) {
     } else if (role === "Staff") {
       existingUser.role = role;
       existingUser.grade = 5;
+    } else if (!role) {
+      existingUser.team = teamid;
     }
 
     existingUser.save();

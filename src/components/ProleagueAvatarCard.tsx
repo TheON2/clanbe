@@ -20,9 +20,10 @@ export default function ProleagueAvatarCard({
     return <Spinner size="lg" />;
   }
 
-  const totalWins = userData.BELO.pw + userData.BELO.zw + userData.BELO.tw;
+  const totalWins =
+    userData.league.pw + userData.league.zw + userData.league.tw;
   const totalGames =
-    totalWins + userData.BELO.pl + userData.BELO.zl + userData.BELO.tl;
+    totalWins + userData.league.pl + userData.league.zl + userData.league.tl;
   const winRate =
     totalGames > 0 ? ((totalWins / totalGames) * 100).toFixed(2) : 0;
   const myTeam = teamData.filter((team: any) => team._id === userData.team);

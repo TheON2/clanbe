@@ -225,8 +225,8 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     // 다승 계산
     const topWins = [...users]
       .sort((a, b) => {
-        const totalWinsA = a.BELO.pw + a.BELO.tw + a.BELO.zw;
-        const totalWinsB = b.BELO.pw + b.BELO.tw + b.BELO.zw;
+        const totalWinsA = a.league.pw + a.league.tw + a.league.zw;
+        const totalWinsB = b.league.pw + b.league.tw + b.league.zw;
         return totalWinsB - totalWinsA; // 내림차순 정렬
       })
       .slice(0, 5);
@@ -234,10 +234,12 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     // 승률 계산
     const topWinRate = [...users]
       .sort((a, b) => {
-        const totalWinsA = a.BELO.pw + a.BELO.tw + a.BELO.zw;
-        const totalGamesA = totalWinsA + a.BELO.pl + a.BELO.tl + a.BELO.zl;
-        const totalWinsB = b.BELO.pw + b.BELO.tw + b.BELO.zw;
-        const totalGamesB = totalWinsB + b.BELO.pl + b.BELO.tl + b.BELO.zl;
+        const totalWinsA = a.league.pw + a.league.tw + a.league.zw;
+        const totalGamesA =
+          totalWinsA + a.league.pl + a.league.tl + a.league.zl;
+        const totalWinsB = b.league.pw + b.league.tw + b.league.zw;
+        const totalGamesB =
+          totalWinsB + b.league.pl + b.league.tl + b.league.zl;
         const winRateA = totalGamesA > 0 ? totalWinsA / totalGamesA : 0;
         const winRateB = totalGamesB > 0 ? totalWinsB / totalGamesB : 0;
         return winRateB - winRateA; // 내림차순 정렬
@@ -248,9 +250,19 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     const topTotalGames = [...users]
       .sort((a, b) => {
         const totalGamesA =
-          a.BELO.pw + a.BELO.pl + a.BELO.tw + a.BELO.tl + a.BELO.zw + a.BELO.zl;
+          a.league.pw +
+          a.league.pl +
+          a.league.tw +
+          a.league.tl +
+          a.league.zw +
+          a.league.zl;
         const totalGamesB =
-          b.BELO.pw + b.BELO.pl + b.BELO.tw + b.BELO.tl + b.BELO.zw + b.BELO.zl;
+          b.league.pw +
+          b.league.pl +
+          b.league.tw +
+          b.league.tl +
+          b.league.zw +
+          b.league.zl;
         return totalGamesB - totalGamesA; // 내림차순 정렬
       })
       .slice(0, 5);
@@ -295,18 +307,20 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
   const topTeamStats = useMemo(() => {
     const topWins = [...topTeamUsers]
       .sort((a, b) => {
-        const totalWinsA = a.BELO.pw + a.BELO.tw + a.BELO.zw;
-        const totalWinsB = b.BELO.pw + b.BELO.tw + b.BELO.zw;
+        const totalWinsA = a.league.pw + a.league.tw + a.league.zw;
+        const totalWinsB = b.league.pw + b.league.tw + b.league.zw;
         return totalWinsB - totalWinsA; // 내림차순 정렬
       })
       .slice(0, 5);
 
     const topWinRate = [...topTeamUsers]
       .sort((a, b) => {
-        const totalWinsA = a.BELO.pw + a.BELO.tw + a.BELO.zw;
-        const totalGamesA = totalWinsA + a.BELO.pl + a.BELO.tl + a.BELO.zl;
-        const totalWinsB = b.BELO.pw + b.BELO.tw + b.BELO.zw;
-        const totalGamesB = totalWinsB + b.BELO.pl + b.BELO.tl + b.BELO.zl;
+        const totalWinsA = a.league.pw + a.league.tw + a.league.zw;
+        const totalGamesA =
+          totalWinsA + a.league.pl + a.league.tl + a.league.zl;
+        const totalWinsB = b.league.pw + b.league.tw + b.league.zw;
+        const totalGamesB =
+          totalWinsB + b.league.pl + b.league.tl + b.league.zl;
         const winRateA = totalGamesA > 0 ? totalWinsA / totalGamesA : 0;
         const winRateB = totalGamesB > 0 ? totalWinsB / totalGamesB : 0;
         return winRateB - winRateA; // 내림차순 정렬
@@ -316,9 +330,19 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     const topTotalGames = [...topTeamUsers]
       .sort((a, b) => {
         const totalGamesA =
-          a.BELO.pw + a.BELO.pl + a.BELO.tw + a.BELO.tl + a.BELO.zw + a.BELO.zl;
+          a.league.pw +
+          a.league.pl +
+          a.league.tw +
+          a.league.tl +
+          a.league.zw +
+          a.league.zl;
         const totalGamesB =
-          b.BELO.pw + b.BELO.pl + b.BELO.tw + b.BELO.tl + b.BELO.zw + b.BELO.zl;
+          b.league.pw +
+          b.league.pl +
+          b.league.tw +
+          b.league.tl +
+          b.league.zw +
+          b.league.zl;
         return totalGamesB - totalGamesA; // 내림차순 정렬
       })
       .slice(0, 5);
