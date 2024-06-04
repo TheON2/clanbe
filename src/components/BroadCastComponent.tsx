@@ -2,11 +2,21 @@
 
 import React from "react";
 import { Post } from "../../types/types";
-import { Card, CardHeader, Image, Link } from "@nextui-org/react";
-import NextCarousel from "./NextCarousel";
+import {
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
+  Image,
+  Link,
+} from "@nextui-org/react";
 import styles from "../styles/style.module.css";
 import { useMediaQuery } from "react-responsive";
 import { useEffect, useState } from "react";
+import { categoryLabels } from "../../public/data";
+import { useRouter } from "next/navigation";
+import { formatDate } from "@/utils/dateUtils";
 
 interface BroadCastComponentProps {
   posts: Post[];
@@ -15,16 +25,54 @@ interface BroadCastComponentProps {
 const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
   const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
   const [hydrated, setHydrated] = useState(false);
+  const labels = categoryLabels;
+  const router = useRouter();
+
+  const getCategoryPath = (category: string) => {
+    switch (category) {
+      case "공지사항":
+        return "/clanbe/notices";
+      case "클랜 후원":
+        return "/clanbe/support";
+      case "자유게시판":
+        return "/community/forum";
+      case "가입인사":
+        return "/community/introduce";
+      case "건의사항":
+        return "/community/feedback";
+      case "전략전술":
+        return "/community/tactics";
+      case "출석체크":
+        return "/community/dailycheckin";
+      case "랭킹전":
+        return "/league/ranking";
+      case "이벤트":
+        return "/league/event";
+      case "외부리그":
+        return "/league/opponent";
+      case "끝장전":
+        return "/league/versus";
+      case "프로리그":
+        return "/proleague/notice";
+      default:
+        return "/"; // 기본 경로
+    }
+  };
+
+  // 제목이 14글자를 넘으면 '...'으로 처리하는 함수
+  const formatTitle = (title: string) => {
+    return title.length > 15 ? `${title.substring(0, 14)} ...` : title;
+  };
 
   useEffect(() => {
     setHydrated(true);
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center gap-2 w-full">
+    <div className="flex flex-col items-center justify-center gap-2 w-full md:h-[350px] mt-4">
       <div className="flex flex-wrap items-center justify-center gap-2 w-full overflow-auto">
         <div
-          className={`w-full md:w-1/2 h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
+          className={`w-full md:w-1/2 md:h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
         >
           <Card className="hidden md:block w-full">
             <div className="flex flex-wrap items-center justify-between w-full p-2">
@@ -206,26 +254,67 @@ const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
             </div>
           </Card>
         </div>
-
-        {/* <div
-          className={`w-full md:w-1/2 h-[350px] ${styles.customCard} flex flex-col gap-2 items-center justify-center`}
-        >
-          <Card className="w-full h-[350px] flex items-center justify-center">
-            <CardHeader>VOD 다시보기</CardHeader>
-            <div className="flex justify-center items-center w-full">
-              <div>
-                <iframe
-                  id="afreecatv_player_video"
-                  width="100%"
-                  height="200"
-                  src="https://vod.afreecatv.com/player/123390443/embed?autoPlay=false&mutePlay=true"
-                  allowFullScreen={true}
-                  allow="clipboard-write"
-                ></iframe>
-              </div>
+        <Card className={`w-full lg:w-1/2 ${styles.customCard} min-h-[350px]`}>
+          <CardHeader className="flex gap-3">
+            <Image alt="nextui logo" height={60} src="/Belogo.png" width={60} />
+            <div className="flex flex-col">
+              <Link href={"/league/vod"}>
+                <p className="text-lg font-bold hover:text-blue-default cursor-pointer">
+                  클랜 VOD
+                </p>
+              </Link>
+              <p className="text-small text-default-500">
+                클랜관련 방송 VOD 모음
+              </p>
             </div>
-          </Card>
-        </div> */}
+          </CardHeader>
+          <Divider />
+          <CardBody className="mt-3">
+            {posts.map((notice: Post) => (
+              <div key={notice._id} className="flex gap-4 my-2 items-center">
+                <div>
+                  <Button
+                    className="h-[30px] w-[100px]"
+                    radius="full"
+                    color="primary"
+                    variant="ghost"
+                    onClick={() => {
+                      const path = getCategoryPath(
+                        categoryLabels[notice.category]
+                      );
+                      router.push(`${path}`);
+                    }}
+                  >
+                    {labels[notice.category]}
+                  </Button>
+                </div>
+                <div className="flex-auto truncate overflow-hidden">
+                  <div
+                    className="hidden md:block truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
+                    onClick={() => {
+                      window.location.href = `/post/read/${notice._id}/${notice.category}`;
+                    }}
+                  >
+                    {notice.title}
+                  </div>
+                  <div
+                    className="block md:hidden truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
+                    onClick={() => {
+                      window.location.href = `/post/read/${notice._id}/${notice.category}`;
+                    }}
+                  >
+                    {formatTitle(notice.title)}
+                  </div>
+                </div>
+                <div className="">
+                  <p className="hidden md:block ml-auto text-xs whitespace-nowrap">
+                    {formatDate(notice.createdAt)}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </CardBody>
+        </Card>
       </div>
     </div>
   );
