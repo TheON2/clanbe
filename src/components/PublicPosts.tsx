@@ -4,7 +4,7 @@ import { Button, Card, CardBody, CardHeader, Divider } from "@nextui-org/react";
 import Image from "next/image";
 import React, { useEffect, useState } from "react";
 import styles from "../styles/style.module.css";
-import { categoryLabels } from "../../public/data";
+import { categoryLabels, getCategoryPath } from "../../public/data";
 import { useRouter } from "next/navigation";
 import { Post } from "../../types/types";
 import { getPosts } from "../service/posts";
@@ -15,36 +15,6 @@ const PublicPosts = ({ posts }: any) => {
   const router = useRouter();
   const labels = categoryLabels;
 
-  const getCategoryPath = (category: string) => {
-    switch (category) {
-      case "공지사항":
-        return "/clanbe/notices";
-      case "클랜 후원":
-        return "/clanbe/support";
-      case "자유게시판":
-        return "/community/forum";
-      case "가입인사":
-        return "/community/introduce";
-      case "건의사항":
-        return "/community/feedback";
-      case "전략전술":
-        return "/community/tactics";
-      case "출석체크":
-        return "/community/dailycheckin";
-      case "랭킹전":
-        return "/league/ranking";
-      case "이벤트":
-        return "/league/event";
-      case "외부리그":
-        return "/league/opponent";
-      case "끝장전":
-        return "/league/versus";
-      case "프로리그":
-        return "/proleague/notice";
-      default:
-        return "/"; // 기본 경로
-    }
-  };
   const [board, setBoard] = useState([]);
 
   // 제목이 14글자를 넘으면 '...'으로 처리하는 함수
