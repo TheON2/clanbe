@@ -36,10 +36,10 @@ export default async function HomePage() {
     .slice(0, 6);
 
   return (
-    <div className="mx-auto">
+    <div className="">
       <div className="flex flex-wrap gap-2 justify-center">
         <Banner />
-        <div className="block md:hidden w-full mx-4">
+        <div className="block md:hidden w-full px-2">
           <Suspense fallback={<div>Loading...</div>}>
             <MobileUserComponent teams={teams} users={users} points={points} />
           </Suspense>

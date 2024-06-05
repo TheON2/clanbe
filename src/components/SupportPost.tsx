@@ -90,24 +90,29 @@ const SupportPost = ({ supports, allSupports }: any) => {
         <Tabs aria-label="Options">
           <Tab key="option1" title="누적금액">
             {supports.map((support: Support, index: number) => (
-              <Card key={support._id} className="my-2 pl-2 pt-2">
-                <div className="flex flex-col items-center mb-4 w-full">
-                  <div className="font-bold md:text-2xl pl-4 md:w-1/5">
-                    {index + 1}
-                  </div>
-                  <div className="flex items-center gap-4 md:w-2/5">
+              <Card key={support._id} className="my-2 pl-2 mb-2 pt-2">
+                <div className="flex flex-col items-center w-full">
+                  <div className="flex items-center justify-center mr-16 gap-4 md:w-2/5">
+                    <div className="font-bold md:text-2xl md:w-1/5">
+                      {index + 1}
+                    </div>
                     <Avatar
                       src={support.user?.avatar || "/default-avatar.png"} // 기본 아바타 이미지 추가
                       className="w-12 h-12 text-large"
                     />
                     <div className="flex flex-col">
                       <p className="font-bold text-2xl">{support.nickname}</p>
-                      <p className="font-bold text-md text-blue">
-                        @{support.user?.name || "Anonymous"}
+                      <p className="font-bold text-md text-center text-blue">
+                        <Link
+                          href={`/user/profile/${support.user?.email}`}
+                          className="font-bold text-md text-center text-default-500 hover:text-blue-default cursor-pointer"
+                        >
+                          @{support.user?.name || "Anonymous"}
+                        </Link>
                       </p>
                     </div>
                   </div>
-                  <p className="font-bold md:text-3xl text-xl w-2/5">
+                  <p className="font-bold md:text-2xl text-xl w-2/5 text-center">
                     {support.amount.toLocaleString()}원
                   </p>
                 </div>
@@ -116,25 +121,30 @@ const SupportPost = ({ supports, allSupports }: any) => {
           </Tab>
           <Tab key="option2" title="최신">
             {allSupports.map((support: Support, index: number) => (
-              <Card key={support._id} className="my-2 pl-2 pt-2">
-                <div className="flex items-center mb-4">
-                  <div className="flex items-center gap-4 w-2/5 mr-4">
+              <Card key={support._id} className="my-2 pl-2 mb-2 pt-2">
+                <div className="flex flex-col items-center w-full">
+                  <div className="flex items-center justify-center mr-16 gap-4 md:w-2/5">
                     <Avatar
                       src={support.user?.avatar || "/default-avatar.png"} // 기본 아바타 이미지 추가
                       className="w-12 h-12 text-large"
                     />
                     <div className="flex flex-col">
                       <p className="font-bold text-2xl">{support.nickname}</p>
-                      <p className="font-bold text-md text-blue">
-                        @{support.user?.name || "Anonymous"}
+                      <p className="font-bold text-md text-center text-blue">
+                        <Link
+                          href={`/user/profile/${support.user?.email}`}
+                          className="font-bold text-md text-center text-default-500 hover:text-blue-default cursor-pointer"
+                        >
+                          @{support.user?.name || "Anonymous"}
+                        </Link>
                       </p>
                     </div>
                   </div>
-                  <p className="font-bold md:text-3xl text-xl w-2/5">
+                  <p className="font-bold md:text-2xl text-xl w-2/5 text-center">
                     {support.amount.toLocaleString()}원
                   </p>
-                  <div className="font-bold text-md w-1/5">
-                    {formatRelativeDate(support.createdAt)}
+                  <div className="font-bold text-md">
+                    {formatRelativeDate(support.createdAt)}{" "}
                   </div>
                 </div>
               </Card>

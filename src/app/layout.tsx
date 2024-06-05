@@ -37,7 +37,7 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen">
         <Providers>
           <SpeedInsights />
-          <div className="flex flex-col w-full max-w-7xl mx-auto px-4">
+          <div className="flex flex-col w-full max-w-7xl mx-auto">
             <Header />
             <div className="flex flex-col-reverse md:flex-row items-start w-full">
               <TapNav />
