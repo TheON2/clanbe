@@ -1,5 +1,5 @@
 import React from "react";
-import { Avatar, Button, Chip, Divider } from "@nextui-org/react";
+import { Avatar, Button, Chip, Divider, Link } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
 import { categoryLabels, getCategoryPath } from "../../public/data";
 
@@ -53,7 +53,12 @@ const PostCardComponent: React.FC<PostCardComponentProps> = ({
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">
           <Avatar size="sm" isBordered color="success" src={authorAvatar} />
-          <span>{authorNickName}</span>
+          <Link
+            href={`/user/profile/${author}`}
+            className="font-bold text-xl text-default-500 hover:text-blue-default cursor-pointer"
+          >
+            {authorNickName}
+          </Link>
         </div>
         <div className="flex-none ml-auto mr-2" style={{ width: "auto" }}>
           조회 수 {views}

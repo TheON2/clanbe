@@ -40,7 +40,7 @@ const UserProfile = ({ email }: { email: string | null | undefined }) => {
       <User
         name={user.nickname || "Unknown User"}
         description={
-          <Link href={"#"} size="sm" isExternal>
+          <Link href={`/user/profile/${user.email}`} size="sm">
             @{user.name || "not available"}
           </Link>
         }

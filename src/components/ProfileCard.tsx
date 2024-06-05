@@ -1,4 +1,4 @@
-import { Card, Spinner, User } from "@nextui-org/react";
+import { Card, Link, Spinner, User } from "@nextui-org/react";
 import { CardFooter, Link as MyLink, Avatar } from "@nextui-org/react";
 import { User as MyUser } from "../../types/types";
 import { formatDate } from "@/utils/dateUtils";
@@ -27,7 +27,12 @@ export default function ProfileCard({ userData }: ProfileCardProps) {
           />
           <div className="ml-48">
             <p className="font-bold text-4xl">{userData.nickname}</p>
-            <p className="font-bold text-xl text-blue">@{userData.name}</p>
+            <Link
+              href={`/user/profile/${userData.email}`}
+              className="font-bold text-xl text-blue-400"
+            >
+              @{userData.name}
+            </Link>
           </div>
         </div>
         <Card
