@@ -696,7 +696,7 @@ const MobileUserTab = ({ user, teams, users, points }: UserTabProps) => {
                 <div className="flex justify-center w-full">
                   <Image
                     alt="Card background"
-                    src={myTeam?.avatar}
+                    src={myTeam?.avatar || "/Belogo.png"}
                     width={300}
                     height={300}
                     className="my-4"
