@@ -442,7 +442,7 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
       <Tabs aria-label="Dynamic tabs" items={tabs}>
         <Tab key={"BELO"} title={"BELO"}>
           <Card>
-            <CardBody className="flex items-center justify-center ">
+            <CardBody className="">
               {sessionUser.grade === 5 && (
                 <>
                   <Button
@@ -611,6 +611,17 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
         <Tab key={"LEAGUE"} title={"LEAGUE"}>
           <Card>
             <CardBody className="">
+              {sessionUser.grade === 5 && (
+                <>
+                  <Button
+                    size="sm"
+                    color="success"
+                    onPress={() => router.push("/admin")}
+                  >
+                    어드민 페이지
+                  </Button>
+                </>
+              )}
               <div className="flex justify-between items-center">
                 <div className="flex-grow">
                   <p className="font-bold font-mono text-3xl text-blue text-center">

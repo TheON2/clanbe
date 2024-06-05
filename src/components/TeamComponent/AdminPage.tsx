@@ -459,7 +459,7 @@ const AdminPage = ({ teams, users }: any) => {
           );
         case "actions":
           return (
-            <div className="relative flex items-center gap-2">
+            <div className="relative-parent flex items-center gap-2">
               <Tooltip content="Details">
                 <span
                   className="text-lg text-default-400 cursor-pointer active:opacity-50"
@@ -477,7 +477,7 @@ const AdminPage = ({ teams, users }: any) => {
                 </span>
               </Tooltip>
               <Tooltip content="Edit user">
-                <Popover placement={"right"}>
+                <Popover placement={"bottom"}>
                   <PopoverTrigger>
                     <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                       <EditIcon />
@@ -529,7 +529,7 @@ const AdminPage = ({ teams, users }: any) => {
           );
         case "actions":
           return (
-            <div className="relative flex items-center gap-2">
+            <div className="relative-parent flex items-center gap-2">
               <Tooltip content="Details">
                 <span
                   className="text-lg text-default-400 cursor-pointer active:opacity-50"
@@ -539,7 +539,7 @@ const AdminPage = ({ teams, users }: any) => {
                 </span>
               </Tooltip>
               <Tooltip content="Edit user">
-                <Popover placement={"right"}>
+                <Popover placement={"bottom"}>
                   <PopoverTrigger>
                     <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
                       <EditIcon />
@@ -623,7 +623,7 @@ const AdminPage = ({ teams, users }: any) => {
   }
 
   return (
-    <div className="w-full">
+    <div className="w-full h-full">
       <SubmitModal
         title={"알림"}
         text={modalMessage}
