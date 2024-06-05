@@ -1,5 +1,7 @@
-"use client";
+import PointRanking from "@/components/PointRanking";
+import { getUsers } from "@/service/user";
 
-export default function RankingPage() {
-  return "멤버 페이지";
+export default async function RankingPage() {
+  const users = await getUsers();
+  return <PointRanking users={users.users} />;
 }

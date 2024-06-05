@@ -123,7 +123,7 @@ const SupportPost = ({ supports, allSupports }: any) => {
             {allSupports.map((support: Support, index: number) => (
               <Card key={support._id} className="my-2 pl-2 mb-2 pt-2">
                 <div className="flex flex-col items-center w-full">
-                  <div className="flex items-center justify-center mr-16 gap-4 md:w-2/5">
+                  <div className="flex items-center justify-center mr-8 gap-4 md:w-2/5">
                     <Avatar
                       src={support.user?.avatar || "/default-avatar.png"} // 기본 아바타 이미지 추가
                       className="w-12 h-12 text-large"
