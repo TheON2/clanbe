@@ -27,7 +27,7 @@ import { useSession } from "next-auth/react";
 import ReplyComponent from "./ReplyComponent";
 import { formatDate } from "@/utils/dateUtils";
 import { EditIcon } from "../../public/EditIcon";
-import { getCategoryPath } from "../../public/data";
+import { categoryLabels, getCategoryPath } from "../../public/data";
 
 type PostFormProps = {
   post: {
@@ -45,30 +45,11 @@ type PostFormProps = {
   supportData: SupportAmount;
 };
 
-type CategoryLabels = {
-  [key: string]: string; // 모든 문자열 키는 문자열 값을 가집니다.
-};
-
 export default function PostForm({
   post,
   userData,
   supportData,
 }: PostFormProps) {
-  const categoryLabels: CategoryLabels = {
-    forum: "자유게시판",
-    support: "클랜 후원",
-    introduce: "가입인사",
-    feedback: "건의사항",
-    tactics: "전략전술",
-    dailycheckin: "출석체크",
-    ranking: "랭킹전",
-    event: "이벤트",
-    opponent: "외부리그",
-    versus: "끝장전",
-    notice: "공지사항",
-    proleaguenotice: "프로리그",
-  };
-
   const router = useRouter();
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";

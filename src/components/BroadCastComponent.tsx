@@ -41,7 +41,7 @@ const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
     <div className="flex flex-col items-center justify-center gap-2 w-full md:h-[350px] mt-4">
       <div className="flex flex-wrap items-center justify-center gap-2 w-full overflow-auto">
         <div
-          className={`w-full md:w-1/2 md:h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
+          className={`w-full lg:w-1/2 md:h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
         >
           <Card className="hidden md:block w-full">
             <div className="flex flex-wrap items-center justify-between w-full p-2">

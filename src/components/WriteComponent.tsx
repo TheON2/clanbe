@@ -254,8 +254,9 @@ export default function WriteComponent({ nicknames }: any) {
                     heading: headingClasses,
                   }}
                 >
-                  <SelectItem key="beforetear">티어배정신청</SelectItem>
-                  <SelectItem key="aftertear">티어배정완료</SelectItem>
+                  {/* <SelectItem key="beforetear">티어배정신청</SelectItem>
+                  <SelectItem key="aftertear">티어배정완료</SelectItem> */}
+                  <SelectItem key="vod">VOD</SelectItem>
                   <SelectItem key="ranking">랭킹전</SelectItem>
                   <SelectItem key="event">이벤트</SelectItem>
                   <SelectItem key="opponent">외부리그</SelectItem>

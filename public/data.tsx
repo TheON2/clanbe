@@ -28,6 +28,7 @@ export const categoryLabels: CategoryLabels = {
   proleaguenotice: "프로리그",
   beforetear: "티어배정신청",
   aftertear: "티어배정완료",
+  vod: "VOD",
 };
 
 export const getCategoryPath = (category: string) => {
@@ -54,6 +55,8 @@ export const getCategoryPath = (category: string) => {
       return "/league/opponent";
     case "끝장전":
       return "/league/versus";
+    case "VOD":
+      return "/league/vod";
     case "프로리그":
       return "/proleague/notice";
     default:
