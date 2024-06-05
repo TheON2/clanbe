@@ -41,7 +41,7 @@ const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
     <div className="flex flex-col items-center justify-center gap-2 w-full md:h-[350px] mt-4">
       <div className="flex flex-wrap items-center justify-center gap-2 w-full overflow-auto">
         <div
-          className={`w-full lg:w-1/2 md:h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
+          className={`p-1 w-full lg:w-1/2 md:h-[350px] overflow-y-auto ${styles.customCard} flex flex-col gap-2`}
         >
           <Card className="hidden md:block w-full">
             <div className="flex flex-wrap items-center justify-between w-full p-2">
@@ -223,67 +223,74 @@ const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
             </div>
           </Card>
         </div>
-        <Card className={`w-full lg:w-1/2 ${styles.customCard} min-h-[350px]`}>
-          <CardHeader className="flex gap-3">
-            <Image alt="nextui logo" height={60} src="/Belogo.png" width={60} />
-            <div className="flex flex-col">
-              <Link href={"/league/vod"}>
-                <p className="text-lg font-bold hover:text-blue-default cursor-pointer">
-                  클랜 VOD
-                </p>
-              </Link>
-              <p className="text-small text-default-500">
-                클랜관련 방송 VOD 모음
-              </p>
-            </div>
-          </CardHeader>
-          <Divider />
-          <CardBody className="mt-3">
-            {posts.map((notice: Post) => (
-              <div key={notice._id} className="flex gap-4 my-2 items-center">
-                <div>
-                  <Button
-                    className="h-[30px] w-[100px]"
-                    radius="full"
-                    color="primary"
-                    variant="ghost"
-                    onClick={() => {
-                      const path = getCategoryPath(
-                        categoryLabels[notice.category]
-                      );
-                      router.push(`${path}`);
-                    }}
-                  >
-                    {labels[notice.category]}
-                  </Button>
-                </div>
-                <div className="flex-auto truncate overflow-hidden">
-                  <div
-                    className="hidden md:block truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
-                    onClick={() => {
-                      window.location.href = `/post/read/${notice._id}/${notice.category}`;
-                    }}
-                  >
-                    {notice.title}
-                  </div>
-                  <div
-                    className="block md:hidden truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
-                    onClick={() => {
-                      window.location.href = `/post/read/${notice._id}/${notice.category}`;
-                    }}
-                  >
-                    {formatTitle(notice.title)}
-                  </div>
-                </div>
-                <div className="">
-                  <p className="hidden md:block ml-auto text-xs whitespace-nowrap">
-                    {formatDate(notice.createdAt)}
+        <div className={` w-full lg:w-1/2 ${styles.customCard} `}>
+          <Card className="min-h-[340px]">
+            <CardHeader className="flex gap-3">
+              <Image
+                alt="nextui logo"
+                height={60}
+                src="/Belogo.png"
+                width={60}
+              />
+              <div className="flex flex-col">
+                <Link href={"/league/vod"}>
+                  <p className="text-lg font-bold hover:text-blue-default cursor-pointer">
+                    클랜 VOD
                   </p>
-                </div>
+                </Link>
+                <p className="text-small text-default-500">
+                  클랜관련 방송 VOD 모음
+                </p>
               </div>
-            ))}
-          </CardBody>
-        </Card>
+            </CardHeader>
+            <Divider />
+            <CardBody className="">
+              {posts.map((notice: Post) => (
+                <div key={notice._id} className="flex gap-4 my-2 items-center">
+                  <div>
+                    <Button
+                      className="h-[30px] w-[100px]"
+                      radius="full"
+                      color="primary"
+                      variant="ghost"
+                      onClick={() => {
+                        const path = getCategoryPath(
+                          categoryLabels[notice.category]
+                        );
+                        router.push(`${path}`);
+                      }}
+                    >
+                      {labels[notice.category]}
+                    </Button>
+                  </div>
+                  <div className="flex-auto truncate overflow-hidden">
+                    <div
+                      className="hidden md:block truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
+                      onClick={() => {
+                        window.location.href = `/post/read/${notice._id}/${notice.category}`;
+                      }}
+                    >
+                      {notice.title}
+                    </div>
+                    <div
+                      className="block md:hidden truncate text-sm md:text-md hover:text-blue-500 cursor-pointer"
+                      onClick={() => {
+                        window.location.href = `/post/read/${notice._id}/${notice.category}`;
+                      }}
+                    >
+                      {formatTitle(notice.title)}
+                    </div>
+                  </div>
+                  <div className="">
+                    <p className="hidden md:block ml-auto text-xs whitespace-nowrap">
+                      {formatDate(notice.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </CardBody>
+          </Card>
+        </div>
       </div>
     </div>
   );

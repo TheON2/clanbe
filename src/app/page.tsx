@@ -45,7 +45,7 @@ export default async function HomePage() {
           </Suspense>
         </div>
         <BroadCastComponent posts={filteredVod} />
-        <Divider className="my-4" />
+        <Divider className="my-1" />
         <Notice notices={filteredNotices} />
         <Upcoming events={events} />
         <PublicPosts posts={allPosts} />

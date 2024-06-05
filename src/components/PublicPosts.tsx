@@ -23,12 +23,12 @@ const PublicPosts = ({ posts }: any) => {
   };
 
   useEffect(() => {
-    const sortedData = posts.slice(0, 11);
+    const sortedData = posts.slice(0, 10);
     setBoard(sortedData);
   }, []);
 
   return (
-    <Card className={`w-full lg:w-1/2 ${styles.customCard}`}>
+    <Card className={`w-full lg:w-1/2 ${styles.customCard} h-[600px]`}>
       <CardHeader className="flex gap-3">
         <Image alt="nextui logo" height={60} src="/Belogo.png" width={60} />
         <div className="flex flex-col">
@@ -41,7 +41,7 @@ const PublicPosts = ({ posts }: any) => {
         </div>
       </CardHeader>
       <Divider />
-      <CardBody className="mt-3">
+      <CardBody className="">
         {board.map((board: Post) => (
           <div key={board._id} className="flex gap-4 my-2 items-center">
             <div>

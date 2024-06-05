@@ -707,7 +707,7 @@ const UserTab = ({ user: sessionUser, teams, users, points }: UserTabProps) => {
 
               <Image
                 alt="Card background"
-                src={myTeam?.avatar}
+                src={myTeam?.avatar || "/Belogo.png"}
                 width={200}
                 height={200}
                 className="my-4"
