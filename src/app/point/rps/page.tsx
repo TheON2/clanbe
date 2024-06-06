@@ -1,5 +1,5 @@
-"use client";
+import PointGameRPS from "@/components/PointGameRPS";
 
-export default function RPSPage() {
-  return "멤버 페이지";
+export default async function RPSPage() {
+  return <PointGameRPS />;
 }

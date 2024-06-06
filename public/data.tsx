@@ -1650,12 +1650,12 @@ export const headerCLANBE = {
       icon: "server",
       href: "/clanbe/rules",
     },
-    // {
-    //   title: "티어배정",
-    //   description: "티어배정신청 및 티어배정결과를 확인하는 페이지",
-    //   icon: "scale",
-    //   href: "/clanbe/tear",
-    // },
+    {
+      title: "티어배정",
+      description: "티어배정신청 및 티어배정결과를 확인하는 페이지",
+      icon: "scale",
+      href: "/clanbe/tear",
+    },
     {
       title: "클랜 후원",
       description: "클랜의 활동에 필요한 후원자금에 관련된 게시판 입니다.",
@@ -1783,24 +1783,24 @@ export const headerPOINT = {
       icon: "flash",
       href: "/point/ranking",
     },
-    // {
-    //   title: "가위바위보",
-    //   description: "더미임",
-    //   icon: "server",
-    //   href: "/point/rps",
-    // },
-    // {
-    //   title: "로또복권",
-    //   description: "더미임",
-    //   icon: "server",
-    //   href: "/point/lotto",
-    // },
-    // {
-    //   title: "포인트 배팅",
-    //   description: "더미임",
-    //   icon: "server",
-    //   href: "/point/betting",
-    // },
+    {
+      title: "가위바위보",
+      description: "더미임",
+      icon: "server",
+      href: "/point/rps",
+    },
+    {
+      title: "로또복권",
+      description: "더미임",
+      icon: "server",
+      href: "/point/lotto",
+    },
+    {
+      title: "포인트 배팅",
+      description: "더미임",
+      icon: "server",
+      href: "/point/betting",
+    },
   ],
 };
 
