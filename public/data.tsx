@@ -1773,31 +1773,34 @@ export const headerPOINT = {
   menuItems: [
     {
       title: "포인트규정",
-      description: "더미임",
+      description: "포인트 사용규정을 확인 할 수 있습니다.",
       icon: "scale",
       href: "/point/rules",
     },
     {
       title: "포인트랭킹",
-      description: "더미임",
+      description: "포인트 랭킹을 확인 할 수 있습니다.",
       icon: "flash",
       href: "/point/ranking",
     },
     {
       title: "가위바위보",
-      description: "더미임",
+      description:
+        "포인트를 사용해서 도파민이 분출되는 가위바위보를 할 수 있습니다.",
       icon: "server",
       href: "/point/rps",
     },
     {
       title: "로또복권",
-      description: "더미임",
+      description:
+        "포인트를 사용해서 도파민이 분출되는 로또복권을 구매 할 수 있습니다.",
       icon: "server",
       href: "/point/lotto",
     },
     {
       title: "포인트 배팅",
-      description: "더미임",
+      description:
+        "포인트를 사용해서 도파민이 분출되는 승자베팅을 할 수 있습니다.",
       icon: "server",
       href: "/point/betting",
     },

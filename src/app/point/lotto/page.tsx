@@ -1,5 +1,7 @@
 "use client";
 
+import PointGameLotto from "@/components/PointGameLotto";
+
 export default function LottoPage() {
-  return "멤버 페이지";
+  return <PointGameLotto />;
 }
