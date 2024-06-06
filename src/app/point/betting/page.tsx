@@ -1,5 +1,5 @@
-"use client";
+import PointBatting from "@/components/PointBatting";
 
-export default function BettingPage() {
-  return "멤버 페이지";
+export default async function BettingPage() {
+  return <PointBatting />;
 }

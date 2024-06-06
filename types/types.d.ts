@@ -4,6 +4,16 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
   size?: number;
 };
 
+export type Betting = {
+  title: string;
+  home: string;
+  homeBetRate: number;
+  away: string;
+  awayBetRate: number;
+  status: string;
+  bets: { nickname: string; amount: number; choice: string }[];
+};
+
 // TeamModel의 타입 정의
 export type Team = {
   _id: string; // MongoDB에서 자동으로 생성되는 필드 (필요에 따라 사용)
