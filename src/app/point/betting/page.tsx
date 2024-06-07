@@ -1,5 +1,9 @@
-import PointBatting from "@/components/PointBatting";
+import PointBetting from "@/components/PointBetting";
+import { getBettingData } from "@/service/betting";
+import { getUsers } from "@/service/user";
 
 export default async function BettingPage() {
-  return <PointBatting />;
+  const bettings = await getBettingData();
+  const { users } = await getUsers();
+  return <PointBetting bettings={bettings} users={users} />;
 }

@@ -5,13 +5,16 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 };
 
 export type Betting = {
+  _id?: string;
   title: string;
   home: string;
   homeBetRate: number;
   away: string;
   awayBetRate: number;
+  betMax: number;
   status: string;
   bets: { nickname: string; amount: number; choice: string }[];
+  createdAt?: Date;
 };
 
 // TeamModel의 타입 정의

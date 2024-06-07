@@ -2,52 +2,125 @@
 "use server";
 
 import { revalidateTag } from "next/cache";
-import { Point } from "../../types/types";
 
-export async function sendPoint(newPointData: any) {
+export async function createBetting(newBettingData: any) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/point/create`,
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/create`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(newPointData),
-        next: { tags: ["point"] },
+        body: JSON.stringify({ newBettingData }),
+        next: { tags: ["betting"] },
         cache: "no-store",
       }
     );
     if (!response.ok) {
-      throw new Error("Failed to send point. Status: " + response.status);
+      throw new Error("Failed to send betting. Status: " + response.status);
     }
-    revalidateTag("point");
+    revalidateTag("betting");
     return await response.json();
   } catch (error) {
-    console.error("Error send point:", error);
+    console.error("Error send betting:", error);
     return null;
   }
 }
 
-export async function getPointData() {
+export async function updateBetting(nickname:string, point:number, bettingId:string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/point`,
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/update`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        next: { tags: ["point"] },
+        body: JSON.stringify({ nickname, point, bettingId }),
+        next: { tags: ["betting"] },
+        cache: "no-store",
       }
     );
     if (!response.ok) {
-      throw new Error("Failed to fetch pointData. Status: " + response.status);
+      throw new Error("Failed to send betting. Status: " + response.status);
     }
-    revalidateTag("point");
+    revalidateTag("betting");
     return await response.json();
   } catch (error) {
-    console.error("Error fetch pointData:", error);
+    console.error("Error send betting:", error);
+    return null;
+  }
+}
+
+export async function deleteBetting(bettingId: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/delete`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bettingId),
+        next: { tags: ["betting"] },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to send betting. Status: " + response.status);
+    }
+    revalidateTag("betting");
+    return await response.json();
+  } catch (error) {
+    console.error("Error send betting:", error);
+    return null;
+  }
+}
+
+export async function resultBetting(bettingId: string,winner: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/result`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ bettingId, winner }),
+        next: { tags: ["betting"] },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to send betting. Status: " + response.status);
+    }
+    revalidateTag("betting");
+    return await response.json();
+  } catch (error) {
+    console.error("Error send betting:", error);
+    return null;
+  }
+}
+
+export async function getBettingData() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/betting`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      next: { tags: ["betting"] },
+    });
+    if (!response.ok) {
+      throw new Error(
+        "Failed to fetch bettingData. Status: " + response.status
+      );
+    }
+    revalidateTag("betting");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetch bettingData:", error);
     return null;
   }
 }

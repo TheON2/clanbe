@@ -2,12 +2,8 @@ import { Button, Card, CardHeader, Textarea, User } from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import UserProfile from "../UserProfile";
 import { useSession } from "next-auth/react";
-import CommentComponent from "../CommentComponent";
-import ReplyComponent from "../ReplyComponent";
-import SubmitModal from "../SubmitModal";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { revalidatePath } from "next/cache";
 import { deleteComment, updateComment } from "../../service/comment";
 import { formatDate } from "@/utils/dateUtils";
 
@@ -55,7 +51,7 @@ export default function CommentCard({
         postid,
         commentid,
         author,
-        editedText,
+        editedText, // Ensure the updated text is sent correctly
       });
       setEditMode(false);
     } catch (error) {
@@ -134,7 +130,7 @@ export default function CommentCard({
               autoFocus
             />
           ) : (
-            text
+            <div className="whitespace-pre-wrap">{text}</div>
           )}
         </Card>
       </Card>

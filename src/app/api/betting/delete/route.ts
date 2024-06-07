@@ -1,4 +1,5 @@
 import BettingModel from "@/models/betting";
+import UserModel from "@/models/user";
 import mongoose from "mongoose";
 
 export async function POST(req: Request, res: Response) {
@@ -14,6 +15,20 @@ export async function POST(req: Request, res: Response) {
     const existingBetting = await BettingModel.findOneAndDelete({
       _id: bettingId,
     });
+
+    //배팅이 완료가 아닐경우 모든 배팅금액 유저들에게 반환
+    if (existingBetting?.status !== "종료") {
+      for (let i = 0; i < existingBetting?.bets.length; i++) {
+        const { nickname, amount } = existingBetting.bets[i];
+
+        const user = await UserModel.findOne({ nickname });
+
+        if (user) {
+          user.point += amount;
+          await user.save();
+        }
+      }
+    }
 
     if (!existingBetting) {
       return new Response(

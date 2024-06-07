@@ -12,19 +12,6 @@ export async function POST(req: Request, res: Response) {
 
     const { nickname, amount, choice, bettingId } = body;
 
-    // 베팅자와 피베팅자를 조회
-    const betUser = await UserModel.findOne({ nickname: nickname });
-    const bettedUser = await UserModel.findOne({ nickname: choice });
-
-    if (!betUser || !bettedUser) {
-      return new Response(
-        JSON.stringify({ message: "베팅 출전 선수를 찾을 수 없습니다." }),
-        {
-          status: 404,
-        }
-      );
-    }
-
     const existingBetting = await BettingModel.findOne({ _id: bettingId });
 
     if (!existingBetting) {

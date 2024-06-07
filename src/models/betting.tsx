@@ -41,6 +41,10 @@ const bettingSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    betMax: {
+      type: Number,
+      required: true,
+    },
     status: {
       type: String,
       required: true,

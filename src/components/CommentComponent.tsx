@@ -75,12 +75,13 @@ export default function CommentComponent({
   return (
     <Card className="p-4 flex flex-nowrap w-full">
       <UserProfile email={author} />
-      <div className="flex-1  w-full min-h-[200px]">
+      <div className="flex-1 w-full min-h-[200px]">
         <Textarea
           value={text}
           minRows={7}
           maxRows={7}
           onChange={handleTextChange}
+          className="whitespace-pre-wrap"
         ></Textarea>
       </div>
       <div className="flex mt-4">

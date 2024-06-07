@@ -1,11 +1,4 @@
-import {
-  Button,
-  ButtonGroup,
-  Card,
-  CardHeader,
-  Textarea,
-  User,
-} from "@nextui-org/react";
+import { Button, Card, CardHeader, Textarea, User } from "@nextui-org/react";
 import { CardFooter, Link as MyLink } from "@nextui-org/react";
 import { Server } from "../../public/Icons";
 import { Image } from "@nextui-org/react";
@@ -134,7 +127,7 @@ export default function ReplyCard({
               autoFocus
             />
           ) : (
-            text
+            <div className="whitespace-pre-wrap">{text}</div>
           )}
         </Card>
       </Card>

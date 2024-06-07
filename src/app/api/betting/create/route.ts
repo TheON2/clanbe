@@ -11,19 +11,6 @@ export async function POST(req: Request) {
 
     const { title, home, away } = body;
 
-    // 홈과 어웨이에 등록된 유저를 조회
-    const homeUser = await UserModel.findOne({ nickname: home });
-    const awayUser = await UserModel.findOne({ nickname: away });
-
-    if (!homeUser || !awayUser) {
-      return new Response(
-        JSON.stringify({ message: "베팅 출전 선수를 찾을 수 없습니다." }),
-        {
-          status: 404,
-        }
-      );
-    }
-
     // 포인트 전송 기록 저장
     const newBetting = new BettingModel({
       title,
