@@ -76,9 +76,9 @@ export default function HeaderComponent(categoryData: any) {
           menuItems={headerPOINT.menuItems}
         />
       </NavbarContent>
-      <NavbarContent>
+      {/* <NavbarContent>
         <HeaderEnd />
-      </NavbarContent>
+      </NavbarContent> */}
       <NavbarMenu className="w-2/3 flex items-center">
         <Accordion variant="splitted">
           {[
