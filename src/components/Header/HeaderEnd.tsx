@@ -3,7 +3,7 @@ import { ThemeSwitcher } from "../ThemeSwitcher";
 
 export const HeaderEnd = () => {
   const handleSubmit = async (event: any) => {
-    event.preventDefault(); // Link 컴포넌트의 기본 행동을 중단합니다.
+    //event.preventDefault(); // Link 컴포넌트의 기본 행동을 중단합니다.
 
     try {
       const response = await fetch("/api/users/dummy", {
@@ -28,11 +28,11 @@ export const HeaderEnd = () => {
           Sign Up
         </Button>
       </NavbarItem> */}
-      {/* <NavbarItem>
+      <NavbarItem>
         <Button color="primary" href="#" variant="flat" onClick={handleSubmit}>
           Dummy
         </Button>
-      </NavbarItem> */}
+      </NavbarItem>
     </NavbarContent>
   );
 };

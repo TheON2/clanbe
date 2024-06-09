@@ -75,7 +75,7 @@ const tierColorMap: Record<string, string> = {
   "B+": "bg-yellow-100",
   B: "bg-yellow-200",
   C: "bg-red-100",
-  D: "bg-red-200",
+  "C+": "bg-red-200",
 };
 
 export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {

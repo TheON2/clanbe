@@ -49,7 +49,7 @@ type PostFormProps = {
   supportData: SupportAmount;
 };
 
-const tiers = ["S+", "S", "A+", "A", "B+", "B", "C", "D"];
+const tiers = ["S+", "S", "A+", "A", "B+", "B", "C+", "C"];
 
 export default function PostForm({
   post,

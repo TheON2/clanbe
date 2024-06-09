@@ -110,7 +110,6 @@ export default function MemberComponent({ users }: MemberComponentProps) {
 
   const filteredData = useMemo(() => {
     let data = users
-      .filter((user: any) => user.team)
       .filter((user: any) => {
         if (!searchField) return true;
         return user[searchField]

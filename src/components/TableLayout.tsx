@@ -16,7 +16,7 @@ interface TableLayoutProps {
 }
 
 const races = ["ALL", "Z", "T", "P"];
-const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
+const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C+", "C"];
 const fieldLabels: { [key: string]: string } = {
   name: "이름",
   nickname: "닉네임",

@@ -90,7 +90,7 @@ const ProleagueUpdateModal = ({
     { id: "9", name: "버미어" },
   ];
 
-  const tiers = ["S+/S", "A+/A", "B+/B", "C+/D"];
+  const tiers = ["S+/S", "A+/A", "B+/B", "C+/C"];
 
   const homeTeamPlayers = useMemo(
     () => users.filter((user) => user.team === homeTeam),

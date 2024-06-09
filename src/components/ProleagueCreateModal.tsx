@@ -97,7 +97,7 @@ const ProleagueCreateModal = ({
     { id: "9", name: "버미어" },
   ];
 
-  const tiers = ["S+/S", "A+/A", "B+/B", "C+/D"];
+  const tiers = ["S+/S", "A+/A", "B+/B", "C+/C"];
   const results = [
     { id: "0", name: "경기전" },
     { id: "1", name: "홈승" },

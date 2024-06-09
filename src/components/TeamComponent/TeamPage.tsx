@@ -44,6 +44,7 @@ import { updateUserTeam } from "@/service/team";
 import SubmitModal from "../SubmitModal";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { beUsers, playersData } from "../../../public/data";
 
 interface UserItem {
   nickname: string;
@@ -78,7 +79,7 @@ const tierColorMap: Record<string, string> = {
   "B+": "bg-yellow-100",
   B: "bg-yellow-200",
   C: "bg-red-100",
-  D: "bg-red-200",
+  "C+": "bg-red-200",
 };
 
 const TeamPage = ({ teams, users }: any) => {
@@ -97,6 +98,12 @@ const TeamPage = ({ teams, users }: any) => {
   const isLoggedIn = status === "authenticated";
   const user = session?.user;
   const userGrade = user?.grade ?? 0;
+
+  const playerData = playersData;
+  const beuser = beUsers;
+
+  console.log("playerData length:", playerData.length);
+  console.log("beuser length:", beuser.length);
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
@@ -199,7 +206,7 @@ const TeamPage = ({ teams, users }: any) => {
   const rowsPerPage = 10;
 
   const races = ["ALL", "Z", "T", "P"];
-  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
+  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C+", "C", "F"];
 
   const raceMapping: { [key: string]: string } = useMemo(
     () => ({

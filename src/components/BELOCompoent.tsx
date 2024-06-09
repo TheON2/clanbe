@@ -25,15 +25,41 @@ interface UserItem {
   [key: string]: string | number; // 인덱스 시그니처 추가
 }
 
+interface Column {
+  name: string;
+  uid: string;
+  sortable: boolean;
+  align?: "center" | "start" | "end";
+  width?: number;
+  color?:
+    | "default"
+    | "primary"
+    | "secondary"
+    | "success"
+    | "warning"
+    | "danger";
+}
+
+const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C+", "C", "F"];
+const races = ["ALL", "Z", "T", "P"];
+
+const tierColorMap: Record<string, string> = {
+  "S+": "bg-green-100",
+  S: "bg-green-200",
+  "A+": "bg-blue-100",
+  A: "bg-blue-200",
+  "B+": "bg-yellow-100",
+  B: "bg-yellow-200",
+  C: "bg-red-100",
+  "C+": "bg-red-200",
+};
+
 export default function BELOComponent({ users }: { users: User[] }) {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [selectedTier, setSelectedTier] = useState("");
   const [selectedRace, setSelectedRace] = useState("");
   const rowsPerPage = 15;
-
-  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
-  const races = ["ALL", "Z", "T", "P"];
 
   const raceMapping: { [key: string]: string } = useMemo(
     () => ({
@@ -51,8 +77,9 @@ export default function BELOComponent({ users }: { users: User[] }) {
     if (belo >= 1000) return "A";
     if (belo >= 900) return "B+";
     if (belo >= 800) return "B";
-    if (belo >= 700) return "C";
-    return "D";
+    if (belo >= 700) return "C+";
+    if (belo >= 500) return "C";
+    return "F";
   };
 
   const filteredData: UserItem[] = useMemo(() => {
@@ -162,7 +189,19 @@ export default function BELOComponent({ users }: { users: User[] }) {
         <TableBody items={items}>
           {(item) => (
             <TableRow key={item.nickname}>
-              {(columnKey) => <TableCell>{item[columnKey]}</TableCell>}
+              {(columnKey) => (
+                <TableCell
+                  className={
+                    columnKey === "tier"
+                      ? `${
+                          tierColorMap[item.tier] || "bg-gray-100"
+                        } text-center text-black font-bold`
+                      : "text-center"
+                  }
+                >
+                  {item[columnKey]}
+                </TableCell>
+              )}
             </TableRow>
           )}
         </TableBody>

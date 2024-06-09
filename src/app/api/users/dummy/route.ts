@@ -15,7 +15,11 @@ import CategoryModel from "@/models/category";
 
 export async function POST(req: Request, res: Response) {
   try {
-    const teams = ["660cc0e452afd8daf291b3b9", "660cc0e452afd8daf291b3ba", "6641b6bd288b8fdc5f10c4ad"];
+    const teams = [
+      "660cc0e452afd8daf291b3b9",
+      "660cc0e452afd8daf291b3ba",
+      "6641b6bd288b8fdc5f10c4ad",
+    ];
     let teamIndex = 0;
 
     const getTier = (belo: number) => {
@@ -25,19 +29,21 @@ export async function POST(req: Request, res: Response) {
       if (belo >= 1000) return "A";
       if (belo >= 900) return "B+";
       if (belo >= 800) return "B";
-      if (belo >= 700) return "C";
-      return "D";
+      if (belo >= 700) return "C+";
+      if (belo >= 500) return "C";
+      return "F";
     };
 
-    const tierMapping: {[key: string]: any} = {
+    const tierMapping: { [key: string]: any } = {
       "S+": [],
-      "S": [],
+      S: [],
       "A+": [],
-      "A": [],
+      A: [],
       "B+": [],
-      "B": [],
-      "C": [],
-      "D": []
+      B: [],
+      "C+": [],
+      C: [],
+      F: [],
     };
 
     // 사용자 데이터를 변환하고 티어 분류
@@ -63,18 +69,24 @@ export async function POST(req: Request, res: Response) {
         pw = pl = tw = tl = zw = zl = 0;
       }
 
-      const belo = playerData && !isNaN(Number(playerData.belo)) ? Number(playerData.belo) : 0;
+      const belo =
+        playerData && !isNaN(Number(playerData.belo))
+          ? Number(playerData.belo)
+          : 0;
       const tier = getTier(Number(belo));
       tierMapping[tier].push(user);
 
       return {
         email: user.email.replace("title: ", ""),
-        password: "$2b$10$cn.9ZkBlc8bqOqK0NFLXkeVXDWZBZXwLJePtmx0g/EMCFNKB8wqRW",
+        password:
+          "$2b$10$cn.9ZkBlc8bqOqK0NFLXkeVXDWZBZXwLJePtmx0g/EMCFNKB8wqRW",
         kakao: `theon${index + 2}`,
         birth: new Date("1993-12-25T00:00:00.000Z"),
         nickname: user.nickname,
         name: user.name,
-        phone: `010-${index.toString().padStart(4, '0')}-${(1000 + index).toString().slice(1)}`,
+        phone: `010-${index.toString().padStart(4, "0")}-${(1000 + index)
+          .toString()
+          .slice(1)}`,
         point: playerPoint ? playerPoint.points : 0,
         role: user.group.includes("관리그룹") ? "Staff" : "Member",
         grade: user.group.includes("관리그룹") ? 5 : 1,
@@ -100,14 +112,14 @@ export async function POST(req: Request, res: Response) {
           zw: 0,
           zl: 0,
         },
-        team: teams[index % teams.length],
-        message: "만나서 반갑습니다."
+        team: "",
+        message: "만나서 반갑습니다.",
       };
     });
 
     // 순환적으로 팀 할당
-    Object.values(tierMapping).forEach(usersInTier => {
-      usersInTier.forEach((user:any) => {
+    Object.values(tierMapping).forEach((usersInTier) => {
+      usersInTier.forEach((user: any) => {
         user.team = teams[teamIndex];
         teamIndex = (teamIndex + 1) % teams.length;
       });

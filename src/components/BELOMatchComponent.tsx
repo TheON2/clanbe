@@ -27,7 +27,7 @@ export default function BELOMatchComponent({ matchs }: { matchs: Match[] }) {
   const [mapSearch, setMapSearch] = useState("");
   const rowsPerPage = 10;
 
-  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
+  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C+", "C"];
   const races = ["ALL", "Z", "T", "P"];
 
   const raceMapping: { [key: string]: string } = useMemo(

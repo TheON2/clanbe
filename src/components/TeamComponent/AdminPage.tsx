@@ -78,7 +78,7 @@ const tierColorMap: Record<string, string> = {
   "B+": "bg-yellow-100",
   B: "bg-yellow-200",
   C: "bg-red-100",
-  D: "bg-red-200",
+  "C+": "bg-red-200",
 };
 
 const AdminPage = ({ teams, users }: any) => {
@@ -138,7 +138,7 @@ const AdminPage = ({ teams, users }: any) => {
   const [noTeamSelectedRace, setNoTeamSelectedRace] = useState("");
 
   const races = ["ALL", "Z", "T", "P"];
-  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C", "D"];
+  const tiers = ["ALL", "S+", "S", "A+", "A", "B+", "B", "C+", "C", "F"];
 
   // 선택한 팀 객체를 찾습니다.
   const selectedTeam = useMemo(
@@ -667,7 +667,7 @@ const AdminPage = ({ teams, users }: any) => {
         </CardBody>
       </Card>
       {/* 팀 수정삭제 컴포넌트 */}
-      {selectedTeamName !== "" && (
+      {/* {selectedTeamName !== "" && (
         <Card className="m-2">
           <p className="font-bold text-3xl ml-2 p-2">팀 수정/삭제</p>
           <CardBody>
@@ -780,9 +780,9 @@ const AdminPage = ({ teams, users }: any) => {
             </div>
           </CardBody>
         </Card>
-      )}
+      )} */}
       {/* 팀 생성 컴포넌트 */}
-      <Card className="m-2">
+      {/* <Card className="m-2">
         <p className="font-bold text-3xl ml-2 p-2">팀 생성</p>
         <CardBody>
           <div className="flex flex-wrap my-2 justify-center items-center gap-4">
@@ -864,7 +864,7 @@ const AdminPage = ({ teams, users }: any) => {
             </div>
           </div>
         </CardBody>
-      </Card>
+      </Card> */}
       {/* 팀에 소속된 유저 리스트 */}
       <Card className="m-2">
         <CardHeader>
@@ -1080,7 +1080,7 @@ const AdminPage = ({ teams, users }: any) => {
                         columnKey === "tier"
                           ? `${
                               tierColorMap[item.tier] || "bg-gray-100"
-                            } text-center`
+                            } text-center text-black font-bold`
                           : "text-center"
                       }
                     >
