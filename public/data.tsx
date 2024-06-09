@@ -37,6 +37,10 @@ export const getCategoryPath = (category: string) => {
       return "/clanbe/notices";
     case "클랜 후원":
       return "/clanbe/support";
+    case "티어배정신청":
+      return "/clanbe/tear";
+    case "티어배정완료":
+      return "/clanbe/tear";
     case "자유게시판":
       return "/community/forum";
     case "가입인사":

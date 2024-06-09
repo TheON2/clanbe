@@ -27,6 +27,15 @@ export async function POST(req: Request, res: Response) {
         .limit(10); // noticed가 false인 게시물 최신 10개
 
       posts = [...noticedPosts, ...regularPosts];
+    } else if (body.category === "tear") {
+      // "tear" 카테고리에 대한 로직 처리
+      posts = await PostModel.find({
+        $or: [
+          { category: "beforetear" },
+          { category: "aftertear" },
+          { category: "notice" },
+        ],
+      });
     } else {
       posts = await PostModel.find({
         $or: [{ category: body.category }, { category: "notice" }],

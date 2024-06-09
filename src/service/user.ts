@@ -1,4 +1,4 @@
-'use server'
+"use server";
 
 import mongoose from "mongoose";
 import TeamModel from "@/models/team";
@@ -14,7 +14,6 @@ type updateProfile = {
   race: string;
   avatar: string;
 };
-
 
 export async function getProfile(author: string) {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/user`, {
@@ -45,7 +44,7 @@ export async function getUserProfile(slug: string) {
 }
 
 export async function deleteUser(nickname: string) {
-   const response = await fetch(
+  const response = await fetch(
     `${process.env.NEXT_PUBLIC_URL}/api/user/delete`,
     {
       method: "POST",
@@ -60,7 +59,6 @@ export async function deleteUser(nickname: string) {
   return await response.json();
 }
 
-
 export async function getNavData() {
   try {
     const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/nav`, {
@@ -72,7 +70,7 @@ export async function getNavData() {
       next: { tags: ["user"] },
     });
     const { teams, users } = await response.json();
-    
+
     // 데이터 변환 로직은 필요에 따라 조정
     return {
       users,
@@ -82,7 +80,7 @@ export async function getNavData() {
     console.error("Error fetching data from MongoDB", error);
     throw new Error("Error fetching data from MongoDB");
   }
-};
+}
 
 export async function getUsers() {
   const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/users`, {
@@ -109,6 +107,19 @@ export async function updateProfile(updateState: updateProfile) {
       next: { tags: ["user"] },
     }
   );
+  revalidateTag("user");
+  return await response.json();
+}
+
+export async function tearUpdate(usernickname: string, tear: string) {
+  const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/user/tear`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ usernickname, tear }),
+    next: { tags: ["user"] },
+  });
   revalidateTag("user");
   return await response.json();
 }

@@ -28,7 +28,36 @@ export async function createBetting(newBettingData: any) {
   }
 }
 
-export async function updateBetting(nickname:string, point:number, bettingId:string) {
+export async function updateStatusBetting(bettingId: string, status: string) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/update`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ bettingId, status }),
+        next: { tags: ["betting"] },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to send betting. Status: " + response.status);
+    }
+    revalidateTag("betting");
+    return await response.json();
+  } catch (error) {
+    console.error("Error send betting:", error);
+    return null;
+  }
+}
+
+export async function updateBetting(
+  nickname: string,
+  point: number,
+  bettingId: string
+) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/betting/update`,
@@ -38,6 +67,35 @@ export async function updateBetting(nickname:string, point:number, bettingId:str
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ nickname, point, bettingId }),
+        next: { tags: ["betting"] },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      throw new Error("Failed to send betting. Status: " + response.status);
+    }
+    revalidateTag("betting");
+    return await response.json();
+  } catch (error) {
+    console.error("Error send betting:", error);
+    return null;
+  }
+}
+
+export async function cancelBetting(
+  nickname: string,
+  choice: string,
+  bettingId: string
+) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/update`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ nickname, choice, bettingId }),
         next: { tags: ["betting"] },
         cache: "no-store",
       }
@@ -78,7 +136,7 @@ export async function deleteBetting(bettingId: string) {
   }
 }
 
-export async function resultBetting(bettingId: string,winner: string) {
+export async function resultBetting(bettingId: string, winner: string) {
   try {
     const response = await fetch(
       `${process.env.NEXT_PUBLIC_URL}/api/betting/result`,

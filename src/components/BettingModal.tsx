@@ -8,13 +8,12 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
-import { Input } from "@nextui-org/react";
+import { Input, Select, SelectItem } from "@nextui-org/react";
 import { Calendar, Divider } from "@nextui-org/react";
 import { parseDate, DateValue } from "@internationalized/date";
 import { Betting } from "../../types/types";
 import { User } from "next-auth";
 import SubmitModal from "./SubmitModal";
-import { set } from "mongoose";
 
 type Props = {
   title: string;
@@ -24,13 +23,7 @@ type Props = {
   bettingData?: Betting;
 };
 
-const BettingModal = ({
-  title,
-  isOpen,
-  onClose,
-  users,
-  bettingData,
-}: Props) => {
+const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
   const [selectedDate, setSelectedDate] = useState<DateValue | null>(null);
   const {
     isOpen: isModalOpen,
@@ -93,6 +86,8 @@ const BettingModal = ({
     setHomeBetRate("");
     setAwayBetRate("");
     setBetMax("");
+    setStatus("");
+    setBetTitle("");
     onClose();
   };
 
@@ -104,6 +99,8 @@ const BettingModal = ({
       setHomeBetRate("");
       setAwayBetRate("");
       setBetMax("");
+      setStatus("");
+      setBetTitle("");
     }
   }, [isOpen]);
 
@@ -132,7 +129,25 @@ const BettingModal = ({
               )}
             </div>
             <Divider />
-            <div className="flex gap-4 w-full">
+            <div className="flex flex-col gap-4 w-full">
+              <Select
+                className="md:w-1/2"
+                name="status"
+                id="status"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+                selectedKeys={[status]}
+              >
+                <SelectItem value="경기전" key={"경기전"}>
+                  경기전
+                </SelectItem>
+                <SelectItem value="경기중" key={"경기중"}>
+                  경기중
+                </SelectItem>
+                <SelectItem value="종료" key={"종료"}>
+                  종료
+                </SelectItem>
+              </Select>
               <Input
                 label="Title"
                 placeholder="Enter Title"

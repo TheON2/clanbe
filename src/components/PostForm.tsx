@@ -16,6 +16,9 @@ import {
   Divider,
   Button,
   Tooltip,
+  Input,
+  Select,
+  SelectItem,
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import CommentCard from "./CommentCard/CommentCard";
@@ -28,6 +31,7 @@ import ReplyComponent from "./ReplyComponent";
 import { formatDate } from "@/utils/dateUtils";
 import { EditIcon } from "../../public/EditIcon";
 import { categoryLabels, getCategoryPath } from "../../public/data";
+import { tearUpdate } from "@/service/user";
 
 type PostFormProps = {
   post: {
@@ -45,6 +49,8 @@ type PostFormProps = {
   supportData: SupportAmount;
 };
 
+const tiers = ["S+", "S", "A+", "A", "B+", "B", "C", "D"];
+
 export default function PostForm({
   post,
   userData,
@@ -59,6 +65,7 @@ export default function PostForm({
   const { title, category, fileUrl, next, prev, _id } = post;
   const [isDeleting, setIsDeleting] = useState(false);
   const [isSubmit, setIsSubmit] = useState(false);
+  const [tear, setTear] = useState("");
   const [activeCommentId, setActiveCommentId] = useState(null);
 
   const handleCommentClick = (commentId: any) => {
@@ -95,6 +102,18 @@ export default function PostForm({
     }
   };
 
+  // const handleUpdateTear = async () => {
+  //   try {
+  //     const response = await tearUpdate(user.nickname, tear);
+
+  //     if (!response.ok) {
+  //       throw new Error(`Error: ${response.statusText}`);
+  //     }
+  //   } catch (error) {
+  //     console.error("Failed to update the tear:", error);
+  //   }
+  // };
+
   const triggerDelete = () => {
     setIsDeleting(true);
   };
@@ -128,11 +147,7 @@ export default function PostForm({
       };
       viewCount();
     }
-  }, []); // status와 user를 종속성 배열에 추가
-
-  // useEffect(() => {
-  //   window.scrollTo(0, 0);
-  // }, [router]);
+  }, []);
 
   if (!post) {
     // Optionally, return a loading spinner here
@@ -206,6 +221,28 @@ export default function PostForm({
               <p className="font-bold text-2xl">
                 {supportData.amount}원을 지출하셨습니다.
               </p>
+            </Card>
+          )}
+          {category === "beforetear" && user && user.grade >= 4 && (
+            <Card className="mx-4 h-[200px] flex items-center justify-center">
+              <p className="font-bold text-2xl">티어배정을 확정하시겠습니까?</p>
+              <Select
+                aria-label="tear"
+                value={tear}
+                className="w-[100px] mt-2"
+                onChange={(e) => {
+                  setTear(e.target.value);
+                }}
+              >
+                {tiers.map((tier) => (
+                  <SelectItem key={tier} value={tier}>
+                    {tier}
+                  </SelectItem>
+                ))}
+              </Select>
+              <Button className="mt-2" color="primary">
+                확정
+              </Button>
             </Card>
           )}
           <CKEditorContent contentUrl={fileUrl} />

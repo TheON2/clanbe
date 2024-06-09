@@ -255,6 +255,8 @@ export default function CKEditorForm({
               >
                 <SelectItem key="notice">공지사항</SelectItem>
                 <SelectItem key="support">클랜후원</SelectItem>
+                <SelectItem key="beforetear">티어배정신청</SelectItem>
+                <SelectItem key="aftertear">티어배정완료</SelectItem>
               </SelectSection>
               <SelectSection
                 title="커뮤니티"
