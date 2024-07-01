@@ -105,12 +105,18 @@ const ProleagueCreateModal = ({
   ];
 
   const homeTeamPlayers = useMemo(
-    () => users.filter((user) => user.team === Array.from(homeTeam).join("")),
+    () => [
+      { email: "undefined", nickname: "선수미정" },
+      ...users.filter((user) => user.team === Array.from(homeTeam).join("")),
+    ],
     [homeTeam, users]
   );
 
   const awayTeamPlayers = useMemo(
-    () => users.filter((user) => user.team === Array.from(awayTeam).join("")),
+    () => [
+      { email: "undefined", nickname: "선수미정" },
+      ...users.filter((user) => user.team === Array.from(awayTeam).join("")),
+    ],
     [awayTeam, users]
   );
 

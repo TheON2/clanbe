@@ -23,6 +23,23 @@ export async function updateUserRole(usernickname: string, role: string) {
   return await response.json();
 }
 
+export async function updateUserTear(usernickname: string, tear: string) {
+  console.log(usernickname, tear);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/user/update`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ usernickname, tear }),
+      next: { tags: ["user"] },
+    }
+  );
+  revalidateTag("user");
+  return await response.json();
+}
+
 // export const getCategoryData = async (): Promise<{ categories: Category[] }> => {
 //   try {
 //     // MongoDB 데이터베이스에 연결

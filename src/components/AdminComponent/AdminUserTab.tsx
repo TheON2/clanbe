@@ -20,6 +20,7 @@ import {
   PopoverContent,
   Avatar,
   Chip,
+  Divider,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
@@ -110,6 +111,9 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
           birth: user.birth,
           avatar: user.avatar,
           idData: user.idData,
+          role: user.role,
+          point: user.point,
+          createdAt: new Date(user.createdAt),
         },
         role: user.role,
         point: user.point,
@@ -200,63 +204,76 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
       case "user":
         return (
           <div className="w-full flex justify-center items-center">
-            <Card className="w-[220px]">
-              <div className="flex items-center">
-                <Avatar src={user.user.avatar} size="lg" className="m-2" />
+            <Card className="w-[200px] md:w-full">
+              <div className="flex items-center mx-0 md:mx-4">
+                <Avatar src={user.user.avatar} size="md" className="m-2" />
                 <div className="flex flex-col">
-                  <p className="font-bold text-xl">{user.user.nickname}</p>
-                  <p className="font-bold text-lg">@{user.user.name}</p>
+                  <p className="font-bold text-md">{user.user.nickname}</p>
+                  <p className="font-bold text-sm">@{user.user.name}</p>
+                </div>
+                <div className="flex gap-2 items-center ml-auto mr-2">
+                  <button
+                    color="primary"
+                    onClick={() =>
+                      router.push(`/user/profile/${user.user.email}`)
+                    }
+                  >
+                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                      <EditIcon />
+                    </span>
+                  </button>
+                  <button
+                    color="danger"
+                    onClick={() => handleDelete(user.user.nickname)}
+                  >
+                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                      <DeleteIcon />
+                    </span>
+                  </button>
+                  <div>
+                    <Popover placement={"right"}>
+                      <PopoverTrigger>
+                        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                          <EyeIcon />
+                        </span>
+                      </PopoverTrigger>
+                      <PopoverContent className="">
+                        <div>
+                          <Image
+                            src={user.user.idData || "/Belogo.png"}
+                            width={500}
+                            height={300}
+                            alt="ID"
+                          />
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
               </div>
-              <div className="flex gap-2 justify-center">
-                <Button
-                  color="primary"
-                  onPress={() =>
-                    router.push(`/user/profile/${user.user.email}`)
-                  }
-                >
-                  수정
-                </Button>
-                <Button
-                  color="danger"
-                  onClick={() => handleDelete(user.user.nickname)}
-                >
-                  삭제
-                </Button>
+              <Divider />
+              <div className="flex justify-center gap-2 md:gap-8 mx-2">
+                <p className="font-bold">
+                  Role <br />
+                  {user.role}
+                </p>
+                <p className="font-bold">
+                  Point <br /> {user.point}
+                </p>
+                <p className="font-bold">{formatDateOnly(user.createdAt)}</p>
               </div>
-              <div>
+              <Divider />
+              <div className="flex flex-col ">
                 <p>
-                  email <br />
+                  Email {user.user.email} <br />
                 </p>
-                <p className="font-bold text-md">{user.user.email}</p>
                 <p>
-                  kakao <br />
+                  Kakao {user.user.kakao} <br />
                 </p>
-                <p className="font-bold text-md">{user.user.kakao}</p>
-                <p className="font-bold text-md">H.P {user.user.phone}</p>
-                <p className="font-bold text-md">
+                <p className="">H.P {user.user.phone}</p>
+                <p className="text-sm">
                   Birth {formatDateOnly(user.user.birth)}
                 </p>
-                <div>
-                  {" "}
-                  <Popover placement={"right"}>
-                    <PopoverTrigger>
-                      <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                        <EyeIcon />
-                      </span>
-                    </PopoverTrigger>
-                    <PopoverContent className="">
-                      <div>
-                        <Image
-                          src={user.user.idData || "/Belogo.png"}
-                          width={500}
-                          height={300}
-                          alt="ID"
-                        />
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
               </div>
             </Card>
           </div>
@@ -275,16 +292,21 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
 
       case "actions":
         return (
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-col items-center justify-center gap-4 ">
             <Tooltip content="Edit user">
               <Popover placement={"right"}>
                 <PopoverTrigger>
-                  <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                    <EditIcon />
-                  </span>
+                  <Chip
+                    className="w-full text-sm text-center cursor-pointer"
+                    size="sm"
+                    color="primary"
+                  >
+                    <div className="">등 급</div>
+                  </Chip>
                 </PopoverTrigger>
                 <PopoverContent className="">
                   <div className="flex flex-col gap-1">
+                    <p className="text-center">등급 변경</p>
                     <Chip
                       className="w-full text-sm text-center cursor-pointer"
                       size="sm"
@@ -329,6 +351,188 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
                 </PopoverContent>
               </Popover>
             </Tooltip>
+            <Tooltip content="Edit user">
+              <Popover placement={"right"}>
+                <PopoverTrigger>
+                  <Chip
+                    className="w-full text-sm text-center cursor-pointer"
+                    size="sm"
+                    color="primary"
+                  >
+                    <div className="">종 족</div>
+                  </Chip>
+                </PopoverTrigger>
+                <PopoverContent className="">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-center">종족 변경</p>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Guest")
+                      }
+                    >
+                      <div className="w-[70px]">P</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Member")
+                      }
+                    >
+                      <div className="w-[70px]">T</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Staff")
+                      }
+                    >
+                      <div className="w-[70px]">Z</div>
+                    </Chip>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </Tooltip>
+            <Tooltip content="Edit user">
+              <Popover placement={"right"}>
+                <PopoverTrigger>
+                  <Chip
+                    className="w-full text-sm text-center cursor-pointer"
+                    size="sm"
+                    color="primary"
+                  >
+                    <div className="">티 어</div>
+                  </Chip>
+                </PopoverTrigger>
+                <PopoverContent className="">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-center">티어 변경</p>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Guest")
+                      }
+                    >
+                      <div className="w-[70px]">S+</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Member")
+                      }
+                    >
+                      <div className="w-[70px]">S</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Staff")
+                      }
+                    >
+                      <div className="w-[70px]">A+</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">A</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">B+</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">B</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">C+</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">C</div>
+                    </Chip>
+                    <Chip
+                      className="w-full text-sm text-center cursor-pointer"
+                      size="sm"
+                      color="primary"
+                      onClick={() =>
+                        handleUpdateRole(user.user.nickname, "Master")
+                      }
+                    >
+                      <div className="w-[70px]">F</div>
+                    </Chip>
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </Tooltip>
+            <Tooltip content="Edit user">
+              <Popover placement={"right"}>
+                <PopoverTrigger>
+                  <Chip
+                    className="w-full text-xs text-center cursor-pointer"
+                    size="sm"
+                    color="primary"
+                  >
+                    <div className="">포인트</div>
+                  </Chip>
+                </PopoverTrigger>
+                <PopoverContent className="">
+                  <div className="flex flex-col gap-1">
+                    <p className="text-center">포인트 변경</p>
+                    <p className="text-center">
+                      {user.nickname} 현재 : {user.point}
+                    </p>
+                    <Input
+                      type="number"
+                      placeholder="변경할 포인트"
+                      className="w-full mb-2"
+                    />
+                  </div>
+                </PopoverContent>
+              </Popover>
+            </Tooltip>
           </div>
         );
       default:
@@ -342,27 +546,6 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
       sortable: true,
       align: "center",
       width: 100,
-    },
-    {
-      name: "역할",
-      uid: "role",
-      sortable: true,
-      align: "center",
-      width: 30,
-    },
-    {
-      name: "포인트",
-      uid: "point",
-      sortable: true,
-      align: "center",
-      width: 30,
-    },
-    {
-      name: "가입일",
-      uid: "createdAt",
-      sortable: true,
-      align: "center",
-      width: 30,
     },
     {
       name: "Action",

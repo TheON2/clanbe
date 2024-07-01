@@ -210,8 +210,8 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
     });
   }
 
-  const findUser = (nickname: string) =>
-    users.find((user: User) => user.nickname === nickname);
+  const findUser = (nickname: string): User | "선수미정" =>
+    users.find((user: User) => user.nickname === nickname) || "선수미정";
 
   const findTeam = (teamid: string) =>
     teams.find((team: Team) => team._id === teamid);
@@ -631,7 +631,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
             </div>
           </div>
         </CardHeader>
-        <CardBody className="md:w-2/3 w-full">
+        <CardBody className="md:w-1/2 w-full">
           {filteredEvents.length > 0 &&
             filteredEvents.map((match: any, index: string) => {
               const homeTeam = findTeam(match.homeId);
@@ -697,7 +697,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                   </div>
                   <Table aria-label="Proleague Schedule">
                     <TableHeader>
-                      <TableColumn>맵</TableColumn>
                       <TableColumn>Home</TableColumn>
                       <TableColumn>티어</TableColumn>
                       <TableColumn>Away</TableColumn>
@@ -708,7 +707,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                         const awayUser = findUser(game.awayPlayer);
                         return (
                           <TableRow key={idx}>
-                            <TableCell>{game?.map}</TableCell>
                             <TableCell>
                               {renderCell(
                                 homeUser,
@@ -717,7 +715,11 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                                 true
                               )}
                             </TableCell>
-                            <TableCell>{game?.tier}</TableCell>
+                            <TableCell className="text-center">
+                              {game?.map}
+                              <br />
+                              {game?.tier}
+                            </TableCell>
                             <TableCell>
                               {renderCell(
                                 awayUser,
