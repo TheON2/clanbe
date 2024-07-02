@@ -23,6 +23,8 @@ import {
   CircularProgress,
   Button,
   User as UiUser,
+  Tabs,
+  Tab,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../types/types";
@@ -166,7 +168,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
         case "awayPlayer":
           return (
             <div
-              className={`text-center font-bold ${cellClass} p-2 rounded-md shadow-md transform transition-transform hover:scale-105`}
+              className={`text-center text-xs font-bold ${cellClass} p-1 rounded-md shadow-md transform transition-transform hover:scale-105`}
             >
               {user ? `${user.nickname} (${user.tear})` : "N/A"}
             </div>
@@ -407,6 +409,351 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
 
   return (
     <div className="w-full">
+      <Tabs>
+        <Tab key={"팀순위/선수랭킹"} title="팀순위/선수랭킹">
+          <Card className="m-2">
+            <CardHeader>
+              <p className="font-bold text-3xl ml-2">프로리그 순위</p>
+            </CardHeader>
+            <CardBody>
+              <div className="flex flex-wrap my-2 justify-center items-center mx-auto gap-4">
+                <Card key={sortedTeams[0]?._id} className="w-[220px] h-full">
+                  <CardBody>
+                    <p className="font-bold text-2xl text-center">1위</p>
+                    <Image
+                      src={sortedTeams[0]?.avatar}
+                      height={200}
+                      width={200}
+                      alt="team"
+                    />
+                  </CardBody>
+                  <CardFooter>
+                    <div className="flex justify-center items-center w-full">
+                      <p className="font-bold text-2xl">
+                        {sortedTeams[0]?.name}
+                      </p>
+                    </div>
+                  </CardFooter>
+                </Card>
+                <div>
+                  <div className="flex flex-col gap-2 mt-4 justify-center items-center">
+                    <p className="mx-4 font-bold text-2xl">
+                      팀장 : {sortedTeams[0]?.leader}
+                    </p>
+                    <p className="mx-4 font-bold text-2xl">
+                      팀장 : {sortedTeams[0]?.subleader}
+                    </p>
+                  </div>
+                  <div className="flex m-4 justify-center items-center">
+                    <CircularProgress
+                      aria-label="Loading..."
+                      classNames={{
+                        svg: "w-24 h-24",
+                      }}
+                      value={winRate}
+                      color={winRate >= 50 ? "success" : "danger"}
+                      showValueLabel={true}
+                    />
+                    <div>
+                      <p className="mx-4 font-bold">
+                        {sortedTeams[0]?.ranking}위 {sortedTeams[0]?.w}W{" "}
+                        {sortedTeams[0]?.l}L
+                      </p>
+                      <p className="mx-4 font-bold">
+                        득실 {sortedTeams[0]?.point}
+                      </p>
+                      <p className="mx-4 font-bold">
+                        승점 {sortedTeams[0]?.winpoint}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <p className="mx-4 font-bold">팀내 최고승률</p>
+                  {topTeamStats.topWinRate[0] && (
+                    <ProleagueAvatarCard
+                      userData={topTeamStats.topWinRate[0]}
+                      type={1}
+                      teamData={teams}
+                    />
+                  )}
+                  <p className="mx-4 font-bold">팀내 최다승리</p>
+                  {topTeamStats.topWins[0] && (
+                    <ProleagueAvatarCard
+                      userData={topTeamStats.topWins[0]}
+                      type={0}
+                      teamData={teams}
+                    />
+                  )}
+                  <p className="mx-4 font-bold">팀내 최다출전</p>
+                  {topTeamStats.topTotalGames[0] && (
+                    <ProleagueAvatarCard
+                      userData={topTeamStats.topTotalGames[0]}
+                      type={2}
+                      teamData={teams}
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-between items-center">
+                <Table aria-label="Team Rankings">
+                  <TableHeader columns={columnRank}>
+                    {(column) => (
+                      <TableColumn key={column.uid}>{column.name}</TableColumn>
+                    )}
+                  </TableHeader>
+                  <TableBody items={sortedTeams}>
+                    {(item) => (
+                      <TableRow key={item._id}>
+                        <TableCell>{sortedTeams.indexOf(item) + 1}</TableCell>
+                        <TableCell>{item.name}</TableCell>
+                        <TableCell>{item.w}</TableCell>
+                        <TableCell>{item.l}</TableCell>
+                        <TableCell>{item.point}</TableCell>
+                        <TableCell>{item.winpoint}</TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </div>
+            </CardBody>
+          </Card>
+          {/* 프로리그 순위카드 */}
+          <Card className="m-2">
+            <CardHeader>
+              <p className="font-bold text-3xl ml-2">프로리그 선수 랭킹</p>
+            </CardHeader>
+            <CardBody>
+              <div className="flex gap-4 justify-center flex-wrap">
+                {["다승", "승률", "전체 경기"].map(
+                  (category, index: number) => (
+                    <div key={index}>
+                      <Card key={index} className="w-[300px] h-full">
+                        <p
+                          className={`mt-4 font-bold text-2xl dark:text-blue-dark text-center`}
+                        >
+                          {category}
+                        </p>
+                        <CardBody>
+                          <div>
+                            <ProleagueProfileCard
+                              userData={
+                                index === 0
+                                  ? topWins[0]
+                                  : index === 1
+                                  ? topWinRate[0]
+                                  : topTotalGames[0]
+                              }
+                              index={index}
+                              teamData={teams}
+                            />
+                          </div>
+                          <div className="w-full flex flex-col gap-2 mt-2">
+                            {index === 0 &&
+                              topWins
+                                .slice(1)
+                                .map((user, idx) => (
+                                  <ProleagueAvatarCard
+                                    userData={user}
+                                    type={0}
+                                    index={idx + 1}
+                                    key={user.nickname}
+                                    teamData={teams}
+                                  />
+                                ))}
+                            {index === 1 &&
+                              topWinRate
+                                .slice(1)
+                                .map((user, idx) => (
+                                  <ProleagueAvatarCard
+                                    userData={user}
+                                    type={1}
+                                    index={idx + 1}
+                                    key={user.nickname}
+                                    teamData={teams}
+                                  />
+                                ))}
+                            {index === 2 &&
+                              topTotalGames
+                                .slice(1)
+                                .map((user, idx) => (
+                                  <ProleagueAvatarCard
+                                    userData={user}
+                                    type={2}
+                                    index={idx + 1}
+                                    key={user.nickname}
+                                    teamData={teams}
+                                  />
+                                ))}
+                          </div>
+                        </CardBody>
+                      </Card>
+                    </div>
+                  )
+                )}
+              </div>
+            </CardBody>
+          </Card>
+        </Tab>
+        <Tab key={"프로리그 일정표"} title="프로리그 일정표">
+          <Card className="w-full flex justify-center items-center">
+            <CardHeader className="">
+              <div className="flex flex-col w-full justify-center items-center gap-2">
+                <div>
+                  {userGrade > 3 && (
+                    <Button onPress={() => setIsCreate(true)}>
+                      리그정보 등록
+                    </Button>
+                  )}
+                </div>
+                <div>
+                  <FullCalendar
+                    plugins={[
+                      dayGridPlugin,
+                      interactionPlugin,
+                      timeGridPlugin,
+                      listPlugin,
+                    ]}
+                    initialView="listWeek"
+                    events={formattedLeagueEvents}
+                    weekends={true}
+                    locale={koLocale}
+                    dateClick={handleDateClick}
+                    eventClick={handleEventClick}
+                    headerToolbar={{
+                      left: "prev,next today",
+                      center: "title",
+                      right: "listWeek,dayGridMonth",
+                    }}
+                    height={"300px"}
+                    editable={typeof userGrade === "number" && userGrade > 4}
+                  />
+                </div>
+              </div>
+            </CardHeader>
+            <CardBody className=" w-full">
+              {filteredEvents.length > 0 &&
+                filteredEvents.map((match: any, index: string) => {
+                  const homeTeam = findTeam(match.homeId);
+                  const awayTeam = findTeam(match.awayId);
+                  const { homeWins, awayWins, result } = getMatchResult(
+                    match.sets
+                  );
+
+                  return (
+                    <div key={index} className="w-full border rounded-lg">
+                      {userGrade > 3 && (
+                        <div className="flex gap-3 justify-end mt-4 mr-4">
+                          <Button
+                            color="success"
+                            isIconOnly
+                            onClick={() => handleEditClick(match)}
+                            startContent={<EditIcon fill="currentColor" />}
+                          />
+                          <Button
+                            color="danger"
+                            isIconOnly
+                            onClick={() => handleDeleteClick(match._id)}
+                            startContent={<DeleteIcon fill="currentColor" />}
+                          />
+                        </div>
+                      )}
+                      <div className="flex justify-center items-center mb-2 gap-4">
+                        <div className="text-center font-bold">
+                          <p>{match.date}</p>
+                          <p className="text-xl">
+                            {homeWins}:{awayWins}
+                          </p>
+                          <p>
+                            {homeWins > awayWins
+                              ? `${homeTeam?.name} 승`
+                              : awayWins > homeWins
+                              ? `${awayTeam?.name} 승`
+                              : ""}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex justify-center items-center">
+                        <div className="flex flex-col items-center">
+                          <Image
+                            src={homeTeam?.avatar || "/default-avatar.png"}
+                            alt="Home Team Avatar"
+                            width={200}
+                            height={200}
+                            className="rounded-md mr-2"
+                          />
+                          <div>
+                            <p className="font-bold">
+                              {homeTeam?.name || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                        <Table
+                          aria-label="Proleague Schedule"
+                          className="md:w-1/2 w-full"
+                        >
+                          <TableHeader>
+                            <TableColumn>MAP</TableColumn>
+                            <TableColumn>Home</TableColumn>
+                            <TableColumn>티어</TableColumn>
+                            <TableColumn>Away</TableColumn>
+                          </TableHeader>
+                          <TableBody>
+                            {match.sets.map((game: any, idx: string) => {
+                              const homeUser = findUser(game.homePlayer);
+                              const awayUser = findUser(game.awayPlayer);
+                              return (
+                                <TableRow key={idx}>
+                                  <TableCell className="text-center text-xs w-[100px]">
+                                    {game?.map}
+                                  </TableCell>
+                                  <TableCell>
+                                    {renderCell(
+                                      homeUser,
+                                      "homePlayer",
+                                      game.result,
+                                      true
+                                    )}
+                                  </TableCell>
+                                  <TableCell className="text-center">
+                                    {game?.tier}
+                                  </TableCell>
+                                  <TableCell>
+                                    {renderCell(
+                                      awayUser,
+                                      "awayPlayer",
+                                      game.result,
+                                      false
+                                    )}
+                                  </TableCell>
+                                </TableRow>
+                              );
+                            })}
+                          </TableBody>
+                        </Table>
+                        <div className="flex flex-col items-center">
+                          <Image
+                            src={awayTeam?.avatar || "/default-avatar.png"}
+                            alt="Away Team Avatar"
+                            width={200}
+                            height={200}
+                            className="rounded-md ml-2"
+                          />
+                          <div className=" ml-2">
+                            <p className="font-bold">
+                              {awayTeam?.name || "N/A"}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+            </CardBody>
+            <CardFooter></CardFooter>
+          </Card>
+        </Tab>
+      </Tabs>
       <ProleagueCreateModal
         title="프로리그 일정등록"
         isOpen={isCreate}
@@ -421,324 +768,6 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
         isOpen={isSubmit}
         onClose={() => setIsSubmit(false)}
       />
-      <Card className="m-2">
-        <CardHeader>
-          <p className="font-bold text-3xl ml-2">프로리그 순위</p>
-        </CardHeader>
-        <CardBody>
-          <div className="flex flex-wrap my-2 justify-center items-center mx-auto gap-4">
-            <Card key={sortedTeams[0]?._id} className="w-[220px] h-full">
-              <CardBody>
-                <p className="font-bold text-2xl text-center">1위</p>
-                <Image
-                  src={sortedTeams[0]?.avatar}
-                  height={200}
-                  width={200}
-                  alt="team"
-                />
-              </CardBody>
-              <CardFooter>
-                <div className="flex justify-center items-center w-full">
-                  <p className="font-bold text-2xl">{sortedTeams[0]?.name}</p>
-                </div>
-              </CardFooter>
-            </Card>
-            <div>
-              <div className="flex flex-col gap-2 mt-4 justify-center items-center">
-                <p className="mx-4 font-bold text-2xl">
-                  팀장 : {sortedTeams[0]?.leader}
-                </p>
-                <p className="mx-4 font-bold text-2xl">
-                  팀장 : {sortedTeams[0]?.subleader}
-                </p>
-              </div>
-              <div className="flex m-4 justify-center items-center">
-                <CircularProgress
-                  aria-label="Loading..."
-                  classNames={{
-                    svg: "w-24 h-24",
-                  }}
-                  value={winRate}
-                  color={winRate >= 50 ? "success" : "danger"}
-                  showValueLabel={true}
-                />
-                <div>
-                  <p className="mx-4 font-bold">
-                    {sortedTeams[0]?.ranking}위 {sortedTeams[0]?.w}W{" "}
-                    {sortedTeams[0]?.l}L
-                  </p>
-                  <p className="mx-4 font-bold">득실 {sortedTeams[0]?.point}</p>
-                  <p className="mx-4 font-bold">
-                    승점 {sortedTeams[0]?.winpoint}
-                  </p>
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-col gap-2">
-              <p className="mx-4 font-bold">팀내 최고승률</p>
-              {topTeamStats.topWinRate[0] && (
-                <ProleagueAvatarCard
-                  userData={topTeamStats.topWinRate[0]}
-                  type={1}
-                  teamData={teams}
-                />
-              )}
-              <p className="mx-4 font-bold">팀내 최다승리</p>
-              {topTeamStats.topWins[0] && (
-                <ProleagueAvatarCard
-                  userData={topTeamStats.topWins[0]}
-                  type={0}
-                  teamData={teams}
-                />
-              )}
-              <p className="mx-4 font-bold">팀내 최다출전</p>
-              {topTeamStats.topTotalGames[0] && (
-                <ProleagueAvatarCard
-                  userData={topTeamStats.topTotalGames[0]}
-                  type={2}
-                  teamData={teams}
-                />
-              )}
-            </div>
-          </div>
-          <div className="flex justify-between items-center">
-            <Table aria-label="Team Rankings">
-              <TableHeader columns={columnRank}>
-                {(column) => (
-                  <TableColumn key={column.uid}>{column.name}</TableColumn>
-                )}
-              </TableHeader>
-              <TableBody items={sortedTeams}>
-                {(item) => (
-                  <TableRow key={item._id}>
-                    <TableCell>{sortedTeams.indexOf(item) + 1}</TableCell>
-                    <TableCell>{item.name}</TableCell>
-                    <TableCell>{item.w}</TableCell>
-                    <TableCell>{item.l}</TableCell>
-                    <TableCell>{item.point}</TableCell>
-                    <TableCell>{item.winpoint}</TableCell>
-                  </TableRow>
-                )}
-              </TableBody>
-            </Table>
-          </div>
-        </CardBody>
-      </Card>
-      {/* 프로리그 순위카드 */}
-      {/* <Card className="m-2">
-        <CardHeader>
-          <p className="font-bold text-3xl ml-2">프로리그 선수 랭킹</p>
-        </CardHeader>
-        <CardBody>
-          <div className="flex gap-4 justify-center flex-wrap">
-            {["다승", "승률", "전체 경기"].map((category, index: number) => (
-              <div key={index}>
-                <Card key={index} className="w-[300px] h-full">
-                  <p
-                    className={`mt-4 font-bold text-2xl dark:text-blue-dark text-center`}
-                  >
-                    {category}
-                  </p>
-                  <CardBody>
-                    <div>
-                      <ProleagueProfileCard
-                        userData={
-                          index === 0
-                            ? topWins[0]
-                            : index === 1
-                            ? topWinRate[0]
-                            : topTotalGames[0]
-                        }
-                        index={index}
-                        teamData={teams}
-                      />
-                    </div>
-                    <div className="w-full flex flex-col gap-2 mt-2">
-                      {index === 0 &&
-                        topWins
-                          .slice(1)
-                          .map((user, idx) => (
-                            <ProleagueAvatarCard
-                              userData={user}
-                              type={0}
-                              index={idx + 1}
-                              key={user.nickname}
-                              teamData={teams}
-                            />
-                          ))}
-                      {index === 1 &&
-                        topWinRate
-                          .slice(1)
-                          .map((user, idx) => (
-                            <ProleagueAvatarCard
-                              userData={user}
-                              type={1}
-                              index={idx + 1}
-                              key={user.nickname}
-                              teamData={teams}
-                            />
-                          ))}
-                      {index === 2 &&
-                        topTotalGames
-                          .slice(1)
-                          .map((user, idx) => (
-                            <ProleagueAvatarCard
-                              userData={user}
-                              type={2}
-                              index={idx + 1}
-                              key={user.nickname}
-                              teamData={teams}
-                            />
-                          ))}
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </CardBody>
-      </Card> */}
-      <Card className="w-full flex justify-center items-center">
-        <CardHeader className="">
-          <div className="flex flex-col w-full justify-center items-center gap-2">
-            <div>
-              {userGrade > 3 && (
-                <Button onPress={() => setIsCreate(true)}>리그정보 등록</Button>
-              )}
-            </div>
-            <div>
-              <FullCalendar
-                plugins={[
-                  dayGridPlugin,
-                  interactionPlugin,
-                  timeGridPlugin,
-                  listPlugin,
-                ]}
-                initialView="listWeek"
-                events={formattedLeagueEvents}
-                weekends={true}
-                locale={koLocale}
-                dateClick={handleDateClick}
-                eventClick={handleEventClick}
-                headerToolbar={{
-                  left: "prev,next today",
-                  center: "title",
-                  right: "listWeek,dayGridMonth",
-                }}
-                height={"300px"}
-                editable={typeof userGrade === "number" && userGrade > 4}
-              />
-            </div>
-          </div>
-        </CardHeader>
-        <CardBody className="md:w-1/2 w-full">
-          {filteredEvents.length > 0 &&
-            filteredEvents.map((match: any, index: string) => {
-              const homeTeam = findTeam(match.homeId);
-              const awayTeam = findTeam(match.awayId);
-              const { homeWins, awayWins, result } = getMatchResult(match.sets);
-
-              return (
-                <div key={index} className="w-full mb-4 p-4 border rounded-lg">
-                  {userGrade > 3 && (
-                    <div className="flex gap-3 justify-end mb-4">
-                      <Button
-                        color="success"
-                        isIconOnly
-                        onClick={() => handleEditClick(match)}
-                        startContent={<EditIcon fill="currentColor" />}
-                      />
-                      <Button
-                        color="danger"
-                        isIconOnly
-                        onClick={() => handleDeleteClick(match._id)}
-                        startContent={<DeleteIcon fill="currentColor" />}
-                      />
-                    </div>
-                  )}
-                  <div className="flex justify-center items-center mb-2 gap-4">
-                    <div className="flex flex-col items-center">
-                      <Image
-                        src={homeTeam?.avatar || "/default-avatar.png"}
-                        alt="Home Team Avatar"
-                        width={100}
-                        height={100}
-                        className="rounded-md mr-2"
-                      />
-                      <div>
-                        <p className="font-bold">{homeTeam?.name || "N/A"}</p>
-                      </div>
-                    </div>
-                    <div className="text-center font-bold">
-                      <p>{match.date}</p>
-                      <p className="text-xl">
-                        {homeWins}:{awayWins}
-                      </p>
-                      <p>
-                        {homeWins > awayWins
-                          ? `${homeTeam?.name} 승`
-                          : awayWins > homeWins
-                          ? `${awayTeam?.name} 승`
-                          : ""}
-                      </p>
-                    </div>
-                    <div className="flex flex-col items-center">
-                      <Image
-                        src={awayTeam?.avatar || "/default-avatar.png"}
-                        alt="Away Team Avatar"
-                        width={100}
-                        height={100}
-                        className="rounded-md ml-2"
-                      />
-                      <div className=" ml-2">
-                        <p className="font-bold">{awayTeam?.name || "N/A"}</p>
-                      </div>
-                    </div>
-                  </div>
-                  <Table aria-label="Proleague Schedule">
-                    <TableHeader>
-                      <TableColumn>Home</TableColumn>
-                      <TableColumn>티어</TableColumn>
-                      <TableColumn>Away</TableColumn>
-                    </TableHeader>
-                    <TableBody>
-                      {match.sets.map((game: any, idx: string) => {
-                        const homeUser = findUser(game.homePlayer);
-                        const awayUser = findUser(game.awayPlayer);
-                        return (
-                          <TableRow key={idx}>
-                            <TableCell>
-                              {renderCell(
-                                homeUser,
-                                "homePlayer",
-                                game.result,
-                                true
-                              )}
-                            </TableCell>
-                            <TableCell className="text-center">
-                              {game?.map}
-                              <br />
-                              {game?.tier}
-                            </TableCell>
-                            <TableCell>
-                              {renderCell(
-                                awayUser,
-                                "awayPlayer",
-                                game.result,
-                                false
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })}
-                    </TableBody>
-                  </Table>
-                </div>
-              );
-            })}
-        </CardBody>
-        <CardFooter></CardFooter>
-      </Card>
     </div>
   );
 };
