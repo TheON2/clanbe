@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { User } from "next-auth";
 import {
   Table,
@@ -18,26 +18,12 @@ import {
   CardBody,
   CardFooter,
   CircularProgress,
-  Divider,
-  Switch,
-  Button,
-  User as UiUser,
   Chip,
   Tooltip,
   ChipProps,
-  Modal,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  useDisclosure,
 } from "@nextui-org/react";
 import Image from "next/image";
 import { Team } from "../../../types/types";
-import ProfileCard from "../ProfileCard";
-import ProleagueProfileCard from "../ProleagueProfileCard";
-import ProleagueAvatarCard from "../ProleagueAvatarCard";
-
-import { EditIcon } from "../../../public/EditIcon";
 import { EyeIcon } from "../../../public/EyeIcon";
 import { DeleteIcon } from "../../../public/DeleteIcon";
 import { updateUserTeam } from "@/service/team";
@@ -104,6 +90,12 @@ const TeamPage = ({ teams, users }: any) => {
 
   console.log("playerData length:", playerData.length);
   console.log("beuser length:", beuser.length);
+
+  useEffect(() => {
+    if (teams.length > 0) {
+      setSelectedTeamName(teams[0].name);
+    }
+  }, [teams]);
 
   const renderCell = useCallback((user: User, columnKey: React.Key) => {
     const cellValue = user[columnKey as keyof User];
@@ -217,43 +209,6 @@ const TeamPage = ({ teams, users }: any) => {
     []
   ); // Dependencies array is empty, it only initializes once
 
-  const { topWins, topWinRate, topTotalGames } = useMemo(() => {
-    // 다승 계산
-    const topWins = [...users]
-      .sort((a, b) => {
-        const totalWinsA = a.BELO.pw + a.BELO.tw + a.BELO.zw;
-        const totalWinsB = b.BELO.pw + b.BELO.tw + b.BELO.zw;
-        return totalWinsB - totalWinsA; // 내림차순 정렬
-      })
-      .slice(0, 5);
-
-    // 승률 계산
-    const topWinRate = [...users]
-      .sort((a, b) => {
-        const totalWinsA = a.BELO.pw + a.BELO.tw + a.BELO.zw;
-        const totalGamesA = totalWinsA + a.BELO.pl + a.BELO.tl + a.BELO.zl;
-        const totalWinsB = b.BELO.pw + b.BELO.tw + b.BELO.zw;
-        const totalGamesB = totalWinsB + b.BELO.pl + b.BELO.tl + b.BELO.zl;
-        const winRateA = totalGamesA > 0 ? totalWinsA / totalGamesA : 0;
-        const winRateB = totalGamesB > 0 ? totalWinsB / totalGamesB : 0;
-        return winRateB - winRateA; // 내림차순 정렬
-      })
-      .slice(0, 5);
-
-    // 전체 경기 수 계산
-    const topTotalGames = [...users]
-      .sort((a, b) => {
-        const totalGamesA =
-          a.BELO.pw + a.BELO.pl + a.BELO.tw + a.BELO.tl + a.BELO.zw + a.BELO.zl;
-        const totalGamesB =
-          b.BELO.pw + b.BELO.pl + b.BELO.tw + b.BELO.tl + b.BELO.zw + b.BELO.zl;
-        return totalGamesB - totalGamesA; // 내림차순 정렬
-      })
-      .slice(0, 5);
-
-    return { topWins, topWinRate, topTotalGames };
-  }, [users]);
-
   const filteredData: UserItem[] = useMemo(() => {
     const data = users
       .filter((user: User) => {
@@ -334,14 +289,17 @@ const TeamPage = ({ teams, users }: any) => {
         </CardHeader>
         <CardBody>
           <div className="flex gap-4 justify-center flex-wrap">
-            {" "}
-            {/* flex-wrap 추가로 반응형 처리 */}
             {teams.map((team: Team) => (
               <div
                 key={team._id}
                 onClick={() => {
                   setSelectedTeamName(team.name);
                 }}
+                className={`${
+                  selectedTeamName === team.name
+                    ? "border-2 border-blue-400"
+                    : ""
+                }`}
               >
                 <Card key={team._id} className="w-[220px] h-full">
                   <CardBody>
@@ -363,82 +321,7 @@ const TeamPage = ({ teams, users }: any) => {
           </div>
         </CardBody>
       </Card>
-      {/* 프로리그 순위카드 */}
-      <Card className="m-2">
-        <CardHeader>
-          <p className="font-bold text-3xl ml-2">프로리그 선수 랭킹</p>
-        </CardHeader>
-        <CardBody>
-          <div className="flex gap-4 justify-center flex-wrap">
-            {["다승", "승률", "전체 경기"].map((category, index: number) => (
-              <div key={index}>
-                <Card key={index} className="w-[300px] h-full">
-                  <p
-                    className={`mt-4 font-bold text-2xl dark:text-blue-dark text-center`}
-                  >
-                    {category}
-                  </p>
-                  <CardBody>
-                    <div>
-                      {/* 첫 번째 선수를 헤더로 표시 */}
-                      <ProleagueProfileCard
-                        userData={
-                          index === 0
-                            ? topWins[0]
-                            : index === 1
-                            ? topWinRate[0]
-                            : topTotalGames[0]
-                        }
-                        index={index}
-                        teamData={teams}
-                      />
-                    </div>
-                    <div className="w-full flex flex-col gap-2 mt-2">
-                      {/* 2, 3, 4, 5위 선수를 바디로 표시 */}
-                      {index === 0 &&
-                        topWins
-                          .slice(1)
-                          .map((user, idx) => (
-                            <ProleagueAvatarCard
-                              userData={user}
-                              type={0}
-                              index={idx + 1}
-                              key={user.nickname}
-                              teamData={teams}
-                            />
-                          ))}
-                      {index === 1 &&
-                        topWinRate
-                          .slice(1)
-                          .map((user, idx) => (
-                            <ProleagueAvatarCard
-                              userData={user}
-                              type={1}
-                              index={idx + 1}
-                              key={user.nickname}
-                              teamData={teams}
-                            />
-                          ))}
-                      {index === 2 &&
-                        topTotalGames
-                          .slice(1)
-                          .map((user, idx) => (
-                            <ProleagueAvatarCard
-                              userData={user}
-                              type={2}
-                              index={idx + 1}
-                              key={user.nickname}
-                              teamData={teams}
-                            />
-                          ))}
-                    </div>
-                  </CardBody>
-                </Card>
-              </div>
-            ))}
-          </div>
-        </CardBody>
-      </Card>
+
       {/* 팀 정보 */}
       {selectedTeamName !== "" && (
         <Card className="">

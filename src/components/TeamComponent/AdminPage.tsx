@@ -667,7 +667,7 @@ const AdminPage = ({ teams, users }: any) => {
         </CardBody>
       </Card>
       {/* 팀 수정삭제 컴포넌트 */}
-      {/* {selectedTeamName !== "" && (
+      {selectedTeamName !== "" && (
         <Card className="m-2">
           <p className="font-bold text-3xl ml-2 p-2">팀 수정/삭제</p>
           <CardBody>
@@ -780,9 +780,9 @@ const AdminPage = ({ teams, users }: any) => {
             </div>
           </CardBody>
         </Card>
-      )} */}
+      )}
       {/* 팀 생성 컴포넌트 */}
-      {/* <Card className="m-2">
+      <Card className="m-2">
         <p className="font-bold text-3xl ml-2 p-2">팀 생성</p>
         <CardBody>
           <div className="flex flex-wrap my-2 justify-center items-center gap-4">
@@ -864,7 +864,7 @@ const AdminPage = ({ teams, users }: any) => {
             </div>
           </div>
         </CardBody>
-      </Card> */}
+      </Card>
       {/* 팀에 소속된 유저 리스트 */}
       <Card className="m-2">
         <CardHeader>
