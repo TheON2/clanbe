@@ -8,16 +8,29 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
-import { Select, SelectItem, Selection } from "@nextui-org/react";
+import {
+  DatePicker,
+  Input,
+  Select,
+  SelectItem,
+  Selection,
+} from "@nextui-org/react";
 import { Autocomplete, AutocompleteItem } from "@nextui-org/autocomplete";
 import { Calendar, Divider } from "@nextui-org/react";
-import { parseDate, DateValue } from "@internationalized/date";
+import {
+  parseDate,
+  DateValue,
+  getLocalTimeZone,
+  now,
+  parseDateTime,
+} from "@internationalized/date";
 import { Team } from "../../types/types";
 import { User } from "next-auth";
 import { createLeagueEvent, updateLeagueEvent } from "@/service/leagueevent";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 import SubmitModal from "./SubmitModal";
 import { useFilter } from "@react-aria/i18n";
+import { set } from "mongoose";
 
 type Props = {
   title: string;
@@ -27,6 +40,7 @@ type Props = {
   users: User[];
   matchData?: {
     _id: string;
+    title: string;
     homeId: string;
     awayId: string;
     date: string;
@@ -57,6 +71,7 @@ const ProleagueCreateModal = ({
   } = useDisclosure();
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
+  const [leagueTitle, setLeagueTitle] = useState(matchData?.title || "");
   const [homeTeam, setHomeTeam] = useState<Selection>(new Set());
   const [awayTeam, setAwayTeam] = useState<Selection>(new Set());
   const [sets, setSets] = useState([
@@ -70,7 +85,8 @@ const ProleagueCreateModal = ({
   useEffect(() => {
     if (isOpen) {
       if (matchData) {
-        setSelectedDate(parseDate(matchData.date));
+        setLeagueTitle(matchData.title);
+        setSelectedDate(parseDateTime(matchData.date));
         setHomeTeam(new Set([matchData.homeId]));
         setAwayTeam(new Set([matchData.awayId]));
         setSets(
@@ -80,7 +96,7 @@ const ProleagueCreateModal = ({
           }))
         );
       } else {
-        setSelectedDate(parseDate(new Date().toISOString().split("T")[0]));
+        setSelectedDate(parseDateTime(new Date().toISOString().split("T")[0]));
       }
     }
   }, [isOpen, matchData]);
@@ -150,6 +166,7 @@ const ProleagueCreateModal = ({
     const leagueEvent = {
       homeId: Array.from(homeTeam).join(""),
       awayId: Array.from(awayTeam).join(""),
+      title: leagueTitle,
       date: selectedDate?.toString() || "",
       sets: sets.map((set) => ({
         homePlayer: set.homePlayer,
@@ -200,6 +217,7 @@ const ProleagueCreateModal = ({
 
     const leagueEvent = {
       id: matchData?._id || "",
+      title: leagueTitle || "",
       homeId: Array.from(homeTeam).join(""),
       awayId: Array.from(awayTeam).join(""),
       date: selectedDate?.toString() || "",
@@ -268,14 +286,30 @@ const ProleagueCreateModal = ({
         <ModalContent className="max-h-[80vh] overflow-y-auto">
           <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
           <ModalBody className="max-h-[70vh] overflow-y-auto flex items-center">
-            <div className="mb-4">
-              {selectedDate && (
+            <div className="flex flex-col gap-2 mb-4">
+              {/* {selectedDate && (
                 <Calendar
                   aria-label="Date (Controlled)"
                   value={selectedDate}
                   onChange={setSelectedDate}
                 />
-              )}
+              )} */}
+              <DatePicker
+                label="Event Date"
+                variant="bordered"
+                hideTimeZone
+                showMonthAndYearPickers
+                defaultValue={now(getLocalTimeZone())}
+                value={selectedDate}
+                onChange={setSelectedDate}
+              />
+              <Input
+                placeholder="Match Title"
+                value={leagueTitle}
+                onChange={(e) => {
+                  setLeagueTitle(e.target.value);
+                }}
+              />
             </div>
             <Divider />
             <div className="flex gap-4 w-full">

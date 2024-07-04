@@ -10,12 +10,13 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { id, homeId, awayId, date, sets } = body;
+    const { id, homeId,title, awayId, date, sets } = body;
 
     // 기존 이벤트를 찾아 업데이트
     const updatedLeagueEvent = await LeagueEventModel.findByIdAndUpdate(
       id,
       {
+        title,
         homeId,
         awayId,
         date,

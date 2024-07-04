@@ -18,6 +18,7 @@ const eventSetSchema = new mongoose.Schema<EventSet>(
 // LeagueEvent 스키마 정의
 const leagueEventSchema = new mongoose.Schema<LeagueEvent>(
   {
+    title: { type: String, required: true },
     homeId: { type: String, required: true },
     awayId: { type: String, required: true },
     date: { type: String, required: true },

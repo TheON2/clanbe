@@ -55,6 +55,7 @@ export type Point = {
 
 export type LeagueEvent = {
   _id?: string;
+  title: string;
   homeId: string;
   awayId: string;
   date: string;

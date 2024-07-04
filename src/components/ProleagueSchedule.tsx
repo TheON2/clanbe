@@ -632,16 +632,15 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
               </div>
             </CardHeader>
             <CardBody className=" w-full">
-              {filteredEvents.length > 0 &&
-                filteredEvents.map((match: any, index: string) => {
+              {leagueEvents.length > 0 &&
+                leagueEvents.map((match: any, index: string) => {
                   const homeTeam = findTeam(match.homeId);
                   const awayTeam = findTeam(match.awayId);
                   const { homeWins, awayWins, result } = getMatchResult(
                     match.sets
                   );
-
                   return (
-                    <div key={index} className="w-full border rounded-lg">
+                    <div key={index} className="w-full border rounded-lg my-2">
                       {userGrade > 3 && (
                         <div className="flex gap-3 justify-end mt-4 mr-4">
                           <Button
@@ -660,16 +659,16 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                       )}
                       <div className="flex justify-center items-center mb-2 gap-4">
                         <div className="text-center font-bold">
-                          <p>{match.date}</p>
-                          <p className="text-xl">
-                            {homeWins}:{awayWins}
-                          </p>
+                          <p>{match.title}</p>
                           <p>
-                            {homeWins > awayWins
-                              ? `${homeTeam?.name} 승`
-                              : awayWins > homeWins
-                              ? `${awayTeam?.name} 승`
-                              : ""}
+                            {new Date(match.date).toLocaleString("ko-KR", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                              hour: "numeric",
+                              minute: "numeric",
+                              hour12: true,
+                            })}
                           </p>
                         </div>
                       </div>
@@ -682,10 +681,11 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                             height={200}
                             className="rounded-md mr-2"
                           />
-                          <div>
+                          <div className="text-center">
                             <p className="font-bold">
                               {homeTeam?.name || "N/A"}
                             </p>
+                            <p className="font-bold">{homeWins}</p>
                           </div>
                         </div>
                         <Table
@@ -693,6 +693,7 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                           className="md:w-1/2 w-full"
                         >
                           <TableHeader>
+                            <TableColumn>SET</TableColumn>
                             <TableColumn>MAP</TableColumn>
                             <TableColumn>Home</TableColumn>
                             <TableColumn>티어</TableColumn>
@@ -704,6 +705,9 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                               const awayUser = findUser(game.awayPlayer);
                               return (
                                 <TableRow key={idx}>
+                                  <TableCell className="text-center text-xs w-[50px]">
+                                    {Number(idx + 1) === 5 ? "ACE" : idx + 1}
+                                  </TableCell>
                                   <TableCell className="text-center text-xs w-[100px]">
                                     {game?.map}
                                   </TableCell>
@@ -739,10 +743,11 @@ export const ProleagueSchedule = ({ teams, users, leagueEvents }: any) => {
                             height={200}
                             className="rounded-md ml-2"
                           />
-                          <div className=" ml-2">
+                          <div className="text-center">
                             <p className="font-bold">
                               {awayTeam?.name || "N/A"}
                             </p>
+                            <p className="font-bold">{awayWins}</p>
                           </div>
                         </div>
                       </div>
