@@ -29,18 +29,40 @@ export async function sendPoint(newPointData: any) {
   }
 }
 
-export async function getPointData() {
+export async function getDailyPoint(userNickName: string) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/point`,
+      `${process.env.NEXT_PUBLIC_URL}/api/point/daily`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        body: JSON.stringify(userNickName),
         next: { tags: ["point"] },
+        cache: "no-store",
       }
     );
+    if (!response.ok) {
+      throw new Error("Failed to get daily point. Status: " + response.status);
+    }
+    revalidateTag("point");
+    return await response.json();
+  } catch (error) {
+    console.error("Error get daily point:", error);
+    return null;
+  }
+}
+
+export async function getPointData() {
+  try {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/point`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      next: { tags: ["point"] },
+    });
     if (!response.ok) {
       throw new Error("Failed to fetch pointData. Status: " + response.status);
     }

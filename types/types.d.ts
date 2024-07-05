@@ -102,6 +102,11 @@ export type ViewDate = {
   postid: string;
 };
 
+export type DailyPoint = {
+  _id?: string;
+  userid: string;
+};
+
 export type EventType = {
   id?: string;
   title: string;

@@ -31,14 +31,14 @@ export async function POST(req: Request, res: Response) {
     const uniqueId = `${userid}-${postid}-${dateId}`; // 유니크한 ID 생성
 
     const viewExists = await viewDateModel.findOne({
-      _id: uniqueId
+      _id: uniqueId,
     });
 
-     if (!viewExists) {
+    if (!viewExists) {
       await viewDateModel.create({
         _id: uniqueId,
         userid,
-        postid
+        postid,
       });
       const post = await PostModel.findById(postid);
       if (post) {
