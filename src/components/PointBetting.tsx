@@ -8,6 +8,7 @@ import { User } from "next-auth";
 import BettingModal from "./BettingModal";
 import BettingCard from "./BettingCard";
 import BetModal from "./BetModal";
+import { useRouter } from "next/navigation";
 
 interface PointBettingProps {
   bettings: Betting[];
@@ -33,7 +34,12 @@ const dummyBettings: Betting[] = Array.from({ length: 10 }, (_, i) => ({
 }));
 
 const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session,status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  if (!isLoggedIn) {
+    router.push("/auth/signin");
+  }
   const userInfo = users.filter(
     (user) => user.email === session?.user?.email
   )[0];

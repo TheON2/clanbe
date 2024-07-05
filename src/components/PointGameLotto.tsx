@@ -5,15 +5,22 @@ import { Card, Button, Input } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { getProfile } from "@/service/user";
 import { resultPointGame } from "@/service/game";
+import { useRouter } from "next/navigation";
 
 interface PointGameLottoProps {}
 
 const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  if (!isLoggedIn) {
+    router.push("/auth/signin");
+  }
   const [userInfo, setUserInfo] = useState<{ point: number } | null>(null);
   const [betPoints, setBetPoints] = useState<number | "">(0);
   const [selectedNumbers, setSelectedNumbers] = useState<number[]>([]);
   const [winningNumbers, setWinningNumbers] = useState<number[]>([]);
+  const [bonusNumber, setBonusNumber] = useState<number | null>(null);
   const [result, setResult] = useState<string>("");
   const [pointResult, setPointResult] = useState<string>("");
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -52,7 +59,7 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
     } else if (newNumbers.length < numbersToSelect) {
       newNumbers.push(num);
     }
-    setSelectedNumbers(newNumbers);
+    setSelectedNumbers(newNumbers.sort((a, b) => a - b));
   };
 
   const validateNumbers = (numbers: number[]) => {
@@ -81,7 +88,76 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
     return true;
   };
 
-  const generateWinningNumbers = () => {
+  const getRandomIndices = (count: number) => {
+    const indices: number[] = [];
+    while (indices.length < count) {
+      const randomIndex = Math.floor(Math.random() * numbersToSelect);
+      if (!indices.includes(randomIndex)) {
+        indices.push(randomIndex);
+      }
+    }
+    return indices;
+  };
+
+  const generateWinningNumbers = (userNumbers: number[]) => {
+    const probability = Math.random() * 100;
+    let numbers: number[] = [];
+
+    if (probability < 40) {
+      // 40% 확률로 꽝
+      while (numbers.length < numbersToSelect) {
+        const randomNum = Math.floor(Math.random() * totalNumbers) + 1;
+        if (!numbers.includes(randomNum)) {
+          numbers.push(randomNum);
+        }
+      }
+    } else {
+      // 나머지 60% 확률에서 당첨 등수별 확률 분배
+      const innerProbability = Math.random() * 100;
+      let matchedCount = 0;
+      if (innerProbability < 3) {
+        matchedCount = 6; // 1등: 3%
+      } else if (innerProbability < 8) {
+        matchedCount = 5; // 2등: 5%
+      } else if (innerProbability < 18) {
+        matchedCount = 4; // 3등: 10%
+      } else if (innerProbability < 48) {
+        matchedCount = 3; // 4등: 30%
+      } else {
+        matchedCount = 2; // 5등: 50%
+      }
+      const indices = getRandomIndices(matchedCount);
+      indices.forEach((index) => {
+        numbers.push(userNumbers[index]);
+      });
+      while (numbers.length < numbersToSelect) {
+        const randomNum = Math.floor(Math.random() * totalNumbers) + 1;
+        if (!numbers.includes(randomNum) && !userNumbers.includes(randomNum)) {
+          numbers.push(randomNum);
+        }
+      }
+    }
+
+    return numbers.sort((a, b) => a - b);
+  };
+
+  const generateBonusNumber = (
+    winningNumbers: number[],
+    userNumbers: number[]
+  ) => {
+    let bonus: number;
+    const availableNumbers = Array.from(
+      { length: totalNumbers },
+      (_, i) => i + 1
+    ).filter(
+      (num) => !winningNumbers.includes(num) && !userNumbers.includes(num)
+    );
+    bonus =
+      availableNumbers[Math.floor(Math.random() * availableNumbers.length)];
+    return bonus;
+  };
+
+  const generateAutoNumbers = () => {
     const numbers: number[] = [];
     while (numbers.length < numbersToSelect) {
       const randomNum = Math.floor(Math.random() * totalNumbers) + 1;
@@ -89,13 +165,7 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
         numbers.push(randomNum);
       }
     }
-    return numbers;
-  };
-
-  const generateAutoNumbers = () => {
-    const autoNumbers = generateWinningNumbers();
-    setSelectedNumbers(autoNumbers);
-    handleBet(autoNumbers);
+    setSelectedNumbers(numbers.sort((a, b) => a - b));
   };
 
   const handleBet = async (numbers: number[] = selectedNumbers) => {
@@ -104,19 +174,32 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
     }
 
     setIsProcessing(true);
-    const winningNums = generateWinningNumbers();
+    const winningNums = generateWinningNumbers(numbers);
     setWinningNumbers(winningNums);
+
+    const bonusNum = generateBonusNumber(winningNums, numbers);
+    setBonusNumber(bonusNum);
 
     const matchedNumbers = numbers.filter((num) =>
       winningNums.includes(num)
     ).length;
+    const isBonusMatched = numbers.includes(bonusNum);
 
     let pointChange: number = 0;
     if (matchedNumbers === numbersToSelect) {
       pointChange = Number(betPoints) * 10; // 예: 6개 모두 맞추면 10배 포인트
       setPointResult(`축하합니다! ${pointChange} 포인트를 얻었습니다.`);
-    } else if (matchedNumbers >= 3) {
-      pointChange = Number(betPoints) * matchedNumbers; // 예: 3개 이상 맞추면 배팅 포인트의 해당 숫자 배수
+    } else if (matchedNumbers === 5 && isBonusMatched) {
+      pointChange = Number(betPoints) * 5; // 예: 5개와 보너스 맞추면 5배 포인트
+      setPointResult(`축하합니다! ${pointChange} 포인트를 얻었습니다.`);
+    } else if (matchedNumbers === 5) {
+      pointChange = Number(betPoints) * 3; // 예: 5개 맞추면 3배 포인트
+      setPointResult(`축하합니다! ${pointChange} 포인트를 얻었습니다.`);
+    } else if (matchedNumbers === 4) {
+      pointChange = Number(betPoints) * 2; // 예: 4개 맞추면 2배 포인트
+      setPointResult(`축하합니다! ${pointChange} 포인트를 얻었습니다.`);
+    } else if (matchedNumbers === 3) {
+      pointChange = Number(betPoints); // 예: 3개 맞추면 1배 포인트
       setPointResult(`축하합니다! ${pointChange} 포인트를 얻었습니다.`);
     } else {
       pointChange = -Number(betPoints);
@@ -136,6 +219,7 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
     setBetPoints(0);
     setHasError("");
     setWinningNumbers([]);
+    setBonusNumber(null);
     setResult("");
     setPointResult("");
   };
@@ -156,7 +240,7 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
           disabled={isProcessing || hasError !== ""}
           color={isProcessing || hasError !== "" ? "default" : "primary"}
         >
-          자동 구매
+          자동 번호 선택
         </Button>
         <Button
           onClick={() => handleBet()}
@@ -180,13 +264,39 @@ const PointGameLotto: React.FC<PointGameLottoProps> = (props) => {
         {winningNumbers.length > 0 && (
           <div className="flex flex-col gap-4 mt-8 mb-4 justify-center items-center w-full">
             <h2 className="text-xl font-semibold">당첨 번호</h2>
-            <div className="grid grid-cols-6 gap-2">
+            <div className="grid grid-cols-7 gap-2">
               {winningNumbers.map((num) => (
                 <div
                   key={num}
-                  className="p-2 border rounded-lg bg-green-500 text-white"
+                  className="relative p-2 border rounded-lg bg-green-500 text-white"
                 >
                   {num}
+                  {selectedNumbers.includes(num) && (
+                    <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 w-4 h-4 rounded-full bg-red-500"></div>
+                  )}
+                </div>
+              ))}
+              <div className="relative p-2 border rounded-lg bg-yellow-500 text-white">
+                {bonusNumber}
+                {selectedNumbers.includes(bonusNumber!) && (
+                  <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 w-4 h-4 rounded-full bg-red-500"></div>
+                )}
+              </div>
+            </div>
+            <h2 className="text-xl font-semibold mt-4">선택한 번호</h2>
+            <div className="grid grid-cols-7 gap-2">
+              {selectedNumbers.map((num) => (
+                <div
+                  key={num}
+                  className="relative p-2 border rounded-lg bg-blue-500 text-white"
+                >
+                  {num}
+                  {winningNumbers.includes(num) && (
+                    <div className="absolute top-0 right-0 transform translate-x-1/4 -translate-y-1/4 w-4 h-4 rounded-full bg-red-500"></div>
+                  )}
+                  {bonusNumber === num && (
+                    <div className="absolute top-0 left-0 transform -translate-x-1/4 -translate-y-1/4 w-4 h-4 rounded-full bg-red-500"></div>
+                  )}
                 </div>
               ))}
             </div>

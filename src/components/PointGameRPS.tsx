@@ -6,11 +6,17 @@ import { Card, Input } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { getProfile } from "@/service/user";
 import { resultPointGame } from "@/service/game";
+import { useRouter } from "next/navigation";
 
 interface PointGameRPSProps {}
 
 const PointGameRPS: React.FC<PointGameRPSProps> = (props) => {
-  const { data: session } = useSession();
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const isLoggedIn = status === "authenticated";
+  if (!isLoggedIn) {
+    router.push("/auth/signin");
+  }
   const choices = ["가위", "바위", "보"];
   const [userInfo, setUserInfo] = useState<{ point: number } | null>(null);
   const [playerChoice, setPlayerChoice] = useState("");
