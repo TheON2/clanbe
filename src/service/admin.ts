@@ -1,15 +1,14 @@
-'use server'
+"use server";
 
 import mongoose from "mongoose";
 import { Category } from "../../types/types"; // Category 타입 임포트
 import CategoryModel from "@/models/category"; // Mongoose 모델 임포트
 import { revalidateTag } from "next/cache";
 
-
 export async function updateUserRole(usernickname: string, role: string) {
-  console.log(usernickname,role)
+  console.log(usernickname, role);
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/user/update`,
+    `${process.env.NEXT_PUBLIC_URL}/api/admin/role`,
     {
       method: "POST",
       headers: {
@@ -23,16 +22,50 @@ export async function updateUserRole(usernickname: string, role: string) {
   return await response.json();
 }
 
-export async function updateUserTear(usernickname: string, tear: string) {
-  console.log(usernickname, tear);
+export async function updateUserTier(usernickname: string, tier: string) {
+  console.log(usernickname, tier);
   const response = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}/api/user/update`,
+    `${process.env.NEXT_PUBLIC_URL}/api/admin/tier`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ usernickname, tear }),
+      body: JSON.stringify({ usernickname, tier }),
+      next: { tags: ["user"] },
+    }
+  );
+  revalidateTag("user");
+  return await response.json();
+}
+
+export async function updateUserPoint(usernickname: string, point: number) {
+  console.log(usernickname, point);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/admin/point`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ usernickname, point }),
+      next: { tags: ["user"] },
+    }
+  );
+  revalidateTag("user");
+  return await response.json();
+}
+
+export async function updateUserRace(usernickname: string, race: string) {
+  console.log(usernickname, race);
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/admin/race`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ usernickname, race }),
       next: { tags: ["user"] },
     }
   );

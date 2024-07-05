@@ -29,7 +29,13 @@ import { deleteUser } from "@/service/user";
 import { EditIcon } from "../../../public/EditIcon";
 import { EyeIcon } from "../../../public/EyeIcon";
 import { DeleteIcon } from "../../../public/DeleteIcon";
-import { updateUserRole } from "@/service/admin";
+import {
+  updateUserPoint,
+  updateUserRace,
+  updateUserRole,
+  updateUserTier,
+} from "@/service/admin";
+import { parse } from "path";
 
 interface Column {
   name: string;
@@ -85,6 +91,7 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
   const [searchField, setSearchField] = useState("name");
   const [sortField, setSortField] = useState("createdAt");
   const [sortOrder, setSortOrder] = useState("asc");
+  const [point, setPoint] = useState<string>("");
   const rowsPerPage = 4;
   const guestCount = useMemo(
     () => users.filter((user: any) => user.role === "Guest").length,
@@ -191,354 +198,412 @@ const AdminUserTab = ({ users, setModalMessage, setIsSubmit }: any) => {
     }
   };
 
+  const handleUpdateTier = async (usernickname: string, tier: string) => {
+    try {
+      const response = await updateUserTier(usernickname, tier);
+      if (response) {
+        setModalMessage("성공적으로 티어를 변경했습니다.");
+      } else {
+        setModalMessage("유저정보 변경에 실패했습니다.");
+      }
+      setIsSubmit(true);
+    } catch (error) {
+      setModalMessage("유저 정보 변경 중 오류가 발생했습니다.");
+      setIsSubmit(true);
+    }
+  };
+
+  const handleUpdatePoint = async (usernickname: string, point: number) => {
+    try {
+      const response = await updateUserPoint(usernickname, point);
+      if (response) {
+        setModalMessage("성공적으로 포인트를 변경했습니다.");
+      } else {
+        setModalMessage("유저정보 변경에 실패했습니다.");
+      }
+      setIsSubmit(true);
+    } catch (error) {
+      setModalMessage("유저 정보 변경 중 오류가 발생했습니다.");
+      setIsSubmit(true);
+    }
+  };
+
+  const handleUpdateRace = async (usernickname: string, race: string) => {
+    try {
+      const response = await updateUserRace(usernickname, race);
+      if (response) {
+        setModalMessage("성공적으로 종족을 변경했습니다.");
+      } else {
+        setModalMessage("유저정보 변경에 실패했습니다.");
+      }
+      setIsSubmit(true);
+    } catch (error) {
+      setModalMessage("유저 정보 변경 중 오류가 발생했습니다.");
+      setIsSubmit(true);
+    }
+  };
+
   const handleGuestClick = () => {
     setSearchField("role");
     setSearch("Guest");
     setPage(1);
   };
 
-  const renderCell = useCallback((user: any, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof any];
+  const renderCell = useCallback(
+    (user: any, columnKey: React.Key) => {
+      const cellValue = user[columnKey as keyof any];
 
-    switch (columnKey) {
-      case "user":
-        return (
-          <div className="w-full flex justify-center items-center">
-            <Card className="w-[200px] md:w-full">
-              <div className="flex items-center mx-0 md:mx-4">
-                <Avatar src={user.user.avatar} size="md" className="m-2" />
-                <div className="flex flex-col">
-                  <p className="font-bold text-md">{user.user.nickname}</p>
-                  <p className="font-bold text-sm">@{user.user.name}</p>
-                </div>
-                <div className="flex gap-2 items-center ml-auto mr-2">
-                  <button
-                    color="primary"
-                    onClick={() =>
-                      router.push(`/user/profile/${user.user.email}`)
-                    }
-                  >
-                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                      <EditIcon />
-                    </span>
-                  </button>
-                  <button
-                    color="danger"
-                    onClick={() => handleDelete(user.user.nickname)}
-                  >
-                    <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                      <DeleteIcon />
-                    </span>
-                  </button>
-                  <div>
-                    <Popover placement={"right"}>
-                      <PopoverTrigger>
-                        <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                          <EyeIcon />
-                        </span>
-                      </PopoverTrigger>
-                      <PopoverContent className="">
-                        <div>
-                          <Image
-                            src={user.user.idData || "/Belogo.png"}
-                            width={500}
-                            height={300}
-                            alt="ID"
-                          />
-                        </div>
-                      </PopoverContent>
-                    </Popover>
+      switch (columnKey) {
+        case "user":
+          return (
+            <div className="w-full flex justify-center items-center">
+              <Card className="w-[200px] md:w-full">
+                <div className="flex items-center mx-0 md:mx-4">
+                  <Avatar src={user.user.avatar} size="md" className="m-2" />
+                  <div className="flex flex-col">
+                    <p className="font-bold text-md">{user.user.nickname}</p>
+                    <p className="font-bold text-sm">@{user.user.name}</p>
+                  </div>
+                  <div className="flex gap-2 items-center ml-auto mr-2">
+                    <button
+                      color="primary"
+                      onClick={() =>
+                        router.push(`/user/profile/${user.user.email}`)
+                      }
+                    >
+                      <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                        <EditIcon />
+                      </span>
+                    </button>
+                    <button
+                      color="danger"
+                      onClick={() => handleDelete(user.user.nickname)}
+                    >
+                      <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                        <DeleteIcon />
+                      </span>
+                    </button>
+                    <div>
+                      <Popover placement={"right"}>
+                        <PopoverTrigger>
+                          <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                            <EyeIcon />
+                          </span>
+                        </PopoverTrigger>
+                        <PopoverContent className="">
+                          <div>
+                            <Image
+                              src={user.user.idData || "/Belogo.png"}
+                              width={500}
+                              height={300}
+                              alt="ID"
+                            />
+                          </div>
+                        </PopoverContent>
+                      </Popover>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <Divider />
-              <div className="flex justify-center gap-2 md:gap-8 mx-2">
-                <p className="font-bold">
-                  Role <br />
-                  {user.role}
-                </p>
-                <p className="font-bold">
-                  Point <br /> {user.point}
-                </p>
-                <p className="font-bold">{formatDateOnly(user.createdAt)}</p>
-              </div>
-              <Divider />
-              <div className="flex flex-col ">
-                <p>
-                  Email {user.user.email} <br />
-                </p>
-                <p>
-                  Kakao {user.user.kakao} <br />
-                </p>
-                <p className="">H.P {user.user.phone}</p>
-                <p className="text-sm">
-                  Birth {formatDateOnly(user.user.birth)}
-                </p>
-              </div>
-            </Card>
-          </div>
-        );
-      case "nickname":
-        return <div>{cellValue}</div>;
-      case "birth":
-      case "createdAt":
-        return <div>{formatDateOnly(cellValue)}</div>;
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">{cellValue}</p>
-          </div>
-        );
+                <Divider />
+                <div className="flex justify-center gap-2 md:gap-8 mx-2">
+                  <p className="font-bold">
+                    Role <br />
+                    {user.role}
+                  </p>
+                  <p className="font-bold">
+                    Point <br /> {user.point}
+                  </p>
+                  <p className="font-bold">{formatDateOnly(user.createdAt)}</p>
+                </div>
+                <Divider />
+                <div className="flex flex-col ">
+                  <p>
+                    Email {user.user.email} <br />
+                  </p>
+                  <p>
+                    Kakao {user.user.kakao} <br />
+                  </p>
+                  <p className="">H.P {user.user.phone}</p>
+                  <p className="text-sm">
+                    Birth {formatDateOnly(user.user.birth)}
+                  </p>
+                </div>
+              </Card>
+            </div>
+          );
+        case "nickname":
+          return <div>{cellValue}</div>;
+        case "birth":
+        case "createdAt":
+          return <div>{formatDateOnly(cellValue)}</div>;
+        case "role":
+          return (
+            <div className="flex flex-col">
+              <p className="text-bold text-sm capitalize">{cellValue}</p>
+            </div>
+          );
 
-      case "actions":
-        return (
-          <div className="flex flex-col items-center justify-center gap-4 ">
-            <Tooltip content="Edit user">
-              <Popover placement={"right"}>
-                <PopoverTrigger>
-                  <Chip
-                    className="w-full text-sm text-center cursor-pointer"
-                    size="sm"
-                    color="primary"
-                  >
-                    <div className="">등 급</div>
-                  </Chip>
-                </PopoverTrigger>
-                <PopoverContent className="">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-center">등급 변경</p>
+        case "actions":
+          return (
+            <div className="flex flex-col items-center justify-center gap-4 ">
+              <Tooltip content="Edit user">
+                <Popover placement={"right"}>
+                  <PopoverTrigger>
                     <Chip
                       className="w-full text-sm text-center cursor-pointer"
                       size="sm"
                       color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Guest")
-                      }
                     >
-                      <div className="w-[70px]">Guest</div>
+                      <div className="">등 급</div>
                     </Chip>
+                  </PopoverTrigger>
+                  <PopoverContent className="">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-center">등급 변경</p>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRole(user.user.nickname, "Guest")
+                        }
+                      >
+                        <div className="w-[70px]">Guest</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRole(user.user.nickname, "Member")
+                        }
+                      >
+                        <div className="w-[70px]">Member</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRole(user.user.nickname, "Staff")
+                        }
+                      >
+                        <div className="w-[70px]">Staff</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRole(user.user.nickname, "Master")
+                        }
+                      >
+                        <div className="w-[70px]">Master</div>
+                      </Chip>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
+              <Tooltip content="Edit user">
+                <Popover placement={"right"}>
+                  <PopoverTrigger>
                     <Chip
                       className="w-full text-sm text-center cursor-pointer"
                       size="sm"
                       color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Member")
-                      }
                     >
-                      <div className="w-[70px]">Member</div>
+                      <div className="">종 족</div>
                     </Chip>
+                  </PopoverTrigger>
+                  <PopoverContent className="">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-center">종족 변경</p>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRace(user.user.nickname, "p")
+                        }
+                      >
+                        <div className="w-[70px]">P</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRace(user.user.nickname, "t")
+                        }
+                      >
+                        <div className="w-[70px]">T</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateRace(user.user.nickname, "z")
+                        }
+                      >
+                        <div className="w-[70px]">Z</div>
+                      </Chip>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
+              <Tooltip content="Edit user">
+                <Popover placement={"right"}>
+                  <PopoverTrigger>
                     <Chip
                       className="w-full text-sm text-center cursor-pointer"
                       size="sm"
                       color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Staff")
-                      }
                     >
-                      <div className="w-[70px]">Staff</div>
+                      <div className="">티 어</div>
                     </Chip>
+                  </PopoverTrigger>
+                  <PopoverContent className="">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-center">티어 변경</p>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "S+")
+                        }
+                      >
+                        <div className="w-[70px]">S+</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "S")
+                        }
+                      >
+                        <div className="w-[70px]">S</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "A+")
+                        }
+                      >
+                        <div className="w-[70px]">A+</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "A")
+                        }
+                      >
+                        <div className="w-[70px]">A</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "B+")
+                        }
+                      >
+                        <div className="w-[70px]">B+</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "B")
+                        }
+                      >
+                        <div className="w-[70px]">B</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "C+")
+                        }
+                      >
+                        <div className="w-[70px]">C+</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "C")
+                        }
+                      >
+                        <div className="w-[70px]">C</div>
+                      </Chip>
+                      <Chip
+                        className="w-full text-sm text-center cursor-pointer"
+                        size="sm"
+                        color="primary"
+                        onClick={() =>
+                          handleUpdateTier(user.user.nickname, "F")
+                        }
+                      >
+                        <div className="w-[70px]">F</div>
+                      </Chip>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
+              <Tooltip>
+                <Popover placement={"right"}>
+                  <PopoverTrigger>
                     <Chip
-                      className="w-full text-sm text-center cursor-pointer"
+                      className="w-full text-xs text-center cursor-pointer"
                       size="sm"
                       color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
                     >
-                      <div className="w-[70px]">Master</div>
+                      <div className="">포인트</div>
                     </Chip>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </Tooltip>
-            <Tooltip content="Edit user">
-              <Popover placement={"right"}>
-                <PopoverTrigger>
-                  <Chip
-                    className="w-full text-sm text-center cursor-pointer"
-                    size="sm"
-                    color="primary"
-                  >
-                    <div className="">종 족</div>
-                  </Chip>
-                </PopoverTrigger>
-                <PopoverContent className="">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-center">종족 변경</p>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Guest")
-                      }
-                    >
-                      <div className="w-[70px]">P</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Member")
-                      }
-                    >
-                      <div className="w-[70px]">T</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Staff")
-                      }
-                    >
-                      <div className="w-[70px]">Z</div>
-                    </Chip>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </Tooltip>
-            <Tooltip content="Edit user">
-              <Popover placement={"right"}>
-                <PopoverTrigger>
-                  <Chip
-                    className="w-full text-sm text-center cursor-pointer"
-                    size="sm"
-                    color="primary"
-                  >
-                    <div className="">티 어</div>
-                  </Chip>
-                </PopoverTrigger>
-                <PopoverContent className="">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-center">티어 변경</p>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Guest")
-                      }
-                    >
-                      <div className="w-[70px]">S+</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Member")
-                      }
-                    >
-                      <div className="w-[70px]">S</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Staff")
-                      }
-                    >
-                      <div className="w-[70px]">A+</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
-                    >
-                      <div className="w-[70px]">A</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
-                    >
-                      <div className="w-[70px]">B+</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
-                    >
-                      <div className="w-[70px]">B</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
-                    >
-                      <div className="w-[70px]">C+</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
-                    >
-                      <div className="w-[70px]">C</div>
-                    </Chip>
-                    <Chip
-                      className="w-full text-sm text-center cursor-pointer"
-                      size="sm"
-                      color="primary"
-                      onClick={() =>
-                        handleUpdateRole(user.user.nickname, "Master")
-                      }
-                    >
-                      <div className="w-[70px]">F</div>
-                    </Chip>
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </Tooltip>
-            <Tooltip content="Edit user">
-              <Popover placement={"right"}>
-                <PopoverTrigger>
-                  <Chip
-                    className="w-full text-xs text-center cursor-pointer"
-                    size="sm"
-                    color="primary"
-                  >
-                    <div className="">포인트</div>
-                  </Chip>
-                </PopoverTrigger>
-                <PopoverContent className="">
-                  <div className="flex flex-col gap-1">
-                    <p className="text-center">포인트 변경</p>
-                    <p className="text-center">
-                      {user.nickname} 현재 : {user.point}
-                    </p>
-                    <Input
-                      type="number"
-                      placeholder="변경할 포인트"
-                      className="w-full mb-2"
-                    />
-                  </div>
-                </PopoverContent>
-              </Popover>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
-  }, []);
+                  </PopoverTrigger>
+                  <PopoverContent className="">
+                    <div className="flex flex-col gap-1">
+                      <p className="text-center">포인트 변경</p>
+                      <p className="text-center">
+                        {user.user.nickname} 현재 : {user.point}
+                      </p>
+                      <Input
+                        placeholder="변경할 포인트"
+                        className="w-full mb-2"
+                        value={point}
+                        onChange={(e) => setPoint(e.target.value)}
+                      />
+                      <Button
+                        className="w-full"
+                        onClick={() =>
+                          handleUpdatePoint(user.user.nickname, parseInt(point))
+                        }
+                      >
+                        변경하기
+                      </Button>
+                    </div>
+                  </PopoverContent>
+                </Popover>
+              </Tooltip>
+            </div>
+          );
+        default:
+          return cellValue;
+      }
+    },
+    [point, router, setIsSubmit, setModalMessage]
+  );
+
   const userColumns: Column[] = [
     {
       name: "유저정보",
