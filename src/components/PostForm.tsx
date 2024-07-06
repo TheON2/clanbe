@@ -19,6 +19,7 @@ import {
   Input,
   Select,
   SelectItem,
+  useDisclosure,
 } from "@nextui-org/react";
 import { useTheme } from "next-themes";
 import CommentCard from "./CommentCard/CommentCard";
@@ -32,6 +33,7 @@ import { formatDate } from "@/utils/dateUtils";
 import { EditIcon } from "../../public/EditIcon";
 import { categoryLabels, getCategoryPath } from "../../public/data";
 import { tearUpdate } from "@/service/user";
+import { updateUserTier } from "@/service/admin";
 
 type PostFormProps = {
   post: {
@@ -56,6 +58,11 @@ export default function PostForm({
   userData,
   supportData,
 }: PostFormProps) {
+  const {
+    isOpen: isModalOpen,
+    onOpen: onModalOpen,
+    onOpenChange: onModalClose,
+  } = useDisclosure();
   const router = useRouter();
   const { data: session, status } = useSession(); // 세션 데이터와 상태 가져오기
   const isLoggedIn = status === "authenticated";
@@ -67,6 +74,8 @@ export default function PostForm({
   const [isSubmit, setIsSubmit] = useState(false);
   const [tear, setTear] = useState("");
   const [activeCommentId, setActiveCommentId] = useState(null);
+  const [modalTitle, setModalTitle] = useState("");
+  const [modalText, setModalText] = useState("");
 
   const handleCommentClick = (commentId: any) => {
     // 이미 활성화된 댓글을 다시 클릭하면 비활성화합니다.
@@ -102,17 +111,21 @@ export default function PostForm({
     }
   };
 
-  // const handleUpdateTear = async () => {
-  //   try {
-  //     const response = await tearUpdate(user.nickname, tear);
-
-  //     if (!response.ok) {
-  //       throw new Error(`Error: ${response.statusText}`);
-  //     }
-  //   } catch (error) {
-  //     console.error("Failed to update the tear:", error);
-  //   }
-  // };
+  const handleUpdateTier = async (usernickname: string, tier: string) => {
+    try {
+      const response = await updateUserTier(usernickname, tier);
+      if (response) {
+        setModalText("성공적으로 티어를 변경했습니다.");
+        onModalOpen();
+      } else {
+        setModalText("유저정보 변경에 실패했습니다.");
+        onModalOpen();
+      }
+    } catch (error) {
+      setModalText("유저 정보 변경 중 오류가 발생했습니다.");
+      onModalOpen();
+    }
+  };
 
   const triggerDelete = () => {
     setIsDeleting(true);
@@ -240,11 +253,52 @@ export default function PostForm({
                   </SelectItem>
                 ))}
               </Select>
-              <Button className="mt-2" color="primary">
+              <Button
+                className="mt-2"
+                color="primary"
+                onPress={() => handleUpdateTier(userData.nickname, tear)}
+              >
                 확정
               </Button>
             </Card>
           )}
+          <div className=" flex flex-col justify-center items-center gap-2">
+            {category === "aftertear" && user && user.grade >= 4 && (
+              <Card className="md:w-1/2  mx-4 md:h-[200px] h-[100px]  dark:border-white dark:border-2 flex items-center justify-center">
+                <p className="font-bold md:text-2xl">
+                  {userData.tear}티어 배정완료
+                </p>
+              </Card>
+            )}
+            {category === "aftertear" && user && user.grade >= 4 && (
+              <Card className="md:w-1/2 marker:mx-4 h-[200px]  dark:border-white dark:border-2 flex items-center justify-center">
+                <p className="font-bold md:text-2xl">
+                  티어배정을 변경하시겠습니까?
+                </p>
+                <Select
+                  aria-label="tear"
+                  value={tear}
+                  className="w-[100px] mt-2"
+                  onChange={(e) => {
+                    setTear(e.target.value);
+                  }}
+                >
+                  {tiers.map((tier) => (
+                    <SelectItem key={tier} value={tier}>
+                      {tier}
+                    </SelectItem>
+                  ))}
+                </Select>
+                <Button
+                  className="mt-2"
+                  color="primary"
+                  onPress={() => handleUpdateTier(userData.nickname, tear)}
+                >
+                  확정
+                </Button>
+              </Card>
+            )}
+          </div>
           <CKEditorContent contentUrl={fileUrl} />
         </CardBody>
         <CardFooter>
@@ -298,6 +352,12 @@ export default function PostForm({
         text={"삭제가 완료되었습니다."}
         isOpen={isSubmit}
         onClose={() => (window.location.href = `/community/allposts`)}
+      />
+      <SubmitModal
+        title={modalTitle}
+        text={modalText}
+        isOpen={isModalOpen}
+        onClose={onModalClose}
       />
     </div>
   );
