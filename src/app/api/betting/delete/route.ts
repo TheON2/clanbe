@@ -10,10 +10,8 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { bettingId } = body;
-
     const existingBetting = await BettingModel.findOneAndDelete({
-      _id: bettingId,
+      _id: body,
     });
 
     //배팅이 완료가 아닐경우 모든 배팅금액 유저들에게 반환

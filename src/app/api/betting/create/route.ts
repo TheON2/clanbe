@@ -9,13 +9,18 @@ export async function POST(req: Request) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { title, home, away } = body;
+    const { title, home, away, homeBetRate, awayBetRate, betMax } = body.newBettingData;
+
+    console.log(body);
 
     // 포인트 전송 기록 저장
     const newBetting = new BettingModel({
       title,
       home,
       away,
+      homeBetRate,
+      awayBetRate,
+      betMax,
       status: "베팅중",
       bets: [],
     });

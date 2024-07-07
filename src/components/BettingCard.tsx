@@ -5,6 +5,7 @@ import { formatDate, formatRelativeDate } from "@/utils/dateUtils";
 import { useMediaQuery } from "react-responsive";
 import { EditIcon } from "../../public/EditIcon";
 import { DeleteIcon } from "../../public/DeleteIcon";
+import { useSession } from "next-auth/react";
 
 interface BettingCardProps {
   bettingData: Betting;
@@ -19,6 +20,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
   onDelete,
   onBet,
 }) => {
+  const { data: session, status } = useSession();
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const formatDateBasedOnDevice = (date: Date) =>
     isMobile ? formatRelativeDate(date) : formatDate(date);
@@ -50,13 +52,18 @@ const BettingCard: React.FC<BettingCardProps> = ({
         >
           {bettingData.title}
         </div>
-        <div className="ml-auto mr-2 flex gap-4">
-          <EditIcon className="text-blue-500 cursor-pointer" onClick={onEdit} />
-          <DeleteIcon
-            className="text-red-500 cursor-pointer"
-            onClick={onDelete}
-          />
-        </div>
+        {session && session.user && session?.user.role === "Staff" && (
+          <div className="ml-auto mr-2 flex gap-4">
+            <EditIcon
+              className="text-blue-500 cursor-pointer"
+              onClick={onEdit}
+            />
+            <DeleteIcon
+              className="text-red-500 cursor-pointer"
+              onClick={onDelete}
+            />
+          </div>
+        )}
       </div>
       <div className="flex flex-row items-center gap-2 mx-4">
         <div className="flex items-center gap-4">

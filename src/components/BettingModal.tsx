@@ -14,6 +14,7 @@ import { parseDate, DateValue } from "@internationalized/date";
 import { Betting } from "../../types/types";
 import { User } from "next-auth";
 import SubmitModal from "./SubmitModal";
+import { createBetting } from "@/service/betting";
 
 type Props = {
   title: string;
@@ -43,9 +44,8 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
   useEffect(() => {
     if (isOpen) {
       if (bettingData && bettingData.createdAt) {
-        setSelectedDate(
-          parseDate(bettingData.createdAt.toISOString().split("T")[0])
-        );
+        const createdAtDate = new Date(bettingData.createdAt); // Date 객체로 변환
+        setSelectedDate(parseDate(createdAtDate.toISOString().split("T")[0]));
         setHomeTeam(bettingData.home);
         setAwayTeam(bettingData.away);
         setHomeBetRate(bettingData.homeBetRate.toString());
@@ -89,6 +89,32 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
     setStatus("");
     setBetTitle("");
     onClose();
+  };
+
+  const handleCreate = async () => {
+    const newBettingData = {
+      title: betTitle,
+      home: homeTeam,
+      homeBetRate: parseFloat(homeBetRate),
+      away: awayTeam,
+      awayBetRate: parseFloat(awayBetRate),
+      betMax: parseInt(betMax),
+      status: status,
+      bets: [],
+      createdAt: new Date(selectedDate?.toString() as string),
+    };
+    try {
+      const { message } = await createBetting(newBettingData);
+      setModalTitle("알림");
+      setModalText(message);
+      onModalOpen();
+      handleClose();
+    } catch (e) {
+      console.error(e);
+      setModalTitle("에러");
+      setModalText("베팅정보 등록에 실패했습니다.");
+      onModalOpen();
+    }
   };
 
   useEffect(() => {
@@ -210,7 +236,9 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
               </>
             ) : (
               <>
-                <Button color="primary">저장</Button>
+                <Button color="primary" onPress={() => handleCreate()}>
+                  저장
+                </Button>
               </>
             )}
           </ModalFooter>

@@ -53,6 +53,31 @@ export async function updateStatusBetting(bettingId: string, status: string) {
   }
 }
 
+export async function haveBetting(newBettingData: any) {
+  try {
+    const response = await fetch(
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/bet`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newBettingData),
+        next: { tags: ["betting"] },
+        cache: "no-store",
+      }
+    );
+    if (!response.ok) {
+      return await response.json();
+    }
+    revalidateTag("betting");
+    return await response.json();
+  } catch (error) {
+    console.error("Error send betting:", error);
+    return null;
+  }
+}
+
 export async function updateBetting(
   nickname: string,
   point: number,

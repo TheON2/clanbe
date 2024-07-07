@@ -15,6 +15,7 @@ import SubmitModal from "./SubmitModal";
 import { Betting } from "../../types/types";
 import { User } from "next-auth";
 import { h } from "@fullcalendar/core/preact";
+import { haveBetting } from "@/service/betting";
 
 type Props = {
   title: string;
@@ -33,6 +34,7 @@ const BetModal = ({ title, isOpen, onClose, user, bettingData }: Props) => {
   } = useDisclosure();
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
+  const [bettingId, setBettingId] = useState("");
   const [betTitle, setBetTitle] = useState("");
   const [homeTeam, setHomeTeam] = useState("");
   const [homeBetRate, setHomeBetRate] = useState("");
@@ -79,6 +81,7 @@ const BetModal = ({ title, isOpen, onClose, user, bettingData }: Props) => {
         setBetMax(bettingData.betMax.toString());
         setStatus(bettingData.status);
         setBetTitle(bettingData.title);
+        setBettingId(bettingData._id as string);
       } else {
         setSelectedDate(null);
       }
@@ -131,9 +134,20 @@ const BetModal = ({ title, isOpen, onClose, user, bettingData }: Props) => {
     }
   }, [choice, betAmount, warning]);
 
-  const handleBetClick = () => {
-    console.log("betAmount:", betAmount);
-    console.log("choice:", choice);
+  const handleBetClick = async () => {
+    const newBettingData = {
+      nickname: user?.nickname || "",
+      amount: parseInt(betAmount),
+      choice,
+      bettingId,
+      status,
+    };
+    console.log(newBettingData);
+    const { message } = await haveBetting(newBettingData);
+    setModalTitle("알림");
+    setModalText(message);
+    onModalOpen();
+    onClose();
   };
 
   return (
