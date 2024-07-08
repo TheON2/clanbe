@@ -47,7 +47,7 @@ export async function POST(req: Request) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const userid = body.userid;
+    const userid = body;
 
     // 일일 포인트를 받을 유저를 찾아냅니다.
     const dateId = getFormattedDate(); // 오늘 날짜를 yyyyMMdd 형식으로 가져옴
