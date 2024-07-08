@@ -39,6 +39,7 @@ export default function RootLayout({
           name="viewport"
           content="width=device-width, initial-scale=1, viewport-fit=cover"
         />
+        <meta name="title" content="StarCraft ClanBe" />
         <meta
           name="description"
           content="스타크래프트 Korea서버 Be 클랜 홈페이지"
