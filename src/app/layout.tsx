@@ -42,7 +42,7 @@ export default function RootLayout({
           name="description"
           content="스타크래프트 Korea서버 Be 클랜 홈페이지"
         />
-        <link rel="icon" href="/Belogo.png" />
+        {/* <link rel="icon" href="/icon.ico" /> */}
       </Head>
       <body className="flex flex-col min-h-screen">
         <Providers>
