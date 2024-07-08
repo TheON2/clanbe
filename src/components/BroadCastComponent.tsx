@@ -37,6 +37,8 @@ const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
     setHydrated(true);
   }, []);
 
+  const latestPosts = posts.slice(0, 5);
+
   return (
     <div className="flex flex-col items-center justify-center gap-2 w-full md:h-[350px] mt-4">
       <div className="flex flex-wrap items-center justify-center gap-2 w-full overflow-auto">
@@ -245,7 +247,7 @@ const BroadCastComponent: React.FC<BroadCastComponentProps> = ({ posts }) => {
             </CardHeader>
             <Divider />
             <CardBody className="">
-              {posts.map((notice: Post) => (
+              {latestPosts.map((notice: Post) => (
                 <div key={notice._id} className="flex gap-4 my-2 items-center">
                   <div>
                     <Button
