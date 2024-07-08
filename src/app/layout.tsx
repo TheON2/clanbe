@@ -10,21 +10,21 @@ import { Analytics } from "@vercel/analytics/react";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 
-// export const metadata = {
-//   title: {
-//     default: "Clan be",
-//     template: "Clan be | %s",
-//   },
-//   description: "스타크래프트 Korea서버 Be 클랜 홈페이지",
-//   icons: {
-//     icon: "/favicon.ico",
-//   },
-//   visualViewport: {
-//     width: "device-width",
-//     initialScale: 1,
-//     viewportFit: "cover",
-//   },
-// };
+export const metadata = {
+  title: {
+    default: "Clan be",
+    template: "Clan be | %s",
+  },
+  description: "스타크래프트 Korea서버 Be 클랜 홈페이지",
+  icons: {
+    icon: "/icon.ico",
+  },
+  visualViewport: {
+    width: "device-width",
+    initialScale: 1,
+    viewportFit: "cover",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -33,19 +33,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={sans.className}>
-      <Head>
-        <title>CLANBE</title>
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1, viewport-fit=cover"
-        />
-        <meta name="title" content="StarCraft ClanBe" />
-        <meta
-          name="description"
-          content="스타크래프트 Korea서버 Be 클랜 홈페이지"
-        />
-        {/* <link rel="icon" href="/icon.ico" /> */}
-      </Head>
       <body className="flex flex-col min-h-screen">
         <Providers>
           <SpeedInsights />
