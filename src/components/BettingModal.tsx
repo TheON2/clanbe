@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ChangeEvent } from "react";
+import React, { useState, useEffect, ChangeEvent, useCallback } from "react";
 import { useDisclosure } from "@nextui-org/use-disclosure";
 import { Button } from "@nextui-org/button";
 import {
@@ -8,13 +8,19 @@ import {
   ModalBody,
   ModalFooter,
 } from "@nextui-org/modal";
-import { Input, Select, SelectItem } from "@nextui-org/react";
+import { DatePicker, Input, Select, SelectItem } from "@nextui-org/react";
 import { Calendar, Divider } from "@nextui-org/react";
-import { parseDate, DateValue } from "@internationalized/date";
+import {
+  parseDate,
+  DateValue,
+  getLocalTimeZone,
+  now,
+  parseDateTime,
+} from "@internationalized/date";
 import { Betting } from "../../types/types";
 import { User } from "next-auth";
 import SubmitModal from "./SubmitModal";
-import { createBetting } from "@/service/betting";
+import { createBetting, updateBetting } from "@/service/betting";
 
 type Props = {
   title: string;
@@ -34,6 +40,7 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
   const [betTitle, setBetTitle] = useState("");
+  const [betId, setBetId] = useState("");
   const [homeTeam, setHomeTeam] = useState("");
   const [homeBetRate, setHomeBetRate] = useState("");
   const [awayTeam, setAwayTeam] = useState("");
@@ -44,8 +51,7 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
   useEffect(() => {
     if (isOpen) {
       if (bettingData && bettingData.createdAt) {
-        const createdAtDate = new Date(bettingData.createdAt); // Date 객체로 변환
-        setSelectedDate(parseDate(createdAtDate.toISOString().split("T")[0]));
+        setSelectedDate(parseDateTime(bettingData.matchDate));
         setHomeTeam(bettingData.home);
         setAwayTeam(bettingData.away);
         setHomeBetRate(bettingData.homeBetRate.toString());
@@ -53,31 +59,44 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
         setBetMax(bettingData.betMax.toString());
         setStatus(bettingData.status);
         setBetTitle(bettingData.title);
+        setBetId(bettingData._id || "");
       } else {
-        setSelectedDate(parseDate(new Date().toISOString().split("T")[0]));
+        setSelectedDate(parseDateTime(new Date().toISOString().split("T")[0]));
       }
     }
   }, [isOpen, bettingData]);
 
-  const handleHomePlayerChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setHomeTeam(e.target.value);
-  };
+  const handleHomePlayerChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setHomeTeam(e.target.value);
+    },
+    []
+  );
 
-  const handleAwayPlayerChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAwayTeam(e.target.value);
-  };
+  const handleAwayPlayerChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setAwayTeam(e.target.value);
+    },
+    []
+  );
 
-  const handleHomeBetRateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setHomeBetRate(e.target.value);
-  };
+  const handleHomeBetRateChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setHomeBetRate(e.target.value);
+    },
+    []
+  );
 
-  const handleAwayBetRateChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setAwayBetRate(e.target.value);
-  };
+  const handleAwayBetRateChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      setAwayBetRate(e.target.value);
+    },
+    []
+  );
 
-  const handleBetMaxChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleBetMaxChange = useCallback((e: ChangeEvent<HTMLInputElement>) => {
     setBetMax(e.target.value);
-  };
+  }, []);
 
   const handleClose = () => {
     setSelectedDate(null);
@@ -88,10 +107,18 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
     setBetMax("");
     setStatus("");
     setBetTitle("");
+    setBetId("");
     onClose();
   };
 
   const handleCreate = async () => {
+    if (!selectedDate) {
+      setModalTitle("에러");
+      setModalText("날짜를 선택하세요.");
+      onModalOpen();
+      return;
+    }
+
     const newBettingData = {
       title: betTitle,
       home: homeTeam,
@@ -101,8 +128,10 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
       betMax: parseInt(betMax),
       status: status,
       bets: [],
-      createdAt: new Date(selectedDate?.toString() as string),
+      createdAt: new Date().toISOString(),
+      matchDate: selectedDate?.toString() || "",
     };
+
     try {
       const { message } = await createBetting(newBettingData);
       setModalTitle("알림");
@@ -117,6 +146,42 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
     }
   };
 
+  const handleUpdate = async () => {
+    if (!selectedDate) {
+      setModalTitle("에러");
+      setModalText("날짜를 선택하세요.");
+      onModalOpen();
+      return;
+    }
+
+    const updateBettingData = {
+      betId: betId,
+      title: betTitle,
+      home: homeTeam,
+      homeBetRate: parseFloat(homeBetRate),
+      away: awayTeam,
+      awayBetRate: parseFloat(awayBetRate),
+      betMax: parseInt(betMax),
+      status: status,
+      bets: [],
+      createdAt: new Date().toISOString(),
+      matchDate: selectedDate?.toString() || "",
+    };
+
+    try {
+      const { message } = await updateBetting(updateBettingData);
+      setModalTitle("알림");
+      setModalText(message);
+      onModalOpen();
+      handleClose();
+    } catch (e) {
+      console.error(e);
+      setModalTitle("에러");
+      setModalText("베팅정보 수정에 실패했습니다.");
+      onModalOpen();
+    }
+  };
+
   useEffect(() => {
     if (!isOpen) {
       setSelectedDate(null);
@@ -127,6 +192,7 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
       setBetMax("");
       setStatus("");
       setBetTitle("");
+      setBetId("");
     }
   }, [isOpen]);
 
@@ -147,8 +213,12 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
           <ModalBody className="max-h-[70vh] overflow-y-auto flex items-center">
             <div className="mb-4">
               {selectedDate && (
-                <Calendar
-                  aria-label="Date (Controlled)"
+                <DatePicker
+                  label="Event Date"
+                  variant="bordered"
+                  hideTimeZone
+                  showMonthAndYearPickers
+                  defaultValue={now(getLocalTimeZone())}
                   value={selectedDate}
                   onChange={setSelectedDate}
                 />
@@ -231,15 +301,13 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
               취소
             </Button>
             {bettingData ? (
-              <>
-                <Button color="primary">수정</Button>
-              </>
+              <Button color="primary" onPress={() => handleUpdate()}>
+                수정
+              </Button>
             ) : (
-              <>
-                <Button color="primary" onPress={() => handleCreate()}>
-                  저장
-                </Button>
-              </>
+              <Button color="primary" onPress={() => handleCreate()}>
+                저장
+              </Button>
             )}
           </ModalFooter>
         </ModalContent>

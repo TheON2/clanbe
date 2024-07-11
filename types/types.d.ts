@@ -7,6 +7,7 @@ export type IconSvgProps = SVGProps<SVGSVGElement> & {
 export type Betting = {
   _id?: string;
   title: string;
+  matchDate: string;
   home: string;
   homeBetRate: number;
   away: string;

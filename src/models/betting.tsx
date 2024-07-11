@@ -25,6 +25,10 @@ const bettingSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    matchDate: {
+      type: String,
+      required: true,
+    },
     home: {
       type: String,
       required: true,

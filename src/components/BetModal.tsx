@@ -15,7 +15,7 @@ import SubmitModal from "./SubmitModal";
 import { Betting } from "../../types/types";
 import { User } from "next-auth";
 import { h } from "@fullcalendar/core/preact";
-import { haveBetting } from "@/service/betting";
+import { createBet } from "@/service/bet";
 
 type Props = {
   title: string;
@@ -143,7 +143,7 @@ const BetModal = ({ title, isOpen, onClose, user, bettingData }: Props) => {
       status,
     };
     console.log(newBettingData);
-    const { message } = await haveBetting(newBettingData);
+    const { message } = await createBet(newBettingData);
     setModalTitle("알림");
     setModalText(message);
     onModalOpen();

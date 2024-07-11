@@ -11,9 +11,21 @@ export async function POST(req: Request, res: Response) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { nickname, amount, choice, bettingId, status } = body;
+    const {
+      betId,
+      title,
+      matchDate,
+      home,
+      away,
+      homeBetRate,
+      awayBetRate,
+      betMax,
+      status,
+    } = body.updateBettingData;
 
-    const existingBetting = await BettingModel.findOne({ _id: bettingId });
+    console.log(body);
+
+    const existingBetting = await BettingModel.findOne({ _id: betId });
 
     if (!existingBetting) {
       return new Response(
@@ -24,59 +36,27 @@ export async function POST(req: Request, res: Response) {
       );
     }
 
-    if (status) {
-      existingBetting.status = status;
-      await existingBetting.save();
-      return new Response(JSON.stringify({ message: "베팅 상태변경 성공" }), {
-        status: 200,
-      });
+    if (existingBetting.status === "종료") {
+      return new Response(
+        JSON.stringify({ message: "종료된 베팅은 수정할 수 없습니다." }),
+        {
+          status: 404,
+        }
+      );
     }
 
-    if (choice === "cancel") {
-      //bets내에 nickname이 존재하는지 체크 후 존재할시 삭제 및 amount 복구
-      const betting = existingBetting.bets.find(
-        (bet: any) => bet.nickname === nickname
-      );
-      
-      if (!betting) {
-        return new Response(
-          JSON.stringify({ message: "베팅을 찾을 수 없습니다." }),
-          {
-            status: 404,
-          }
-        );
-      }
-      const user = await UserModel.findOne({ nickname });
-      if (user) {
-        user.point += betting.amount;
-        await user.save();
-      } else {
-        return new Response(
-          JSON.stringify({ message: "유저를 찾을 수 없습니다." }),
-          {
-            status: 404,
-          }
-        );
-      }
-      existingBetting.bets = existingBetting.bets.filter(
-        (bet: any) => bet.nickname !== nickname
-      );
-      await existingBetting.save();
-      return new Response(JSON.stringify({ message: "베팅 취소 성공" }), {
-        status: 200,
-      });
-    }
-
-    // 베팅 기록 저장
-    existingBetting.bets.push({
-      nickname,
-      amount,
-      choice,
-    });
+    existingBetting.title = title;
+    existingBetting.home = home;
+    existingBetting.away = away;
+    existingBetting.homeBetRate = homeBetRate;
+    existingBetting.awayBetRate = awayBetRate;
+    existingBetting.betMax = betMax;
+    existingBetting.status = status;
+    existingBetting.matchDate = matchDate;
 
     await existingBetting.save();
 
-    return new Response(JSON.stringify({ message: "베팅 성공" }), {
+    return new Response(JSON.stringify({ message: "베팅 수정 성공" }), {
       status: 200,
     });
   } catch (error) {
