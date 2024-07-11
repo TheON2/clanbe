@@ -1,67 +1,22 @@
 import BettingModel from "@/models/betting";
-import UserModel from "@/models/user";
-import { ex } from "@fullcalendar/core/internal-common";
 import mongoose from "mongoose";
 
 export async function POST(req: Request, res: Response) {
-  const body = await req.json();
-
   try {
     // 이미 연결된 경우 재연결하지 않도록 확인합니다.
     if (mongoose.connection.readyState !== 1) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { nickname, amount, choice, bettingId, status } = body;
+    const bettings = await BettingModel.find({});
 
-    console.log(body);
-
-    const existingBetting = await BettingModel.findOne({ _id: bettingId });
-
-    if (!existingBetting) {
-      return new Response(
-        JSON.stringify({ message: "베팅을 찾을 수 없습니다." }),
-        {
-          status: 404,
-        }
-      );
+    if (!bettings) {
+      return new Response(JSON.stringify({ message: "조회 실패" }), {
+        status: 401,
+      });
     }
 
-    if (status === "종료") {
-      return new Response(
-        JSON.stringify({ message: "베팅이 종료되었습니다." }),
-        {
-          status: 404,
-        }
-      );
-    }
-
-    const exsistingBetUser = existingBetting.bets.find(
-      (bet: any) => bet.nickname === nickname
-    );
-
-    if (exsistingBetUser) {
-      return new Response(
-        JSON.stringify({ message: "이미 배팅한 경기 입니다." }),
-        {
-          status: 404,
-        }
-      );
-    } else {
-      const betUser = await UserModel.findOne({ nickname });
-      if (betUser) {
-        betUser.point -= amount;
-        await betUser.save();
-        existingBetting.bets.push({
-          nickname,
-          amount,
-          choice,
-        });
-        await existingBetting.save();
-      }
-    }
-
-    return new Response(JSON.stringify({ message: "베팅 성공" }), {
+    return new Response(JSON.stringify({ bettings }), {
       status: 200,
     });
   } catch (error) {

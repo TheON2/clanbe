@@ -56,7 +56,7 @@ export async function updateStatusBetting(bettingId: string, status: string) {
 export async function haveBetting(newBettingData: any) {
   try {
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/betting/bet`,
+      `${process.env.NEXT_PUBLIC_URL}/api/betting/bet/create`,
       {
         method: "POST",
         headers: {

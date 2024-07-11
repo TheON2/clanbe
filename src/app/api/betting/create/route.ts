@@ -9,7 +9,8 @@ export async function POST(req: Request) {
       await mongoose.connect(process.env.NEXT_PUBLIC_MONGODB_URI as string);
     }
 
-    const { title, home, away, homeBetRate, awayBetRate, betMax } = body.newBettingData;
+    const { title, home, away, homeBetRate, awayBetRate, betMax, status } =
+      body.newBettingData;
 
     console.log(body);
 
@@ -21,7 +22,7 @@ export async function POST(req: Request) {
       homeBetRate,
       awayBetRate,
       betMax,
-      status: "베팅중",
+      status,
       bets: [],
     });
 
