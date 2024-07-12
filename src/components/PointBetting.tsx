@@ -18,6 +18,8 @@ import BetModal from "./BetModal";
 import { useRouter } from "next/navigation";
 import { deleteBetting } from "@/service/betting";
 import SubmitModal from "./SubmitModal";
+import { set } from "mongoose";
+import ConfirmModal from "./ConfirmModal";
 
 interface PointBettingProps {
   bettings: Betting[];
@@ -35,6 +37,8 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
   } = useDisclosure();
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
+  const [confirmTitle, setConfirmTitle] = useState("");
+  const [confirmText, setConfirmText] = useState("");
   const userInfo = users.filter(
     (user) => user.email === session?.user?.email
   )[0];
@@ -57,13 +61,23 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
     onModalOpen();
   };
 
+  const handleResult = async (bettingId: string) => {
+    setConfirmTitle("베팅 정산하기");
+    setConfirmText("베팅을 종료하고 정산하시겠습니까?");
+    setModalTitle("베팅 정산하기");
+    setModalText("베팅종료 및 정산이 완료되었습니다.");
+    onModalOpen();
+  };
+
   // if (!isLoggedIn) {
   //   router.push("/auth/signin");
   // }
 
   return (
     <div className="w-full max-w-[800px] mx-auto">
-      <SubmitModal
+      <ConfirmModal
+        confirmtext={confirmText}
+        confirmtitle={confirmTitle}
         title={modalTitle}
         text={modalText}
         isOpen={isModalOpen}
@@ -112,6 +126,7 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
                     setIsBet(true);
                   }}
                   onDelete={() => handleDelete(betting._id as string)}
+                  onResult={() => handleResult(betting._id as string)}
                 />
               </div>
             ))}

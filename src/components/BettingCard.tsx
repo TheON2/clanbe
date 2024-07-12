@@ -5,6 +5,7 @@ import { formatDate, formatRelativeDate } from "@/utils/dateUtils";
 import { useMediaQuery } from "react-responsive";
 import { EditIcon } from "../../public/EditIcon";
 import { DeleteIcon } from "../../public/DeleteIcon";
+import { CheckIcon } from "../../public/check";
 import { useSession } from "next-auth/react";
 
 interface BettingCardProps {
@@ -12,6 +13,7 @@ interface BettingCardProps {
   onEdit: () => void;
   onDelete: () => void;
   onBet: () => void;
+  onResult: () => void;
 }
 
 const BettingCard: React.FC<BettingCardProps> = ({
@@ -19,6 +21,7 @@ const BettingCard: React.FC<BettingCardProps> = ({
   onEdit,
   onDelete,
   onBet,
+  onResult
 }) => {
   const { data: session, status } = useSession();
   const isMobile = useMediaQuery({ maxWidth: 767 });
@@ -61,6 +64,13 @@ const BettingCard: React.FC<BettingCardProps> = ({
             <DeleteIcon
               className="text-red-500 cursor-pointer"
               onClick={onDelete}
+            />
+            <CheckIcon
+              className="text-green-500 cursor-pointer"
+              filled={false}
+              height={16}
+              width={16}
+              onClick={onResult}
             />
           </div>
         )}

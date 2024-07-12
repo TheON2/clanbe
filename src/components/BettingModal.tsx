@@ -240,9 +240,6 @@ const BettingModal = ({ title, isOpen, onClose, bettingData }: Props) => {
                 <SelectItem value="경기중" key={"경기중"}>
                   경기중
                 </SelectItem>
-                <SelectItem value="종료" key={"종료"}>
-                  종료
-                </SelectItem>
               </Select>
               <Input
                 label="Title"
