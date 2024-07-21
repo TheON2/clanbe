@@ -55,8 +55,10 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
   }, [isCreate, isBet]);
 
   const handleDelete = async (bettingId: string) => {
+    setConfirmTitle("베팅 삭제하기");
+    setConfirmText("베팅을 삭제하시겠습니까?");
     const { message } = await deleteBetting(bettingId);
-    setModalTitle("베팅 삭제");
+    setModalTitle("베팅 삭제하기");
     setModalText(message);
     onModalOpen();
   };

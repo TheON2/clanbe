@@ -98,6 +98,10 @@ export default function WriteComponent({ nicknames }: any) {
   };
 
   const handleSubmit = async () => {
+    if (category === "") {
+      alert("게시판을 선택해주세요.");
+      return;
+    }
     try {
       let postData = {
         htmlContent: editorData,
