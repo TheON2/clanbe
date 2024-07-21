@@ -8,7 +8,6 @@ import {
   CardBody,
   CardHeader,
   useDisclosure,
-  user,
 } from "@nextui-org/react";
 import { useSession } from "next-auth/react";
 import { User } from "next-auth";
@@ -18,7 +17,6 @@ import BetModal from "./BetModal";
 import { useRouter } from "next/navigation";
 import { deleteBetting } from "@/service/betting";
 import SubmitModal from "./SubmitModal";
-import { set } from "mongoose";
 import ConfirmModal from "./ConfirmModal";
 
 interface PointBettingProps {
@@ -31,9 +29,14 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
   const { data: session, status } = useSession();
   const isLoggedIn = status === "authenticated";
   const {
-    isOpen: isModalOpen,
-    onOpen: onModalOpen,
-    onOpenChange: onModalClose,
+    isOpen: isConfirmModalOpen,
+    onOpen: onConfirmModalOpen,
+    onOpenChange: onConfirmModalClose,
+  } = useDisclosure();
+  const {
+    isOpen: isResultModalOpen,
+    onOpen: onResultModalOpen,
+    onOpenChange: onResultModalClose,
   } = useDisclosure();
   const [modalTitle, setModalTitle] = useState("");
   const [modalText, setModalText] = useState("");
@@ -47,6 +50,9 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
   );
   const [isCreate, setIsCreate] = useState(false);
   const [isBet, setIsBet] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<() => Promise<void>>(
+    () => Promise.resolve
+  );
 
   useEffect(() => {
     if (!isCreate && !isBet) {
@@ -54,36 +60,46 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
     }
   }, [isCreate, isBet]);
 
-  const handleDelete = async (bettingId: string) => {
+  const handleDelete = (bettingId: string) => {
     setConfirmTitle("베팅 삭제하기");
     setConfirmText("베팅을 삭제하시겠습니까?");
-    const { message } = await deleteBetting(bettingId);
-    setModalTitle("베팅 삭제하기");
-    setModalText(message);
-    onModalOpen();
+    onConfirmModalOpen();
+
+    setConfirmAction(() => async () => {
+      const { message } = await deleteBetting(bettingId);
+      setModalTitle("베팅 삭제하기");
+      setModalText(message);
+      onResultModalOpen();
+    });
   };
 
-  const handleResult = async (bettingId: string) => {
+  const handleResult = (bettingId: string) => {
     setConfirmTitle("베팅 정산하기");
     setConfirmText("베팅을 종료하고 정산하시겠습니까?");
-    setModalTitle("베팅 정산하기");
-    setModalText("베팅종료 및 정산이 완료되었습니다.");
-    onModalOpen();
-  };
+    onConfirmModalOpen();
 
-  // if (!isLoggedIn) {
-  //   router.push("/auth/signin");
-  // }
+    setConfirmAction(() => async () => {
+      // 여기에 베팅 정산 API 호출 코드 추가
+      setModalTitle("베팅 정산하기");
+      setModalText("베팅종료 및 정산이 완료되었습니다.");
+      onResultModalOpen();
+    });
+  };
 
   return (
     <div className="w-full max-w-[800px] mx-auto">
       <ConfirmModal
         confirmtext={confirmText}
         confirmtitle={confirmTitle}
+        isOpen={isConfirmModalOpen}
+        onClose={onConfirmModalClose}
+        onSubmit={confirmAction}
+      />
+      <SubmitModal
         title={modalTitle}
         text={modalText}
-        isOpen={isModalOpen}
-        onClose={onModalClose}
+        isOpen={isResultModalOpen}
+        onClose={onResultModalClose}
       />
       <BettingModal
         title={"베팅정보 등록/수정"}
