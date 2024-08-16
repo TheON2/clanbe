@@ -7,6 +7,7 @@ import TapNav from "@/components/TapNav/TabNav";
 import Head from "next/head";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import "@testing-library/jest-dom/extend-expect";
 
 const sans = Open_Sans({ subsets: ["latin"] });
 

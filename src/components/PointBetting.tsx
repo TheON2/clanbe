@@ -15,7 +15,7 @@ import BettingModal from "./BettingModal";
 import BettingCard from "./BettingCard";
 import BetModal from "./BetModal";
 import { useRouter } from "next/navigation";
-import { deleteBetting } from "@/service/betting";
+import { deleteBetting, resultBetting } from "@/service/betting";
 import SubmitModal from "./SubmitModal";
 import ConfirmModal from "./ConfirmModal";
 
@@ -79,6 +79,7 @@ const PointBetting: React.FC<PointBettingProps> = ({ bettings, users }) => {
     onConfirmModalOpen();
 
     setConfirmAction(() => async () => {
+      //const { message } = await resultBetting(bettingId);
       // 여기에 베팅 정산 API 호출 코드 추가
       setModalTitle("베팅 정산하기");
       setModalText("베팅종료 및 정산이 완료되었습니다.");
